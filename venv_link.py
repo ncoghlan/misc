@@ -25,16 +25,25 @@ def install_link(name):
     for d in real_libs:
         site.addsitedir(d)
     try:
-        f, real_path, info = imp.find_module(name)
+        f, real_path, mod_info = imp.find_module(name)
     finally:
         sys.path[:] = saved_path
 
     if f is not None:
         f.close()
 
-    link_path = real_path
+    mod_suffix, fmode, mod_type = mod_info
     for virtd, reald in zip(virt_libs, real_libs):
-        link_path = link_path.replace(reald, virtd)
+        if real_path.startswith(reald):
+            link_path = real_path.replace(reald, virtd)
+            break
+    else:
+        # Module lives elsewhere, so build the symlink manually
+        # This whole approach is a hack, so just dump all
+        # manually created links in purelib
+        virt_purelib = virt_libs[0]
+        subpath = name.replace('.', '/') + mod_suffix
+        link_path = os.path.join(virt_purelib, subpath)
 
     print "{} -> {}".format(link_path, real_path)
     os.symlink(real_path, link_path)
@@ -48,4 +57,5 @@ def install_link(name):
 
 
 if __name__ == "__main__":
-    install_link(sys.argv[1])
+    for name in sys.argv[1:]:
+        install_link(name)
