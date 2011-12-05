@@ -3,3 +3,5 @@ syntax: glob
 *.pyo
 __pycache__
 *~
+_build
+*.orig
