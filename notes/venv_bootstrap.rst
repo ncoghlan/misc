@@ -133,7 +133,7 @@ stack, as well as within virtual environments, so an independent installation
 of ``pip`` is our next task.
 
 Once again, the bootstrap script only works for a system installation, so
-we'll be doing another tarball installation:
+we'll be doing another tarball installation::
 
     $ curl -O http://pypi.python.org/packages/source/p/pip/pip-1.0.2.tar.gz
     $ tar -xzvf pip-1.0.2.tar.gz
@@ -207,11 +207,18 @@ for other versions using the system Python's ``virtualenv`` and
     export PIP_VIRTUALENV_BASE=$WORKON_HOME
     export PIP_RESPECT_VIRTUALENV=true
 
-Because we're working on a custom Python installation with nothing
-installed in ``site-packages``, the above configuration leaves site
-package processing enabled by default in virtual environments. This
-allows us to use ``install26 module`` to install a module and have
-it visible to all of our virtual environments.
+Even though we're working on a custom Python installation with nothing
+installed in ``site-packages``, the above configuration still has site
+package processing disabled by default in virtual environments. This
+favours greater separation of our virtual environments, and more
+accurate tracking of project dependencies. To change this setting,
+use the relevant ``virtualenvwrapper`` command::
+
+    $ toggleglobalsitepackages
+
+When this indicates global site-packages support has been enabled, we will
+be able to use anything installed via ``install26 module`` in addition to
+the modules installed specifically in the current virtual environment.
 
 The ``source`` command makes it easy to rerun the shell initialisation
 code (specify the appropriate file for your own system)::
@@ -230,7 +237,8 @@ matter of running::
 From this point, the modules you install will be based on the dependencies
 of the specific project you're working on. If there are packages you
 *always* need, you may choose to install them directly into your user
-package directory. Otherwise, you may install them into specific virtual
+package directory (and enabled global site-packages support in your virtual
+environments). Otherwise, packages should be installed into specific virtual
 environments.
 
 For example, since I want to use the new Python 2.7 ``unittest`` features in
