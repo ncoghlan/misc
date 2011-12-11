@@ -28,7 +28,7 @@ These instructions won't work on Windows. If a Windows enthusiast decides
 to write up how to do this in the extra-special Microsoft way, I'll be happy
 to provide a link to it.
 
-These instructions *should* work on Mac OS X and on any *nix system. Let me
+These instructions *should* work on Mac OS X and on any \*nix system. Let me
 know if they don't and I'll either fix them or note any platform specific
 idiosyncrasies.
 

@@ -13,6 +13,7 @@ Contents:
 
    py3k_binary_protocols.rst
    venv_bootstrap.rst
+   pep_ideas/index.rst
 
 
 About These Notes
