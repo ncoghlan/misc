@@ -51,4 +51,5 @@ additions.
    implicit_with.rst
    skip_with.rst
    ast_metaprogramming.rst
+   preview_namespace.rst
 
