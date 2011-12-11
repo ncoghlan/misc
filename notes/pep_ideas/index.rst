@@ -15,8 +15,8 @@ To help keep myself vaguely sane, I'm currently limiting myself to pushing
 own testing easier), exploring a few miscellaneous enhancements to shell
 scripting functionality (my `walkdir`_ and `shell_command`_ PyPI packages),
 making the main module a better behaved member of the Python import system
-(through `PEP 395`) and helping to finalise our official recommendation to
-Linux distros on managing the Python 2 to Python 3 transition (via `PEP 394`).
+(through `PEP 395`_) and helping to finalise our official recommendation to
+Linux distros on managing the Python 2 to Python 3 transition (via `PEP 394`_).
 
 Those are just the highlights, too - there's plenty of other tracker,
 python-dev and python-ideas traffic relating to proposals others are working
