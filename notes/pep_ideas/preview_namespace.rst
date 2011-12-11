@@ -70,7 +70,7 @@ such as the new ``lzma`` module).
 
 API updates to existing modules may also be passed through this namespace at
 the developer's discretion. In such cases, the module in the preview
-namespace should use ``from original import *`` so that uses never need to
+namespace should use ``from original import *`` so that users never need to
 include both versions.
 
 
