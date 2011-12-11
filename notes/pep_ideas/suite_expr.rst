@@ -79,18 +79,18 @@ circumstances:
 
 A delimited syntax allows definition of a standard way to pass Python source
 code through such channels. Since Python expression syntax is one such medium,
-this then leads immediately to possibility of support multi-line lambdas
-(amongst other things).
+this then leads immediately to the possibility of supporting multi-line
+lambdas (amongst other things).
 
 
 Proposal
 --------
 
 While Python uses braces for another purpose (dictionary and set
-definitions), it is already the case that semi-colons (';') can be
+definitions), it is already the case that semi-colons (``;``) can be
 used as statement terminators, both optionally at the end of any
 simple statement, and also to combine multiple simple statements into
-a single larger statement (e.g. "x += y; print(x)").
+a single larger statement (e.g. ``x += y; print(x)``).
 
 It seems that this existing feature could be combined with a
 brace-based notation to create an unambiguous "suite expression"
@@ -99,7 +99,7 @@ syntax that would enjoy the same semantics as ordinary Python suites
 flow), but allows *all* Python statements to be embedded inside
 expressions.
 
-Currently, the character sequence "{:" is a Syntax Error: you are
+Currently, the character sequence ``{:`` is a Syntax Error: you are
 attempting to end a compound statement header line while an opening
 brace remains unmatched, or else trying to build a dictionary without
 specifying the key value. This creates an opportunity to re-use braces
@@ -109,9 +109,9 @@ set and dictionary construction.
 Specifically, it should be possible to create a variant of the
 top-level Python syntax that:
 
-1. Explicitly delimits suites using the notation "{:" to open the
-   suite and ":}" to end it
-2. Requires the use of ";" to separate simple statements (i.e.
+1. Explicitly delimits suites using the notation ``{:`` to open the
+   suite and ``:}`` to end it
+2. Requires the use of ``;`` to separate simple statements (i.e.
    newline characters would not end a statement, since we would be inside
    an expression)
 3. Allows compound statements to be used as simple statements by requiring
@@ -119,8 +119,9 @@ top-level Python syntax that:
    whitespace would not be significant, since we would be using
    subexpressions to define each suite)
 
-This would be sufficient to have a version of Python that could be embedded
-in whitespace-insensitive contexts without encountering problems with
+This would be sufficient to have a version of Python's syntax that is both
+compatible with the existing syntax and could be embedded in
+whitespace-insensitive contexts without encountering problems with
 suite delineation. However, with one additional change, this new format
 could also be used to define "suite expressions" that could be used
 meaningfully anywhere Python currently accepts an expression:
@@ -162,11 +163,11 @@ In-order conditional expressions::
 
     x = {: if a {:b:} else {:c:} :}
 
-One-liner accumulator function::
+One-line accumulator function::
 
-    def acc(n) {: s=n; return (lambda (i) {: nonlocal s; s += i; s :}) :}
+    def acc(n=0): return lambda (i) {: nonlocal n; n += i; n :}
 
-A Python-based templating engine ([1])::
+A Python-based templating engine ([1_])::
 
     <% if danger_level > 3 {: %>
 
@@ -191,27 +192,5 @@ A Python-based templating engine ([1])::
 
     <% :} %>
 
-[1] Based on an initial example by Simon Baird:
-    https://gist.github.com/1455210
-
-Is such code as beautiful and readable as normal Python code? No, of
-course not. But it would serve a purpose in defining a *standard* way
-to embed Python code in environments where the leading whitespace
-causes problems.
-
-In terms of how such a delimited syntax would relate to currently
-legal Python code, the transformation is basically the reverse of the
-Haskell one:
-
-1. If you encounter a ":" to open a new suite, replace it and any
-trailing whitespace with "{:".
-2. All whitespace between statements in such a suite is replaced with
-";" characters
-3. Any trailing whitespace after the last statement in the suite is
-replaced with ":};"
-
-The rest of the changes (i.e. a suite's expression value being the
-result of the last statement executed, anonymous function and class
-definitions) then follow from the fact that you now have a suite
-syntax that can potentially be embedded as an expression, so a range
-of new possibilities open up.
+.. [1] Based on an initial example by Simon Baird:
+   https://gist.github.com/1455210
