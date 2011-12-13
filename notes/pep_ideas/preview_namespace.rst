@@ -18,6 +18,30 @@ in order to gather early feedback.
 I think ``__preview__`` would be a great term for this namespace.
 
 
+Why not __future__?
+-------------------
+
+Python already has a "forward-looking" namespace in the form of the
+``__future__`` module, so it's reasonable to ask why that can't be re-used
+for this new purpose.
+
+There are two reasons why doing so not appropriate:
+
+1. The ``__future__`` module is actually linked to a separate compiler
+directives feature that can actually *change* the way the Python interpreter
+compiles a module. We don't want that for the preview namespace - we just
+want an ordinary Python package.
+
+2. The ``__future__`` module comes with an express promise that names will
+be maintained in perpetuity, long after the associated features have become
+the compiler's default behaviour. Again, this is precisely the *opposite* of
+what is intended for the preview namespace - it is almost certain that all
+names added to the preview will be removed at some point, most likely due to
+their being moved to a permanent home in the standard library, but also
+potentially due to their being reverted to third party package status (if
+community feedback suggests the proposed addition is irredeemably broken).
+
+
 The Benefits for python-dev
 ---------------------------
 
@@ -34,18 +58,26 @@ API feedback before the final API of the ``set`` and ``frozenset`` builtins
 was determined.
 
 We can also start integrating preview modules in with the rest of the
-standard library, so long as we make it clear to packagers that the preview
-modules should *not* be considered optional. The only difference between
-preview APIs and the rest of the standard library is that preview APIs are
-explicitly exempted from the usual backwards compatibility guarantees)
+standard library early, so long as we make it clear to packagers that the
+preview modules should *not* be considered optional. The only difference
+between preview APIs and the rest of the standard library is that preview
+APIs are explicitly exempted from the usual backwards compatibility
+guarantees)
 
 
 The Benefits for End Users
 --------------------------
 
-For end users, the key benefit lies in ensuring that anything in the preview
-namespace is clearly under python-dev's aegis from at least the following
-perspectives:
+For future end users, the broadest benefit lies in a better "out-of-the-box"
+experience - rather than being told "oh, the standard library tools for task
+X are horrible, download this 3rd party library instead", those superior
+tools are more likely to be just be an import away.
+
+For environments where developers are required to conduct due diligence on
+their upstream dependencies (severely harming the cost-effectiveness of, or
+even ruling out entirely, much of the material on PyPI), the key benefit lies
+in ensuring that anything in the preview namespace is clearly under
+python-dev's aegis from at least the following perspectives:
 
 * licensing (i.e. redistributed by the PSF under a Contributor Licensing
   Agreement)
@@ -56,8 +88,8 @@ perspectives:
 * source control (i.e. the master repository for the software is published
   on http://hg.python.org)
 
-Those are the things that will allow the preview modules to be used under
-existing legal approvals that allow the use of Python itself (e.g. in a
+Those are the things that should allow the preview modules to be used under
+any existing legal approvals that allow the use of Python itself (e.g. in a
 corporate or governmental environment).
 
 
@@ -66,12 +98,30 @@ The Rules
 
 New modules added to the standard library spend at least one release in the
 ``__preview__`` namespace (unless they are using a largely pre-defined API,
-such as the new ``lzma`` module).
+such as the new ``lzma`` module, which generally follows the API of the
+existing :mod:`bz2` module).
 
 API updates to existing modules may also be passed through this namespace at
 the developer's discretion. In such cases, the module in the preview
 namespace should use ``from original import *`` so that users never need to
 include both versions.
+
+Adding this preview namespace doesn't mean that the floodgates suddenly open
+for the addition of arbitrary modules and packages to the standard library.
+All of the existing criteria regarding "best of breed" projects, sufficient
+API stability and general project maturity to cope with an 18 month release
+cycle, etc would still apply. Also, as Ethan Furman once put it, the standard
+library philosophy is "batteries included", not "nuclear reactors included".
+Some projects are simply too big and too complicated to become part of the
+standard library - in such cases, it is better for the standard library to
+define standard interfaces that allow third party projects to interoperate
+effectively, rather than trying to do everything itself (e.g. :mod:`wsgiref`,
+:func:`memoryview`).
+
+All the preview namespace is intended to do is lower the risk of locking in
+minor API design mistakes for extended periods of time. Currently, this
+concern can block new additions, even when the python-dev consensus it that
+a particular addition is a good idea in principle.
 
 
 The Candidates
