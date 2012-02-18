@@ -12,6 +12,7 @@ Contents:
    :maxdepth: 2
 
    py3k_binary_protocols.rst
+   py3k_text_file_processing.rst
    venv_bootstrap.rst
    pep_ideas/index.rst
 
