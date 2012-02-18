@@ -7,6 +7,35 @@ This isn't originally my idea (that honor goes to `Dj Gilcrease`_), it's just
 something I think would be really valuable and that I have some definite ideas
 about.
 
+Guido's Verdict
+---------------
+
+Eli Bendersky ran with this idea and wrote it up as `PEP 408`_. As you can
+see if you click on that link, Guido rejected the PEP in favour of slightly
+relaxing the rules for stdlib inclusion: if we're not 100% sure of an
+addition, even after it has been battle-tested and received widespread
+approval on PyPI, we now have the option to add it anyway, with a
+documented warning that the inclusion of the library is provisional. It
+will remain at least for that version, but there's a slim chance it will be
+removed, or experience backwards incompatible API tweaks in the next feature
+release. (The most likely outcome, however, is that it will remain unchanged
+for the next release and simply lose the "provisional" tag)
+
+Guido's chosen way forward is actually very similar to the way Google now
+provides experimental modules on App Engine under their final names with an
+"Experimental!" tag on their documentation (after an earlier failed
+experiment with a dedicated "labs" namespace). It's also virtually identical
+to the way that Red Hat provides some product features as `tech previews`_
+(i.e. without being covered by the usual support guarantees).
+
+In all cases the intended plan is that the incorporated module or feature
+will, in fact, end up satisfying the normal backwards compatibility
+guidelines. The documented warning just gives us an out where we have the
+*option* of making a backwards incompatible change if we deemed it necessary.
+
+.. _PEP 408: http://www.python.org/dev/peps/pep-0408/
+.. _tech previews: https://access.redhat.com/support/offerings/techpreview/
+
 
 The Namespace
 -------------
