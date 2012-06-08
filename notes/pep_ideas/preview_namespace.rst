@@ -33,7 +33,10 @@ will, in fact, end up satisfying the normal backwards compatibility
 guidelines. The documented warning just gives us an out where we have the
 *option* of making a backwards incompatible change if we deemed it necessary.
 
+The new policy was written up as `PEP 411`_.
+
 .. _PEP 408: http://www.python.org/dev/peps/pep-0408/
+.. _PEP 411: http://www.python.org/dev/peps/pep-0411/
 .. _tech previews: https://access.redhat.com/support/offerings/techpreview/
 
 

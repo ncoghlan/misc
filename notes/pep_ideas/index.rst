@@ -9,29 +9,7 @@ enhancement to the language rather than just useless cruft new Python
 programmers have to learn in order to understand code other programmers might
 write.
 
-To help keep myself vaguely sane, I'm currently limiting myself to pushing
-`PEP 380`_ through to completion (adding the ``yield from`` syntax to Python
-3.3, along with some `associated updates`_ to the :mod:`dis` module to make our
-own testing easier), exploring a few miscellaneous enhancements to shell
-scripting functionality (my `walkdir`_ and `shell_command`_ PyPI packages),
-making the main module a better behaved member of the Python import system
-(through `PEP 395`_) and helping to finalise our official recommendation to
-Linux distros on managing the Python 2 to Python 3 transition (via `PEP 394`_).
-
-Those are just the highlights, too - there's plenty of other tracker,
-python-dev and python-ideas traffic relating to proposals others are working
-on, and various smaller fixes in my areas of interest, as well as a few longer
-term projects relating to better encapsulating the import state and updating
-the compiler to better leverage the AST for a variety of purposes.
-
-.. _associated updates: http://bugs.python.org/issue11816
-.. _PEP 380: http://www.python.org/dev/peps/pep-0380/
-.. _PEP 394: http://www.python.org/dev/peps/pep-0394/
-.. _PEP 395: http://www.python.org/dev/peps/pep-0395/
-.. _walkdir: http://walkdir.readthedocs.com
-.. _shell_command: http://shell-command.readthedocs.com
-
-What that means is that there are plenty of ideas I've had that may actually
+As a result, there are plenty of ideas I've had that may actually
 have some merit, but that I don't have the time to explore. Be aware that
 some of these are going to be *bad* ideas that justifiably won't survive the
 gauntlet of python-ideas and python-dev review, while others may make sense
