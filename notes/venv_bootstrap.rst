@@ -15,14 +15,18 @@ Accordingly, since Fedora only ships the one Python stack, I needed to
 bootstrap a full 2.6 virtual environment to get my development environment
 to better reflect the intended deployment environment.
 
-Initially I assumed that the various packaging tools would allow virtual
+I'm told that the various packaging tools *do* allow virtual
 environments for other Python versions to be managed just using the system
-Python installation. I still believe that's actually the case (at least
-for the two virtual environment specific tools). In practice, however, I
-found it to be something of a pain to get that working properly, so I went
-down the path of isolating the virtual environment implementation as well.
-This approach also has the added virtue of still working even if the affected
-tools *aren't* installed for the system Python installation.
+Python installation. Unfortunately, I have not seen any documentation on how
+to actually do so, and my attempts to figure it out for myself all failed.
+
+What I *did* manage to get working though, is an approach that also isolates
+the virtual environment implementation and other packaging tools. This
+approach also has the added virtue of still working if the affected tools
+*aren't* installed for the system Python installation, so you can use it in
+an environment where adding those tools to the system Python installation is
+either difficult (you don't have root access) or impossible (the system
+administrator won't install them for you even after you ask nicely).
 
 These instructions won't work on Windows. If a Windows enthusiast decides
 to write up how to do this in the extra-special Microsoft way, I'll be happy
