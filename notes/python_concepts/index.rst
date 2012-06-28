@@ -12,8 +12,8 @@ produce a compliant interpreter implementation.
 That book deal never went anywhere, so I asked for the copyright on the
 manuscript to be returned, and donated the draft to the PSF. Converting the
 ODF files to reStructuredText has been an idle thought ever since, but my
-motivation to do so had dropped ever low as the contents of the manuscript
-became increasingly out of date.
+motivation to do so has dropped ever lower as the contents of the manuscript
+become increasingly out of date.
 
 So, instead, this page will host an ad hoc series of articles that dive deep
 into some esoteric element of the Python language definition, and attempt to
