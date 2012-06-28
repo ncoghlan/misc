@@ -339,7 +339,7 @@ and using Unicode for their text handling.
 
 So far we've managed to walk the line by persuading our Python 2 users that
 we aren't going to leave them in the lurch when it comes to appropriate
-platform support for the Python 2.7 series, thus allowing to perform the
+platform support for the Python 2.7 series, thus allowing them to perform the
 migration on their own schedule as their dependencies become available,
 while doing what we can to ease the migration process so that following our
 lead remains the path of least resistance for the future evolution of the
@@ -355,7 +355,7 @@ to fork" implied by Python's liberal licensing model: we had very good
 reasons for going ahead with the creation of Python 3, and very good
 reasons for discontinuing the Python 2 series. We didn't decide to disrupt
 an entire community of developers just for the hell of it - we did it
-because there was a core problem in the language design, and backwards
+because there was a core problem in the language design, and a backwards
 compatibility break was the only way we could find to solve it once and
 for all.
 
