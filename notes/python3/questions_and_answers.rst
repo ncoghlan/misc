@@ -4,11 +4,14 @@ Python 3 Q & A
 Last Updated: 28th June, 2012
 
 With the recent release of Python 3.3 beta 1, some questions are once again
-being asked as to the sanity of the core Python developers in embarking
-down the path of asking the entire language ecosystem to migrate to a new
-version that introduces some backwards incompatible changes for reasons that
-more obviously benefit future users of the language than they do
+being asked as to the sanity of the core Python developers. A few years ago,
+we embarked down the path of asking the entire language ecosystem to
+migrate to a new version that introduces backwards incompatible changes
+that more obviously benefit future users of the language than they do
 current users.
+
+I've seen variants of these questions several times of the years, and
+figured I'd 
 
 The views expressed below are my own. While many of them are shared by
 other core developers, and I use "we" in several places where I believe
@@ -18,6 +21,31 @@ core developer on every point.
 I am also not writing on behalf of the Python Software Foundation (of which
 I am a nominated member) nor on behalf of Red Hat (my current employer).
 
+TL;DR Version
+-------------
+
+* Yes, we know this migration is disruptive.
+* Yes, we know that some sections of the community have never personally
+  experienced the problems with the Python 2 Unicode model that this
+  migration is designed to eliminate
+* Yes, we know that many of those problems had already been solved by
+  some sections of the community to their own satisfaction.
+* Yes, we know that by attempting to fix these problems in the core Unicode
+  model we have broken many of the workarounds that had been put in place
+  to deal with the limitations of the old model
+* Yes, we are trying to ensure there is a smooth migration path from Python
+  2 to Python 3 to minimise the inevitable disruption
+* No, we did not do this lightly
+* No, we do not see any other way to ensure Python remains a viable
+  development platform as developer communities grow in locations
+  where English is not the primary spoken language.
+
+It is my perspective that the web and GUI developers have the right idea:
+dealing with Unicode text correctly is not optional in the modern world.
+In large part, the Python 3 redesign involved taking Unicode handling
+principles elaborated in other parts of the community and building them
+into the core design of the language.
+
 
 Why was Python 3 made incompatible with Python 2?
 -------------------------------------------------
@@ -26,7 +54,8 @@ To the best of my knowledge, the initial decision to make Python 3
 incompatible with the Python 2 series arose from Guido's desire to solve
 one core problem: helping *all* Python applications to handle Unicode
 text in a more consistent and reliable fashion without needing to rely
-on third party libraries and frameworks.
+on third party libraries and frameworks. Even if that wasn't Guido's
+original motivation, it's the rationale that *I* find most persuasive.
 
 The core Unicode support in the Python 2 series has the honour of being
 documented in PEP 100.
