@@ -67,7 +67,7 @@ these details as an informational PEP.
 Guido, along with the wider Python and software development communities,
 learned a lot about the best techniques for handling Unicode in the six years
 between the introduction of Unicode support in Python 2.0 and inauguration
-of the `python-3000 mailing list` in March 2006.
+of the `python-3000 mailing list`_ in March 2006.
 
 One of the most important guidelines for sane Unicode handling is to ensure
 that all encoding and decoding occurs at system boundaries, with all
