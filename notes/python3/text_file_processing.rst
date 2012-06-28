@@ -1,3 +1,5 @@
+.. _py3k-text-files:
+
 Processing Text Files in Python 3
 =================================
 

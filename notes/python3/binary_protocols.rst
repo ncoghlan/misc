@@ -1,3 +1,5 @@
+.. _binary-protocols:
+
 Python 3 and ASCII Compatible Binary Protocols
 ==============================================
 

@@ -12,6 +12,7 @@ aspects of the Python 3 transition.
 .. toctree::
    :maxdepth: 2
 
+   questions_and_answers.rst
    binary_protocols.rst
    text_file_processing.rst
 
