@@ -22,11 +22,13 @@ additions.
    bit about in the past.
 
 
-Package Ideas
--------------
+Ideas for PyPI Prototype Packages
+---------------------------------
 
 This section is for ideas that could conceivably be implemented as a package
-on the Python package index.
+on the Python Package Index, and hence should be field tested in that
+environment before incorporation into the standard library can be seriously
+considered.
 
 .. toctree::
    :maxdepth: 2
