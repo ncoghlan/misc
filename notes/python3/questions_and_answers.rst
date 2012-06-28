@@ -230,7 +230,7 @@ Python 3 is meant to make Unicode easier, so why is <X> harder?
 
 At this point, the Python community as a whole has had more than 12 years
 to get used to the Python 2 way of handling Unicode. For Python 3,
-we've only had a prodcution ready release available for 3 years. Even in
+we've only had a production ready release available for 3 years. Even in
 the core development team, we're still coming to terms with the
 full implications of a strictly enforced distinction between binary and
 text data.
