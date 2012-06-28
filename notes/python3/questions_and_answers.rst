@@ -273,9 +273,9 @@ than others, with a 2.7 release due out soon, but the key feature of Jython
 is using Python code to script the *Java* ecosystem, reducing the importance
 of compatibility with the Python ecosystem for components with a Java
 equivalent. Significantly, one of the most disruptive aspects of the 3.x
-transition for CPython and PyPy - handling all
-text as Unicode data - was already the case for Jython and IronPython, as
-they use the string model of the underlying JVM and CLR platforms).
+transition for CPython and PyPy (handling all
+text as Unicode data) was already the case for Jython and IronPython, as
+they use the string model of the underlying JVM and CLR platforms.
 
 We have also instituted `new guidelines`_ for CPython development which
 require that new standard library additions be granted special dispensation
@@ -318,7 +318,7 @@ ecosystem caught up to the Python 2 ecosystem in terms of real world
 usability. Thus, the extended maintenance period on 2.7 to ensure it
 continues to build and run on new platforms. While python-dev maintenance
 of 2.7 is slated to revert to security-fix only mode in just over 2 years
-time (July 2015). Even after python-dev upstream maintenance ends, Python 2.6
+time (July 2015), even after python-dev upstream maintenance ends, Python 2.6
 and Python 2.7 will still be supported by enterprise Linux vendors until at
 least 2020 (and likely later in the case of 2.7).
 
@@ -332,7 +332,7 @@ changes in updating a code base, and the `python-modernize`_ variant
 performs a similar translation that targets the (large) common subset of
 Python 2.6+ and Python 3 with the aid of the `six`_ compatibility module.
 
-`PEP 414` was implemented in Python 3.3 to restore support for explicit
+`PEP 414`_ was implemented in Python 3.3 to restore support for explicit
 Unicode literals primarily to reduce the number of purely mechanical code
 changes being imposed on users that are doing the right thing in Python 2
 and using Unicode for their text handling.
@@ -361,6 +361,7 @@ for all.
 
 .. _python-modernize: https://github.com/mitsuhiko/python-modernize
 .. _six: http://pypi.python.org/pypi/six
+.. _PEP 414: http://www.python.org/dev/peps/pep-0414/
 .. _PEP 404: http://www.python.org/dev/peps/pep-0404/
 
 
