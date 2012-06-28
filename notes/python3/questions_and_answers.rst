@@ -251,7 +251,7 @@ to have to care about Unicode correctness, or else explicitly tell the
 interpreter not to worry about it.
 
 I've written more extensively on both of these topics in
-:ref`binary-protocols` and :ref:`py3k-text-files`.
+:ref:`binary-protocols` and :ref:`py3k-text-files`.
 
 
 Didn't you strand the major alternative implementations on Python 2?
