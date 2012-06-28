@@ -350,7 +350,7 @@ an opportunity to pass up) was created to make it crystal clear that
 python-dev has no intention of creating a 2.8 release that backports
 2.x compatible features from the 3.x series. After you make it through
 the opening Monty Python references, you'll find the explanation
-that makes it unlikely than anyone else will take advantage of the "right
+that makes it unlikely that anyone else will take advantage of the "right
 to fork" implied by Python's liberal licensing model: we had very good
 reasons for going ahead with the creation of Python 3, and very good
 reasons for discontinuing the Python 2 series. We didn't decide to disrupt
