@@ -11,11 +11,10 @@ Contents:
 .. toctree::
    :maxdepth: 2
 
-   py3k_binary_protocols.rst
-   py3k_text_file_processing.rst
-   venv_bootstrap.rst
+   python3/index.rst
    python_concepts/index.rst
    pep_ideas/index.rst
+   venv_bootstrap.rst
 
 
 About These Notes
