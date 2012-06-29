@@ -1,7 +1,7 @@
 Python 3 Q & A
 ==============
 
-Last Updated: 28th June, 2012
+Last Updated: 29th June, 2012
 
 With the recent release of Python 3.3 beta 1, some questions are once again
 being asked as to the sanity of the core Python developers. A few years ago,
@@ -121,7 +121,7 @@ The other backwards incompatible changes in Python 3 largely fell into the
 following categories:
 
 * dropping deprecated features that were frequent sources of bugs in
-  Python 3, or had been replaced by superior alternatives and retained
+  Python 2, or had been replaced by superior alternatives and retained
   solely for backwards compatibility
 * reducing the number of statements in the language
 * replacing concrete list and dict objects with more memory efficient
@@ -382,13 +382,12 @@ frameworks hide most of the problems with the Python 2 approach from
 their users).
 
 Another category of users are upset that we chose to stop adding new
-features to the Python 2 series, and have been `quite emphatic`_ that
-attempts to backport features (other than via PyPI modules like
-``unittest2`` and ``contextlib2``) are unlikely to receive significant
-support from python-dev. We're not *opposed* to such efforts - it's
-merely the case that we aren't interested in doing them ourselves, and
-are unlikely to devote significant amounts of time to assisting those
-that *are* interested.
+features to the Python 2 series, and have been `quite emphatic`_ that attempts
+to backport features (other than via PyPI modules like ``unittest2``,
+``contextlib2`` and ``configparser``) are unlikely to receive significant
+support from python-dev.  We're not *opposed* to such efforts - it's merely the
+case that we aren't interested in doing them ourselves, and are unlikely to
+devote significant amounts of time to assisting those that *are* interested.
 
 However, we have done everything we can to make migrating to Python 3 the
 easiest exit strategy for Python 2, and provided a fairly leisurely time
@@ -412,9 +411,9 @@ attractive are:
 
 The first three of those approaches are all fully supported by python-dev.
 Many standard library additions in Python 3 started as modules on PyPI and
-thus remain available to Python 2 users. For other cases, such as
-``unittest``, the respective standard library maintainer also maintains a
-PyPI backport.
+thus remain available to Python 2 users. For other cases, such as ``unittest``
+or ``configparser``, the respective standard library maintainer also maintains
+a PyPI backport.
 
 The latter two choices are unfortunate, but we've done what we can to make
 the first three alternatives more attractive.
@@ -472,8 +471,8 @@ backwards compatibility guarantees.
 .. _provisional APIs: http://www.python.org/dev/peps/pep-0411/
 
 
-Why wasn't *I* consulted?
--------------------------
+Why wasn't **I** consulted?
+---------------------------
 
 Technically, even the core developers weren't consulted: Python 3 happened
 because the creator of the language, Guido van Rossum, wanted it
@@ -594,9 +593,9 @@ particular workload. Sure, it's not ideal, and if a portable, reliable,
 maintainable free-threaded implementation was dropped in our laps we'd
 certainly seriously consider adopting it.
 
-Back in reality, though, complaining about the GIL as though its a serious
-barrier to adoption amongst developers that know what they're doing often
-says more about the person doing the complaining than it does about CPython.
+Back in reality, though, complaining about the GIL as though it's a serious
+barrier to adoption in general often says more about the person doing the
+complaining than it does about CPython.
 Does the GIL make CPython (and even PyPy) a poor choice for some workloads
 given certain styles of programming? Absolutely. The appropriate responses
 to that situation are:
