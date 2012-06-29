@@ -382,13 +382,12 @@ frameworks hide most of the problems with the Python 2 approach from
 their users).
 
 Another category of users are upset that we chose to stop adding new
-features to the Python 2 series, and have been `quite emphatic`_ that
-attempts to backport features (other than via PyPI modules like
-``unittest2`` and ``contextlib2``) are unlikely to receive significant
-support from python-dev. We're not *opposed* to such efforts - it's
-merely the case that we aren't interested in doing them ourselves, and
-are unlikely to devote significant amounts of time to assisting those
-that *are* interested.
+features to the Python 2 series, and have been `quite emphatic`_ that attempts
+to backport features (other than via PyPI modules like ``unittest2``,
+``contextlib2`` and ``configparser``) are unlikely to receive significant
+support from python-dev.  We're not *opposed* to such efforts - it's merely the
+case that we aren't interested in doing them ourselves, and are unlikely to
+devote significant amounts of time to assisting those that *are* interested.
 
 However, we have done everything we can to make migrating to Python 3 the
 easiest exit strategy for Python 2, and provided a fairly leisurely time
