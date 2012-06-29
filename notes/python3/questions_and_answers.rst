@@ -411,9 +411,9 @@ attractive are:
 
 The first three of those approaches are all fully supported by python-dev.
 Many standard library additions in Python 3 started as modules on PyPI and
-thus remain available to Python 2 users. For other cases, such as
-``unittest``, the respective standard library maintainer also maintains a
-PyPI backport.
+thus remain available to Python 2 users. For other cases, such as ``unittest``
+or ``configparser``, the respective standard library maintainer also maintains
+a PyPI backport.
 
 The latter two choices are unfortunate, but we've done what we can to make
 the first three alternatives more attractive.
