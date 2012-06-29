@@ -381,6 +381,15 @@ is in place to deal with the problem even in Python 2 (for example, web
 frameworks hide most of the problems with the Python 2 approach from
 their users).
 
+Another category of users are upset that we chose to stop adding new
+features to the Python 2 series, and have been `quite emphatic`_ that
+attempts to backport features (other than via PyPI modules like
+``unittest2`` and ``contextlib2``) are unlikely to receive significant
+support from python-dev. We're not *opposed* to such efforts - it's
+merely the case that we aren't interested in doing them ourselves, and
+are unlikely to devote significant amounts of time to assisting those
+that *are* interested.
+
 However, we have done everything we can to make migrating to Python 3 the
 easiest exit strategy for Python 2, and provided a fairly leisurely time
 frame (at least by open source volunteer supported project standards)
@@ -389,6 +398,28 @@ maintenance of Python 2.7 ends in 2015, source only security
 releases will continue for some time, and, as noted above, I expect
 enterprise Linux vendors to continue to provide paid support for
 some time after community support ends.
+
+Essentially, the choices we have set up for Python 2 users that find
+Python 3 features that are technically backwards compatible with Python 2
+attractive are:
+
+* Live without the features for the moment and continue to use Python 2.7
+* For standard library modules/features, create a backport (either private or
+  public on PyPI) and use the backported version
+* Migrate to Python 3 themselves
+* Fork Python 2 to add the missing features for their own benefit
+* Migrate to a language other than Python
+
+The first three of those approaches are all fully supported by python-dev.
+Many standard library additions in Python 3 started as modules on PyPI and
+thus remain available to Python 2 users. For other cases, such as
+``unittest``, the respective standard library maintainer also maintains a
+PyPI backport.
+
+The latter two choices are unfortunate, but we've done what we can to make
+the first three alternatives more attractive.
+
+.. _quite emphatic: http://www.python.org/dev/peps/pep-0404/
 
 
 Doesn't this make Python look like an immature and unstable platform?
