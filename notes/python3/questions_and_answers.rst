@@ -1,7 +1,7 @@
 Python 3 Q & A
 ==============
 
-Last Updated: 28th June, 2012
+Last Updated: 29th June, 2012
 
 With the recent release of Python 3.3 beta 1, some questions are once again
 being asked as to the sanity of the core Python developers. A few years ago,
@@ -121,7 +121,7 @@ The other backwards incompatible changes in Python 3 largely fell into the
 following categories:
 
 * dropping deprecated features that were frequent sources of bugs in
-  Python 3, or had been replaced by superior alternatives and retained
+  Python 2, or had been replaced by superior alternatives and retained
   solely for backwards compatibility
 * reducing the number of statements in the language
 * replacing concrete list and dict objects with more memory efficient
@@ -472,8 +472,8 @@ backwards compatibility guarantees.
 .. _provisional APIs: http://www.python.org/dev/peps/pep-0411/
 
 
-Why wasn't *I* consulted?
--------------------------
+Why wasn't **I** consulted?
+---------------------------
 
 Technically, even the core developers weren't consulted: Python 3 happened
 because the creator of the language, Guido van Rossum, wanted it
@@ -593,7 +593,7 @@ farming work out to a separate process if the GIL is a problem for a
 particular workload. Sure, it's not ideal, and if a portable, reliable,
 maintainable free-threaded implementation was dropped in our laps we'd
 certainly seriously consider adopting it. Back in reality, though,
-complaining about the GIL as though its a serious barrier to adoption
+complaining about the GIL as though it's a serious barrier to adoption
 amongst developers that know what they're doing often says more about the
 person doing the complaining than it does about CPython.
 
