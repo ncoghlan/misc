@@ -11,7 +11,7 @@ that more obviously benefit future users of the language than they do
 current users.
 
 I've seen variants of these questions several times of the years, and
-figured I'd 
+figured I'd finally record my thoughts on the topic in a single location.
 
 The views expressed below are my own. While many of them are shared by
 other core developers, and I use "we" in several places where I believe
