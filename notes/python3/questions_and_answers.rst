@@ -592,17 +592,62 @@ is often made out to be? We're not an OS kernel - we have the option of
 farming work out to a separate process if the GIL is a problem for a
 particular workload. Sure, it's not ideal, and if a portable, reliable,
 maintainable free-threaded implementation was dropped in our laps we'd
-certainly seriously consider adopting it. Back in reality, though,
-complaining about the GIL as though its a serious barrier to adoption
-amongst developers that know what they're doing often says more about the
-person doing the complaining than it does about CPython.
+certainly seriously consider adopting it.
 
-Some significant work did go into optimising the GIL behaviour for Python
+Back in reality, though, complaining about the GIL as though its a serious
+barrier to adoption amongst developers that know what they're doing often
+says more about the person doing the complaining than it does about CPython.
+Does the GIL make CPython (and even PyPy) a poor choice for some workloads
+given certain styles of programming? Absolutely. The appropriate responses
+to that situation are:
+
+* Use a different programming style that is more suited to the constraints
+  of the GIL
+* Use a different Python implementation that is more suited to this
+  programming style (neither Jython nor IronPython use a GIL)
+* Use a different language that prioritises support for this programming
+  style
+* Fork CPython and remove the GIL to demonstrate that its not as hard to do
+  without negative consequences as the current core developers believe
+  (or pay someone to do this on your behalf)
+
+Jumping on the internet to say that "they" (specifically, the people
+you're not paying a cent to and who aren't bothered by the GIL because
+it only penalises a programming style many of us consider ill advised in the
+first place) should "just fix it" (despite the serious risk of breaking user
+code that currently only works due to the coarse grained locking around
+each bytecode) is also always an option. Generally speaking, such pieces
+come across as "I have no idea how much engineering effort, now and in the
+future, is required to make this happen".
+
+It isn't that a free threaded Python implementation isn't possible (Jython
+and IronPython prove that), it's that free threaded virtual machines are
+hard to write correctly in the first place and are harder to maintain once
+implemented. Linux had the "Big Kernel Lock" for years for exactly the same
+reason. For CPython, any engineering effort directed towards free threading
+support is engineering effort that isn't being directed somewhere else. The
+current core development team don't consider that a good trade-off and, to
+date, nobody else has successfully taken up the standing challenge to try
+and prove us wrong.
+
+Some significant work did go into optimising the GIL behaviour for CPython
 3.2, and further tweaks are possible in the future as more applications are
 ported to Python 3 and get to experience the results of that work, but
 more extensive changes to the CPython threading model are highly likely to
 fail the risk/reward trade-off.
 
+My own hope is that Armin Rigo's research into Software Transactional
+Memory models bears fruit. I know he has some thoughts on how the concepts
+he is exploring in PyPy could be translated back to CPython, but even if
+that doesn't pan out, it's very easy to envision a future where CPython is
+used for command line utilities (which are generally single threaded and
+often so short running that the PyPy JIT never gets a chance to warm up)
+and embedded systems, while PyPy takes over the execution of long running
+scripts and applications, letting them run substantially faster and span
+multiple cores without requiring any modifications to the Python code.
+Splitting the role of the two VMs in that fashion would allow each to
+be optimised appropriately rather than having to make trade-offs that
+attempt to balance the starkly different needs of the various use cases.
 
 .. _Software Transactional Memory: http://morepypy.blogspot.com.au/2011/08/we-need-software-transactional-memory.html
 .. _further tweaks: http://bugs.python.org/issue7946
