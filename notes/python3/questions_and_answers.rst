@@ -1,7 +1,7 @@
 Python 3 Q & A
 ==============
 
-Last Updated: 29th June, 2012
+Last Updated: 30th June, 2012
 
 With the recent release of Python 3.3 beta 1, some questions are once again
 being asked as to the sanity of the core Python developers. A few years ago,
@@ -514,45 +514,172 @@ But, but, surely fixing the GIL is more important than fixing Unicode...
 
 While this complaint isn't really Python 3 specific, it comes up often
 enough that I wanted to put in writing why most of the core development
-team simply don't see the GIL as a particularly big problem.
+team simply don't see the GIL as a particularly big problem in practice.
 
-First and foremost, we have a general view that threading with shared
-non-transactional memory is a broken model for general purpose concurrency.
-Armin Rigo has explained that far more eloquently than I can in the
-introduction to his `Software Transactional Memory`_ work for PyPy.
+Earlier versions of this section were needlessly dismissive of the
+concerns of those that wish to combine their preference for programming
+in Python with their preference for using threads to exploit the
+capabilities of multiple cores on a single machine. In the interests of
+clear communication, the text has been rewritten in a more constructive
+tone. If you wish to see the snarkier early versions, they're
+available in the `source repo`_ for this site.
 
-The advantages of GIL-style coarse grained locking for the CPython interpreter
-implementation are that it makes naively threaded code more likely
-to run correctly, greatly simplifies the interpreter implementation (thus
-increasing general reliability and ease of porting to other platforms) and
-has almost zero overhead when running in single-threaded mode for simple scripts
-(since the GIL is not initialised until the threading support is imported,
-or initialised via the C API, the only overhead is a boolean check to see if
-the GIL has been created).
+.. _source repo: https://bitbucket.org/ncoghlan/misc
 
-The *only* downsides of this approach are that it means that CPU bound Python
-code can't scale to multiple cores within a single machine using threads, and
-that IO operations can incur unexpected additional latency in the presence of
-a CPU bound thread.
+Why is using a Global Interpreter Lock (GIL) a problem?
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+The key issue with Python implementations that rely on a GIL (most notably
+CPython and PyPy) is that it makes them entirely unsuitable for cases where
+a developer wishes to:
+
+* use shared memory threading to exploit multiple cores on a single machine
+* write their entire application in Python, including CPU bound elements
+* use CPython or PyPy as their interpreter
+
+This combination of requirements simply doesn't work - the GIL effectively
+restricts bytecode execution to a single core, thus rendering pure Python
+threads an ineffective tool for distributing CPU bound work across multiple
+cores.
+
+At this point, one of those requirements has to give. The developer has to
+either:
+
+* use a concurrency technique other than shared memory threading
+* move parts of the application out into non-Python code (the path taken
+  by the NumPy/SciPy community, all Cython users and many other people
+  using Python as a glue language to bind disparate components together)
+* use a Python implementation that doesn't rely on a GIL (while the main
+  purpose of Jython and IronPython is to interoperate with other JVM and
+  CLR components, they are also free threaded thanks to the cross-platform
+  threading primitives provide by the underlying virtual machines)
+* use a language other than Python
+  
+Many Python developers find this annoying - they want to use threads *and*
+they want to use Python, but they have the CPython core developers in their
+way saying "Sorry, we don't support that style of programming".
+
+
+What alternative approaches are available?
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Assuming that a free-threaded Python implementation like Jython or IronPython
+isn't suitable for a given application, then there are two main approaches
+to handling distribution of CPU bound Python workloads in the presence of
+a GIL. Which one will be more appropriate will depend on the specific task
+and developer preference.
+
+The approach most directly supported by python-dev is the use of
+process-based concurrency rather than thread-based concurrency. All
+major threading APIs have a process-based equivalent, allowing threading
+to be used for concurrent synchronous IO calls, while multiple processes can
+be used for concurrent CPU bound calculations in Python code. The
+strict memory separation imposed by using multiple processes also makes
+it much easier to avoid many of the common traps of multi-threaded code.
+As another added bonus, for applications which would benefit from scaling
+beyond the limits of a single machine, starting with multiple processes
+means that any reliance on shared memory will already be gone, removing
+one of the major stumbling blocks to distributed processing.
+
+The major alternative approach promoted by the community is best represented
+by `Cython`_. Cython is a Python superset designed to be compiled down to
+CPython C extension modules. One of the features Cython offers (as is
+possible from any C extension module) is the ability to explicitly release
+the GIL around a section of code. By releasing the GIL in this fashion,
+Cython code can fully exploit all cores on a machine for computationally
+intensive sections of the code, while retaining all the benefits of Python
+for other parts of the application.
+
+This approach also works when calling out to *any* code written in other
+languages: release the GIL when handing over control to the external library,
+reacquire it when returning control to the Python interpreter.
+
+.. _Cython: http://www.cython.org/
+.. _release the GIL: http://docs.cython.org/src/userguide/external_C_code.html#acquiring-and-releasing-the-gil
+
+
+Why isn't "just remove the GIL" the obvious answer?
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Removing the GIL *is* the obvious answer. The problem with this phrase is
+the "just" part, not the "remove the GIL" part.
+
+One of the key issues with threading models built on shared
+non-transactional memory is that they are a broken approach to general
+purpose concurrency. Armin Rigo has explained that far more eloquently
+than I can in the introduction to his `Software Transactional Memory`_ work
+for PyPy, but the general idea is that threading is to concurrency as the
+Python 2 Unicode model is to text handling - it works great a lot of the
+time, but if you make a mistake (which is inevitable in any non-trivial
+program) the consequences are unpredictable (and often catastrophic from an
+application stability point of view), and the resulting situations are
+frequently a nightmare to debug.
+
+The advantages of GIL-style coarse grained locking for the CPython
+interpreter implementation are that it makes naively threaded code
+more likely to run correctly, greatly simplifies the interpreter
+implementation (thus increasing general reliability and ease of
+porting to other platforms) and has almost zero overhead when
+running in single-threaded mode for simple scripts or event driven
+applications which don't need to interact with any synchronous APIs (as
+the GIL is not initialised until the threading support is imported,
+or initialised via the C API, the only overhead is a boolean
+check to see if the GIL has been created).
+
+The CPython development team have long had a (largely unwritten) list
+of requirements that any free-threaded Python variant must meet before
+it could be considered for incorporation into the reference interpreter:
+
+* must not substantially slow down single-threaded applications
+* must not substantially increase latency times in IO bound applications
+* threading support must remain optional to ease porting to platforms
+  with no (or broken) threading primitives
+* must minimise breakage of current end user Python code that implicitly
+  relies on the coarse-grained locking provided by the GIL (I recommend
+  consulting Armin's STM introduction on the challenges posed by this)
+* must remain compatible with existing third party C extensions that rely
+  on refcounting and the GIL (I recommend consulting with the cpyext
+  and IronClad developers both on the difficulty of meeting this
+  requirement, and the lack of interest many parts of the community have
+  in any Python implementation that doesn't abide by it)
+* must achieve all of these without reducing the number of supported
+  platforms for CPython, or substantially increasing the difficulty of
+  porting the CPython interpreter to a new platform (I recommend consulting
+  with the JVM and CLR developers on the difficulty of producing and
+  maintaining high performance cross platform threading primitives).
+
+It is important to keep in mind that CPython already has a massive user
+base that doesn't find the GIL to be a problem, or else find it to be a
+problem that is easy to work around. Core development efforts in the
+concurrency arena have focused on better serving the needs of those users
+by providing better primitives for easily distributing work across multiple
+processes. Examples of this approach include the initial incorporation of
+the :mod:`multiprocessing` module, which aims to make it easy to migrate
+from threaded code to multiprocess code, along with the more recent addition
+of the :mod:`concurrent.futures` module, which aims to make it easy to take
+serial code and dispatch it to multiple threads (for IO bound operations) or
+multiple processes (for CPU bound operations).
 
 For IO bound code (with no CPU bound threads present), or, equivalently, code
 that invokes external libraries to perform calculations (as is the case for
 most serious number crunching code, such as that using NumPy and/or Cython),
-the GIL has no significant impact: a single core can handle all Python
-execution on the machine, with other cores either left idle
-(IO bound process) or busy handling calculations (external library
-invocations).
+the GIL does place an additional constraint on the application, but one that
+is typically easy to satisfy: a single core must be able to handle all
+Python execution on the machine, with other cores either left idle
+(IO bound systems) or busy handling calculations (external library
+invocations). If that is not the case, then multiple interpreter processes
+will be needed, just as they are in the case of any CPU bound Python threads.
 
 For seriously concurrent problems, a free threaded interpreter also doesn't
 help much, as it is desired to scale not only to multiple cores on a single
 machine, but to multiple *machines*.
 As soon as a second machine enters the picture, threading based concurrency
-can't help you: you need to use a concurrency model (such as a shared
-database or a message queue) that allows information to be passed between
+can't help you: you need to use a concurrency model (such as message passing
+or a shared datastore) that allows information to be passed between
 processes, either on a single machine or on multiple machines.
 
-That's why there's no strong motivation to implement fine-grained locking in
-CPython:
+These various factors all combine to explain why there's no strong motivation
+to implement fine-grained locking in CPython in the near term:
 
 * a coarse-grained lock makes threaded code behave in a less surprising
   fashion
@@ -562,12 +689,12 @@ CPython:
   end user scripts)
 * fine-grained locking may break end user code that implicitly relies on
   CPython's use of coarse grained locking
-* fine-grained locking provides no substantial benefits to event-based code
+* fine-grained locking provides minimal benefits to event-based code
   that uses threads solely to provide asynchronous access to external
   synchronous interfaces (such as web applications using an event based
   framework like Twisted or gevent, or GUI applications using the GUI event
   loop)
-* fine-grained locking provides no substantial benefits to code that
+* fine-grained locking provides minimal benefits to code that
   uses other languages like Cython, C or Fortran for the serious number
   crunching (as is common in the NumPy/SciPy community)
 * fine-grained locking provides no substantial benefits to code that needs
@@ -578,56 +705,26 @@ CPython:
   protects the integrity of the refcounts, but also the bad effects on
   caching when switching to different threads and writing to the refcount
   fields of a new working set of objects)
-
-The only case where free-threading *might* help is in applications where:
-
-* CPU bound calculations are performed in Python code
-* process-based concurrency techniques are not considered an acceptable
-  substitute
+* increasing the complexity of the core interpreter implementation for any
+  reason always poses risks to maintainability, reliability and portability
 
 Given the dubious payoff, and the wide array of effective alternatives, is
 it really that surprising that the GIL isn't seen as the big problem it
-is often made out to be? We're not an OS kernel - we have the option of
-farming work out to a separate process if the GIL is a problem for a
-particular workload. Sure, it's not ideal, and if a portable, reliable,
+is often made out to be? Sure, it's not ideal, and if a portable, reliable,
 maintainable free-threaded implementation was dropped in our laps we'd
-certainly seriously consider adopting it.
-
-Back in reality, though, complaining about the GIL as though it's a serious
-barrier to adoption in general often says more about the person doing the
-complaining than it does about CPython.
-Does the GIL make CPython (and even PyPy) a poor choice for some workloads
-given certain styles of programming? Absolutely. The appropriate responses
-to that situation are:
-
-* Use a different programming style that is more suited to the constraints
-  of the GIL
-* Use a different Python implementation that is more suited to this
-  programming style (neither Jython nor IronPython use a GIL)
-* Use a different language that prioritises support for this programming
-  style
-* Fork CPython and remove the GIL to demonstrate that its not as hard to do
-  without negative consequences as the current core developers believe
-  (or pay someone to do this on your behalf)
-
-Jumping on the internet to say that "they" (specifically, the people
-you're not paying a cent to and who aren't bothered by the GIL because
-it only penalises a programming style many of us consider ill advised in the
-first place) should "just fix it" (despite the serious risk of breaking user
-code that currently only works due to the coarse grained locking around
-each bytecode) is also always an option. Generally speaking, such pieces
-come across as "I have no idea how much engineering effort, now and in the
-future, is required to make this happen".
+certainly seriously consider adopting it, but we're not an OS kernel -
+we have the option of farming work out to a separate process if the GIL
+is a problem for a particular workload.
 
 It isn't that a free threaded Python implementation isn't possible (Jython
 and IronPython prove that), it's that free threaded virtual machines are
 hard to write correctly in the first place and are harder to maintain once
-implemented. Linux had the "Big Kernel Lock" for years for exactly the same
-reason. For CPython, any engineering effort directed towards free threading
-support is engineering effort that isn't being directed somewhere else. The
-current core development team don't consider that a good trade-off and, to
-date, nobody else has successfully taken up the standing challenge to try
-and prove us wrong.
+implemented. Linux had the "Big Kernel Lock" for years for basically the
+same reason. For CPython, any engineering effort directed towards free
+threading support is engineering effort that isn't being directed
+somewhere else. The current core development team don't consider
+that a good trade-off and, to date, nobody else has successfully
+taken up the standing challenge to try and prove us wrong.
 
 Some significant work did go into optimising the GIL behaviour for CPython
 3.2, and further tweaks are possible in the future as more applications are
@@ -635,8 +732,12 @@ ported to Python 3 and get to experience the results of that work, but
 more extensive changes to the CPython threading model are highly likely to
 fail the risk/reward trade-off.
 
-My own hope is that Armin Rigo's research into Software Transactional
-Memory models bears fruit. I know he has some thoughts on how the concepts
+
+What does the future look like for concurrency in Python?
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+My own hope is that Armin Rigo's research into `Software Transactional
+Memory`_ bears fruit. I know he has some thoughts on how the concepts
 he is exploring in PyPy could be translated back to CPython, but even if
 that doesn't pan out, it's very easy to envision a future where CPython is
 used for command line utilities (which are generally single threaded and
@@ -648,5 +749,25 @@ Splitting the role of the two VMs in that fashion would allow each to
 be optimised appropriately rather than having to make trade-offs that
 attempt to balance the starkly different needs of the various use cases.
 
+I also expect we'll continue to add APIs and features designed to make it
+easier to farm work out to other processes (for example, a new iteration
+of the `pickle protocol`_ is in the works that includes the ability to
+unpickle unbound methods by name, which should allow them to be used
+with the multiprocessing APIs).
+
+As far as a free-threaded CPython implementation goes, that seems unlikely
+in the absence of a corporate sponsor willing to pay for the development and
+maintenance of the necessary high performance cross-platform threading
+primitives, their incorporation into a fork of CPython, and the extensive
+testing needed to ensure compatibility with the existing CPython ecosystem,
+and then persuading python-dev to accept the additional maitenance burden
+imposed by accepting such changes back into the reference implementation.
+
+I personally expect most potential corporate sponsors to spend their money
+more cost effectively and just tell their engineers to use multiple
+processes instead of threads, or else to contribute to sponsoring Armin's
+work on `Software Transactional Memory`_.
+
 .. _Software Transactional Memory: http://morepypy.blogspot.com.au/2011/08/we-need-software-transactional-memory.html
 .. _further tweaks: http://bugs.python.org/issue7946
+.. _pickle protocol: http://www.python.org/dev/peps/pep-3154/
