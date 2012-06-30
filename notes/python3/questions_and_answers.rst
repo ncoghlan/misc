@@ -700,8 +700,8 @@ to implement fine-grained locking in CPython in the near term:
 * fine-grained locking provides no substantial benefits to code that needs
   to scale to multiple machines, and thus cannot rely on shared memory for
   data exchange
-* a refcounting GC doesn't really play well with fine-grained locking (
-  primarily from the point of view of high contention on the lock that
+* a refcounting GC doesn't really play well with fine-grained locking
+  (primarily from the point of view of high contention on the lock that
   protects the integrity of the refcounts, but also the bad effects on
   caching when switching to different threads and writing to the refcount
   fields of a new working set of objects)
@@ -763,10 +763,10 @@ testing needed to ensure compatibility with the existing CPython ecosystem,
 and then persuading python-dev to accept the additional maitenance burden
 imposed by accepting such changes back into the reference implementation.
 
-I personally expect most potential corporate sponsors to spend their money
-more cost effectively and just tell their engineers to use multiple
-processes instead of threads, or else to contribute to sponsoring Armin's
-work on `Software Transactional Memory`_.
+I personally expect most potential corporate sponsors with a vested interest
+in Python to spend their money more cost effectively and just tell their
+engineers to use multiple processes instead of threads, or else to
+contribute to sponsoring Armin's work on `Software Transactional Memory`_.
 
 .. _Software Transactional Memory: http://morepypy.blogspot.com.au/2011/08/we-need-software-transactional-memory.html
 .. _further tweaks: http://bugs.python.org/issue7946
