@@ -11,7 +11,7 @@ the final `test case`_ in the package. I also looked at the XML-RPC wrapper
 implemented in `kobo`_.
 
 Rather than just documenting this for my own use, I decided to write up and
-publish what I figured out. Besides, it gives me an excuse to try out the
+publish what I figured out. Besides, it gives me an excuse to try out
 Kenneth Reitz's famous `requests`_ module :)
 
 All examples in this document are from a Python 2 interactive session. As far
@@ -203,4 +203,6 @@ And an example of using it with ``requests``::
     >>> headers = {"Authorization": krb.auth_header}
     >>> r = requests.get("https://krbhost.example.com/krb/", headers=headers)
     >>> r.status_code
+    200
     >>> krb.verify_response(r.headers["www-authenticate"])
+    >>>
