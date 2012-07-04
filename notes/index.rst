@@ -14,6 +14,7 @@ Contents:
    python3/index.rst
    python_concepts/index.rst
    pep_ideas/index.rst
+   python_kerberos.rst
    venv_bootstrap.rst
 
 
