@@ -65,14 +65,14 @@ type restricted str and bytes convenience functions::
         encoder = getencoder(encoding)
         result, len_consumed = encoder(input, errors)
         if len_consumed < len(input):
-            # Copy str.encode behaviour for this case
+            ... # Copy str.encode behaviour for this case
         return result
 
     def decoder(input, encoding, errors='strict'):
         decoder = getdecoder(encoding)
         result, len_consumed = decoder(input, errors)
         if len_consumed < len(input):
-            # Copy bytes.decode behaviour for this case
+            ... # Copy bytes.decode behaviour for this case
         return result
 
 
