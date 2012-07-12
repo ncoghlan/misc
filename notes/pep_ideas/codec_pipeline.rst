@@ -59,7 +59,8 @@ back and consider a fully type-neutral solution, just like the
 
 One very simple alternative, of course, would be a pair of top level
 functions in the codecs module that were type neutral alternatives to the
-type restricted str and bytes convenience functions::
+type restricted str and bytes convenience functions. The semantics would
+be equivalent to these pure Python versions::
 
     def encode(input, encoding, errors='strict'):
         encoder = getencoder(encoding)
