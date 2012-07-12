@@ -55,7 +55,7 @@ if that's really a good idea. Perhaps it makes more sense to take a step
 back and consider a fully type-neutral solution, just like the
 :mod:`codecs` module itself.
 
-.. _some suggestions: http://bugs.python.org/issue7475
+.. _a suggestion: http://bugs.python.org/issue7475
 
 One very simple alternative, of course, would be a pair of top level
 functions in the codecs module that were type neutral alternatives to the
