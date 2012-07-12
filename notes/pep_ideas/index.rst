@@ -33,6 +33,7 @@ considered.
 .. toctree::
    :maxdepth: 2
 
+   codec_pipeline.rst
    strview.rst
 
 The Devil is in the Details
@@ -42,7 +43,8 @@ This section is for ideas that I actually like and think should be added,
 but need a champion that's willing to dig into them and flush out the
 details through the PEP process.
 
-* `Bytes and Text Transform API`_
+* `Bytes and Text Transform API`_ (but also see the :ref`codec-pipelines`
+  API concept)
 
 .. _Bytes and Text Transform API: http://bugs.python.org/issue7475
 
