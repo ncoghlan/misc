@@ -15,12 +15,6 @@ class CodecPipeline(object):
        decoders.reverse()
        self.decoders = decoders
 
-    @classmethod
-    def from_chain(cls, codec_chain, errors=None):
-       """Create a pipeline from a chain of codec names joined by '+'"""
-       names = [name.strip() for name in codec_chain.split("+")]
-       return cls(*names, errors=errors)
-
     def _bind_kwds(self, errors=None):
        if errors is None:
            errors = "strict"
@@ -63,7 +57,7 @@ class CodecPipeline(object):
 
 if __name__ == "__main__":
     # Quick sanity check
-   cp = CodecPipeline.from_chain("rot-13+koi8-r+bz2")
+   cp = CodecPipeline("rot-13", "koi8-r", "bz2")
    print(cp)
    x = cp.encode('Hello World!')
    print(repr(x))
