@@ -16,6 +16,7 @@ Contents:
    pep_ideas/index.rst
    python_kerberos.rst
    venv_bootstrap.rst
+   linux/index.rst
 
 
 About These Notes
