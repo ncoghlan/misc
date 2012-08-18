@@ -17,6 +17,7 @@ Contents:
    python_kerberos.rst
    venv_bootstrap.rst
    linux/index.rst
+   conferences/index.rst
 
 
 About These Notes
