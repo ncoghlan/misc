@@ -52,8 +52,53 @@ snippets in 2.0
 Jinja2
 ------
 
+text based (syntax very similar to Django templates)
+
+compiles down to Python bytecode
+
+
 Diazo and XSLT
 --------------
 
+XML rules files
+
+Combines web designer template with developer backend
+
+Uses CSS classes and XSLT to drive the transforms
+
+Various directives identify the pieces (e.g. identifying the theme file)
+
+No looping constructs, just use XSLT
+
+From Plone 4.2 (this came up in the Q&A)
+
 Mako
 ----
+
+Embeds Python directly in the template (i.e. Python server pages)
+
+Uses ``<%``, ``%>`` to identify code blocks
+
+
+Summary
+-------
+
+No real battle, no real winner
+
+Driven by different use cases & history
+
+Q & A
+-----
+
+5 chosen are under active development
+
+Diazo seemed very complicated relative to others. Designed to support a
+drag-and-drop theme designer for use by CMS clients. Still a little
+complicated to use from the developer side to set it up.
+
+My Thoughts
+-----------
+
+Reasonable overview, but hard to get into any detail in 25 minutes.
+
+Would have been nice to have explicit pros/cons for each one.
