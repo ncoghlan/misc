@@ -50,15 +50,15 @@ even more annoying, the shorthand aliases for most of those codecs are
 .. _still missing: http://bugs.python.org/issue15331
    
 There is `a suggestion`_ that this be replaced directly with a similarly
-method-based ``transform``/``untransform`` API, but I'm beginning to wonder
-if that's really a good idea. Perhaps it makes more sense to take a step
-back and consider a fully type-neutral solution, just like the
-:mod:`codecs` module itself.
+method-based ``transform``/``untransform`` API, but I'm now convinced that's
+a bad idea being considered only due to the precedent set by Python 2.
+Instead, I believe it makes more sense to take a step back and consider a
+fully type-neutral solution, just like the :mod:`codecs` module itself.
 
 .. _a suggestion: http://bugs.python.org/issue7475
 
-One very simple alternative, of course, would be a pair of top level
-functions in the codecs module that were type neutral alternatives to the
+The simple alternative I plan to propose is introducing a pair of top level
+functions in the codecs module that are type neutral alternatives to the
 type restricted str and bytes convenience functions. The semantics would
 be equivalent to these pure Python versions::
 
