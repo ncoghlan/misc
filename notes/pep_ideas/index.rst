@@ -21,6 +21,32 @@ additions.
    posts. Explore a little - these are generally things I've written a fair
    bit about in the past.
 
+PEP Drafts
+----------
+
+These are ideas that I'm actually working on (perhaps intermittently). They're
+here to cut down on noise on the python-checkins list until they're in a
+form suitable for submission to python-dev review. I may also decide not
+to submit them (primarily if someone else decides to run with them first or
+if I decide they're a bad idea after all)
+
+.. toctree::
+   :maxdepth: 2
+
+   release_cadence.rst
+   core_packaging_api.rst
+
+In addition to the above drafts, I have two deferred drafts in the main
+PEP index, which are competing ideas to allow Python to represent thoughts
+that follow the mathematical pattern of "let <name> = <expression> where
+<define subexpressions>" in that order in addition to the current
+algorithmic order, just as we allow both recursive and iterative
+implementations of algorithms, and the use of both classes and
+closures for scoping, etc:
+
+* :pep:`403` (the ``@in`` decorator clause)
+* :pep:`3150` (the ``given`` statement local namespace clause)
+
 
 Ideas for PyPI Prototype Packages
 ---------------------------------
