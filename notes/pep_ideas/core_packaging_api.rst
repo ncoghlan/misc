@@ -111,19 +111,23 @@ I've been trying to ignore this problem for years. Since working at Red Hat,
 however, I've been having to deal with the impedance mismatch between RPM
 and Python packaging. As valiant as the efforts of the distutils2 folks have
 been, I see their proposals as being to replace a system that sucks with a
-system that is better in a few specific ways, but still sucks a whole lot.
+system that is significantly better in a few specific ways, but still sucks
+a whole lot.
 
 If the option is the status quo, or upgrading to something that is
-different-but-still-awful in many ways, then I'd prefer to stick to the
-status quo.
+different-but-still-awful-in-many-ways, then I'd prefer to stick to just go
+back to the 2.5 era plan of just adopting setuptools and then trying to
+refactor the implementation over time once it was in the same code base as
+distutils.
 
 However, I think it's possible for us to be more ambitious and create
-an alternative approach that *doesn't suck*. If it genuinely doesn't suck,
+an alternative approach that *doesn't suck* (at least as far as any
+packaging system can not suck). If it genuinely doesn't suck,
 then it should be easier to encourage adoption, particularly if:
 
 * new metadata can be distributed in parallel with legacy metadata
 * new metadata can be parsed and validated without requiring custom tools
-* new metadata can easily be parsed from non-Python code
+* new metadata can easily be parsed by non-Python code
 * legacy metadata can be generated from new metadata and vice-versa
 * the new system can be plugged into a platform specific packaging system
   at the source archive level in an automated fashion
@@ -165,7 +169,7 @@ Assumptions
 -----------
 
 This essay assumes that a ``pysetup`` script will make its way back into
-the core Python distribution in order to subsume tasks that currently
+the core Python distribution in order to handle tasks that currently
 rely on direct execution of setup.py files, and that the metadata previously
 supplied by calling ``setup()`` will instead be stored in a static metadata
 file.
@@ -207,7 +211,8 @@ a call to setup(). It is this call which will actually generate the metadata
 file. The MANIFEST.in file is used to control which files are included in
 the source distribution. distutils *also* looks for information in a
 ``setup.cfg`` file, which will override the details of the call to
-``setup()``.
+``setup()``. You can also override many of the settings via command line
+options.
 
 distutils2 proposes to change this to rely solely on "setup.cfg", which
 is then parsed by a ``pysetup sdist`` call to create a PKG-INFO file for
@@ -215,7 +220,7 @@ inclusion in the source archive. The setup.cfg file requires some strange
 contortions in order to properly represent structured data. I believe
 MANIFEST.in is still used to select files.
 
-By contrast, with packaging systems like RPM, a single specification file
+By contrast, packaging systems like RPM use a single specification file
 is used for metadata throughout the entire packaging chain. None of the
 packaging steps alter this file - they just pass it along faithfully.
 
@@ -291,41 +296,32 @@ build system should simply identify that as a build dependency (which the
 updated metadata format will support). This area is simply not ripe for
 (re)standardisation.
 
-I also propose that the standard library get out of the business of
-understanding platform specific packaging formats (beyond whatever is
-needed to create the Windows and Mac OS X binary installers).
-
 Under this approach, the standard "build system" would consist solely of
 the full name of a Python callable in a new metadata attribute. The
 signature would be as follows::
 
-    def build(metadata):
+    def build(bdist_format, metadata):
+        # bdist_format is the kind of output file requested
         # metadata is the parsed metadata for the package
         # return value is the path of a directory using the "WHEEL" layout
 
-An appropriate hook would be added to allow distutils to be specified as the
-build system.
+If no build format was specified, then Python would fall back to checking for
+a setup.py file and invoking that.
 
-If no build system was specified, then Python would assume that the source
-archive consisted solely of pure Python files and static metadata files and
-create an appropriate directory layout (essentially, all files dumped in
-root directory using layout from sdist).
+A new hook would also be provided to allow distutils to be invoked as the
+build machinery without requiring a setup.py file.
 
-A new "Commands" section in the metadata would allow the provision of
-additional options. As with the build system, the commands system would
-permit easy extension by allowing "package" callables to be named::
+A "distutils" extension section in the metadata would allow the provision of
+additional options for the individual commands.
 
-    def binary_dist(built_dir, metadata):
-        # built_dir is the return value
-        # metadata is the parsed metadata for the package
-        # return value is the path of the built binary package
+Other build tools would be expected to follow a similar model: their build
+hook named in the metadata, and any configuration options needed stored
+as metadata extensions. Third party build tools like ``bento`` would also
+need to be listed as build requirements.
 
-The standard library would still understand how to create bdist_dumb,
-bdist_wininst and bdist_rpm, along with bdist_wheel, without needing
-a third party build tool. The metadata file would still allow the
-provision of options, however.
+Invocation would be ``pysetup bdist_<whatever>``. ``pysetup bdist`` would
+always default to ``pysetup bdist_wheel``.
 
-Invocation would be ``pysetup bdist_<whatever>``
 
 Installation
 ------------
@@ -343,7 +339,9 @@ those groups without requiring python-dev involvement. (:pep:`426` proposes
 a subset of this within the confines of the existing PKG-INFO format, but
 this is very limiting. It's not obvious how to express entry points as an
 extension, for example, since the argument syntax can't be used directly
-the way it can with JSON)
+the way it can with JSON. You can do it as a separate file, but that's
+a lot harder to parse and present in a generic fashion)
+
 
 Execution
 ---------
