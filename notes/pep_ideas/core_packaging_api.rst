@@ -16,6 +16,13 @@ four submodules almost made it in. Those modules will be the first to make
 their reappearance in 3.4, once the PEPs they implement have been tweaked to
 close some of the identified holes.
 
+.. note::
+
+    The grand scheme below *doesn't* replace adding these core modules back in
+    to the standard library. The legacy formats will be around for a good
+    while yet (assuming they ever get replaced at all) and solid
+    infrastructure for reading and writing them will be essential.
+
 I'm not one of the distutils2 maintainers, but I decided to start writing
 this up anyway to help ensure we don't get a repeat of what happened with
 3.3. I also want to make sure that any new packaging system doesn't end up
