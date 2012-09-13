@@ -1,5 +1,5 @@
-Core Packaging API
-==================
+My Current Views on Python Packaging
+====================================
 
 .. note::
    To provide feedback on this draft, use the `issue tracker`_ or just send
