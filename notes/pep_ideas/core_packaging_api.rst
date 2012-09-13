@@ -13,12 +13,15 @@ developers of the project felt it was not yet sufficiently mature.
 
 However, while they were ultimately cut along with the rest of the package,
 four submodules almost made it in. Those modules will be the first to make
-their reappearance in 3.4
+their reappearance in 3.4, once the PEPs they implement have been tweaked to
+close some of the identified holes.
 
 I'm not one of the distutils2 maintainers, but I decided to start writing
-this PEP anyway to try to ensure we don't get a repeat of what happened with
+this up anyway to help ensure we don't get a repeat of what happened with
 3.3. I also want to make sure that any new packaging system doesn't end up
-falling into the same trap of implementation defined behaviour.
+falling into the same trap of implementation defined behaviour that is
+such a pain with the status quo.
+
 
 Background
 ----------
@@ -37,7 +40,7 @@ Index to serve as a central repository for Python packages that could
 be shared by the entire community, without being coupled to any particular
 operating system or platform specific packaging format.
 
-One notable extension was Phillip Eby's ``setuptools``, which became popular
+One notable enhancement was Phillip Eby's ``setuptools``, which became popular
 after he created it as part of the work he was doing for OSAF. This
 was subsequently forked to create the ``distribute`` project (like
 ``setuptools`` itself, the ``distribute`` distribution installs both the
