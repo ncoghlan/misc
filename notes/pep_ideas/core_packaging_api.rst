@@ -125,10 +125,10 @@ system that is significantly better in a few specific ways, but still sucks
 a whole lot.
 
 If the option is the status quo, or upgrading to something that is
-different-but-still-awful-in-many-ways, then I'd prefer to stick to just go
+different-but-still-awful-in-many-ways, then I'd almost prefer to just go
 back to the 2.5 era plan of just adopting setuptools and then trying to
 refactor the implementation over time once it was in the same code base as
-distutils.
+distutils. (Relax, I said *almost*)
 
 However, I think it's possible for us to be more ambitious and create
 an alternative approach that *doesn't suck* (at least as far as any
