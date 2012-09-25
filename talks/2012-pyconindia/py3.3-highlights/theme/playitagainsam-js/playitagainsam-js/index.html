@@ -1,0 +1,17 @@
+<html>
+  <head>
+    <title>Play It Again, Sam</title>
+    <meta http-equiv="Content-type" content="text/html;charset=UTF-8" />
+    <link rel="stylesheet" href="styles.css" type="text/css">
+    <script type="text/javascript" src="./jquery-1.7.2.min.js"></script>
+    <script type="text/javascript" src="./playitagainsam.js"></script>
+  </head>
+  <body>
+  <script>
+  $(function() {
+      var player = new PIAS.Player($("body"));
+      player.play("./session.pias");
+  });
+  </script>
+  </body>
+</html>

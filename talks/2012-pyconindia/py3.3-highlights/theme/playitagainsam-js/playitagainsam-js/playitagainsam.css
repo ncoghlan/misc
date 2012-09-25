@@ -1,0 +1,16 @@
+
+@import url("jquery-ui/css/smoothness/jquery-ui-1.8.22.custom.css");
+
+body .pias-container {
+}
+
+input.pias-overlay {
+  position: absolute;
+  opacity: 0;
+}
+
+body .pias-container iframe {
+  display: inline-block;
+  border: 1px solid black;
+  margin: 2px;
+}
