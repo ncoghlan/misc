@@ -4197,7 +4197,8 @@ VT100.prototype.vt100 = function(s) {
   var lineBuf             = '';
   for (var i = 0; i < s.length; i++) {
     var ch = s.charCodeAt(i);
-    if (this.utfEnabled) {
+    // Hack to disable broken UTF-8 special casing
+    if (false && this.utfEnabled) {
       // Decode UTF8 encoded character
       if (ch > 0x7F) {
         if (this.utfCount > 0 && (ch & 0xC0) == 0x80) {
