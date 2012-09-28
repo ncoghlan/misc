@@ -113,12 +113,12 @@ function main() {
             var players = el.getElementsByClassName("pias_player");
             for (var i=0; i < players.length; i++) {
                 var player_div = players[i];
+                var divname = player_div.id;
                 if (player_div.innerHTML) {
                     continue;
                 }
-                var divname = player_div.id;
-                var jsname = divname.replace(/^pias-/, "").replace(/-player$/, "").replace("-", "_");
-                jsname = "theme/demo-js/" + jsname + ".js"
+                var jsname = divname.replace(/^pias-/, "").replace(/-player$/, "");
+                jsname = "demo-js/" + jsname + ".js"
                 var player = new PIAS.Player(jQuery("#" + divname));
                 player.play(jsname, function() {
                     player.destroy();

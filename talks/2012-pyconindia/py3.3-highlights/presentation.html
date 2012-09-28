@@ -78,7 +78,7 @@
             </aside>
             
             <aside class="page_number">
-              1/6
+              1/27
             </aside>
           </footer>
         </div>
@@ -113,7 +113,7 @@
             </aside>
             
             <aside class="page_number">
-              2/6
+              2/27
             </aside>
           </footer>
         </div>
@@ -124,7 +124,44 @@
         <div class="slide">
           <div class="inner">
             
-            <header><h1>Unicode Size and Speed (PEP 393)</h1></header>
+            <header><h1>Unicode Size and Speed</h1></header>
+            
+            
+            <section><ul>
+<li>Unicode bytes-per-code-point now varies</li>
+<li>ASCII (or ASCII-escaped) and latin-1 text uses 1 byte per code point</li>
+<li>Most text will use 2 bytes per code point</li>
+<li>Will use 4 bytes per code point if needed</li>
+<li>Also a speed increase, due to reduced data copying</li>
+<li>Additional work optimising codecs (especially UTF-8 &amp; UTF-16)</li>
+</ul></section>
+            
+          </div>
+          <div class="presenter_notes">
+            <header><h1>Presenter Notes</h1></header>
+            <section>
+            
+            </section>
+          </div>
+          <footer>
+            
+            <aside class="source">
+              Source: <a href="talk.md">talk.md</a>
+            </aside>
+            
+            <aside class="page_number">
+              3/27
+            </aside>
+          </footer>
+        </div>
+      </div>
+      
+      <!-- slide source: talk.md -->
+      <div class="slide-wrapper">
+        <div class="slide">
+          <div class="inner">
+            
+            <header><h1>Unicode Size (Demo)</h1></header>
             
             
             <section><div id="pias-unicode-size-player" class="pias_player"></div></section>
@@ -143,7 +180,7 @@
             </aside>
             
             <aside class="page_number">
-              3/6
+              4/27
             </aside>
           </footer>
         </div>
@@ -154,11 +191,15 @@
         <div class="slide">
           <div class="inner">
             
-            <header><h1>PEP 414: Unicode Literal Prefix</h1></header>
+            <header><h1>Other Unicode Updates</h1></header>
             
             
             <section><ul>
 <li><code>u""</code> literals are once again supported</li>
+<li>Unicode alias and named sequence lookup support</li>
+<li>Case folding method added: <code>x.casefold()</code></li>
+<li>Updated unicode database to 6.1</li>
+<li><code>\u</code> and <code>\U</code> escapes are now permitted in <code>str</code> regexes</li>
 </ul></section>
             
           </div>
@@ -175,7 +216,7 @@
             </aside>
             
             <aside class="page_number">
-              4/6
+              5/27
             </aside>
           </footer>
         </div>
@@ -186,11 +227,14 @@
         <div class="slide">
           <div class="inner">
             
-            <header><h1>Error Reporting</h1></header>
+            <header><h1>Error Reporting Enhancements</h1></header>
             
             
             <section><ul>
-<li>Chained exceptions</li>
+<li>Supressing display of exception context</li>
+<li>Better argument/parameter mismatch exceptions</li>
+<li>More useful hierarchy for OS interface errors</li>
+<li>Optional tracebacks for segfaults and stalled processes</li>
 </ul></section>
             
           </div>
@@ -207,7 +251,697 @@
             </aside>
             
             <aside class="page_number">
-              5/6
+              6/27
+            </aside>
+          </footer>
+        </div>
+      </div>
+      
+      <!-- slide source: talk.md -->
+      <div class="slide-wrapper">
+        <div class="slide">
+          <div class="inner">
+            
+            <header><h1>Import system enhancements</h1></header>
+            
+            
+            <section><ul>
+<li>Migrated to importlib - PEP 302 is finally Final!</li>
+<li>Import system is now defined in the language reference</li>
+<li>import statement, runpy, pkgutil now use same code</li>
+<li>Per-module import locks should reduce import lock contention</li>
+<li>Full namespace package support</li>
+<li><strong>init</strong>.py files are now optional</li>
+<li>if no <strong>init</strong>.py, whole sys.path is searched for portions</li>
+</ul></section>
+            
+          </div>
+          <div class="presenter_notes">
+            <header><h1>Presenter Notes</h1></header>
+            <section>
+            
+            </section>
+          </div>
+          <footer>
+            
+            <aside class="source">
+              Source: <a href="talk.md">talk.md</a>
+            </aside>
+            
+            <aside class="page_number">
+              7/27
+            </aside>
+          </footer>
+        </div>
+      </div>
+      
+      <!-- slide source: talk.md -->
+      <div class="slide-wrapper">
+        <div class="slide">
+          <div class="inner">
+            
+            <header><h1>Integrated virtual environments</h1></header>
+            
+            
+            <section><ul>
+<li><code>pyvenv</code> command, <code>venv</code> module</li>
+<li><code>pyvenv.cfg</code> file identifies root dir of venv</li>
+<li><code>home</code> key in config file identified base Python install</li>
+<li>behaves like virtualenv from <code>user</code> perspective</li>
+</ul></section>
+            
+          </div>
+          <div class="presenter_notes">
+            <header><h1>Presenter Notes</h1></header>
+            <section>
+            
+            </section>
+          </div>
+          <footer>
+            
+            <aside class="source">
+              Source: <a href="talk.md">talk.md</a>
+            </aside>
+            
+            <aside class="page_number">
+              8/27
+            </aside>
+          </footer>
+        </div>
+      </div>
+      
+      <!-- slide source: talk.md -->
+      <div class="slide-wrapper">
+        <div class="slide">
+          <div class="inner">
+            
+            <header><h1>Introspection improvements</h1></header>
+            
+            
+            <section><ul>
+<li>inspect.signature</li>
+<li>inspect.getclosurevars</li>
+<li>inspect.getgeneratorstate</li>
+</ul></section>
+            
+          </div>
+          <div class="presenter_notes">
+            <header><h1>Presenter Notes</h1></header>
+            <section>
+            
+            </section>
+          </div>
+          <footer>
+            
+            <aside class="source">
+              Source: <a href="talk.md">talk.md</a>
+            </aside>
+            
+            <aside class="page_number">
+              9/27
+            </aside>
+          </footer>
+        </div>
+      </div>
+      
+      <!-- slide source: talk.md -->
+      <div class="slide-wrapper">
+        <div class="slide">
+          <div class="inner">
+            
+            <header><h1>Data structure improvements</h1></header>
+            
+            
+            <section><ul>
+<li>More bytes/bytearray methods accept integers where appropriate</li>
+<li>collections.ChainMap added</li>
+<li>hash randomisation is enabled by default</li>
+<li>dict.setdefault() is now atomic</li>
+<li>dictionaries now share key state when possible</li>
+<li>types.MappingPrxoyType</li>
+<li>types.SimpleNamespace</li>
+<li>memoryview improvements</li>
+</ul></section>
+            
+          </div>
+          <div class="presenter_notes">
+            <header><h1>Presenter Notes</h1></header>
+            <section>
+            
+            </section>
+          </div>
+          <footer>
+            
+            <aside class="source">
+              Source: <a href="talk.md">talk.md</a>
+            </aside>
+            
+            <aside class="page_number">
+              10/27
+            </aside>
+          </footer>
+        </div>
+      </div>
+      
+      <!-- slide source: talk.md -->
+      <div class="slide-wrapper">
+        <div class="slide">
+          <div class="inner">
+            
+            <header><h1>Container ABCs</h1></header>
+            
+            
+            <section><ul>
+<li>collections.abc created</li>
+<li>range now supports equality checks (based on contents)</li>
+<li>list and bytearray now provide copy() and clear() methods</li>
+</ul></section>
+            
+          </div>
+          <div class="presenter_notes">
+            <header><h1>Presenter Notes</h1></header>
+            <section>
+            
+            </section>
+          </div>
+          <footer>
+            
+            <aside class="source">
+              Source: <a href="talk.md">talk.md</a>
+            </aside>
+            
+            <aside class="page_number">
+              11/27
+            </aside>
+          </footer>
+        </div>
+      </div>
+      
+      <!-- slide source: talk.md -->
+      <div class="slide-wrapper">
+        <div class="slide">
+          <div class="inner">
+            
+            <header><h1>IP address manipulation</h1></header>
+            
+            
+            <section><ul>
+<li>New ipaddress module</li>
+<li>Can define addresses, networks and interfaces</li>
+<li>IPv4 and IPv6</li>
+<li>Convert to string or integer to pass to socket APIs</li>
+</ul></section>
+            
+          </div>
+          <div class="presenter_notes">
+            <header><h1>Presenter Notes</h1></header>
+            <section>
+            
+            </section>
+          </div>
+          <footer>
+            
+            <aside class="source">
+              Source: <a href="talk.md">talk.md</a>
+            </aside>
+            
+            <aside class="page_number">
+              12/27
+            </aside>
+          </footer>
+        </div>
+      </div>
+      
+      <!-- slide source: talk.md -->
+      <div class="slide-wrapper">
+        <div class="slide">
+          <div class="inner">
+            
+            
+            <section><p>Email policy framework</p>
+<ul>
+<li>Allows flexible control of email parsing rules</li>
+<li>Supports structured header processing</li>
+<li>3.2 compatible by default</li>
+<li>Other policies offer stricter RFC compliance</li>
+<li>SMTP policy suitable for SMTP agents</li>
+<li>HTTP policy suitable for email serialisation</li>
+</ul></section>
+            
+          </div>
+          <div class="presenter_notes">
+            <header><h1>Presenter Notes</h1></header>
+            <section>
+            
+            </section>
+          </div>
+          <footer>
+            
+            <aside class="source">
+              Source: <a href="talk.md">talk.md</a>
+            </aside>
+            
+            <aside class="page_number">
+              13/27
+            </aside>
+          </footer>
+        </div>
+      </div>
+      
+      <!-- slide source: talk.md -->
+      <div class="slide-wrapper">
+        <div class="slide">
+          <div class="inner">
+            
+            <header><h1>Time improvements</h1></header>
+            
+            
+            <section><ul>
+<li>Better abstraction of platform differences in timers</li>
+<li><code>time.monotonic()</code> for timeouts</li>
+<li><code>time.perf_counter()</code> for benchmarking</li>
+<li>Improved access to platform specific timers</li>
+</ul></section>
+            
+          </div>
+          <div class="presenter_notes">
+            <header><h1>Presenter Notes</h1></header>
+            <section>
+            
+            </section>
+          </div>
+          <footer>
+            
+            <aside class="source">
+              Source: <a href="talk.md">talk.md</a>
+            </aside>
+            
+            <aside class="page_number">
+              14/27
+            </aside>
+          </footer>
+        </div>
+      </div>
+      
+      <!-- slide source: talk.md -->
+      <div class="slide-wrapper">
+        <div class="slide">
+          <div class="inner">
+            
+            <header><h1>Datetime improvements</h1></header>
+            
+            
+            <section><ul>
+<li>New timestamp() method for easy conversion to POSIX timestamp</li>
+<li>astimezone() argument is now optional, uses system TZ by default</li>
+<li>Invalid equality comparisons now return False instead of raising</li>
+</ul></section>
+            
+          </div>
+          <div class="presenter_notes">
+            <header><h1>Presenter Notes</h1></header>
+            <section>
+            
+            </section>
+          </div>
+          <footer>
+            
+            <aside class="source">
+              Source: <a href="talk.md">talk.md</a>
+            </aside>
+            
+            <aside class="page_number">
+              15/27
+            </aside>
+          </footer>
+        </div>
+      </div>
+      
+      <!-- slide source: talk.md -->
+      <div class="slide-wrapper">
+        <div class="slide">
+          <div class="inner">
+            
+            <header><h1>C accelerators</h1></header>
+            
+            
+            <section><ul>
+<li>decimal module now uses a C accelerator by default</li>
+<li>xml.etree C accelerator is now used by default</li>
+</ul></section>
+            
+          </div>
+          <div class="presenter_notes">
+            <header><h1>Presenter Notes</h1></header>
+            <section>
+            
+            </section>
+          </div>
+          <footer>
+            
+            <aside class="source">
+              Source: <a href="talk.md">talk.md</a>
+            </aside>
+            
+            <aside class="page_number">
+              16/27
+            </aside>
+          </footer>
+        </div>
+      </div>
+      
+      <!-- slide source: talk.md -->
+      <div class="slide-wrapper">
+        <div class="slide">
+          <div class="inner">
+            
+            <header><h1>IO enhancements</h1></header>
+            
+            
+            <section><ul>
+<li>'x' mode for exclusive creation</li>
+<li>'opener' parameter to more easily create custom IO stacks</li>
+<li>write_through option in TextIOWrapper to disable write caching</li>
+<li>flush keyword argument to print</li>
+</ul></section>
+            
+          </div>
+          <div class="presenter_notes">
+            <header><h1>Presenter Notes</h1></header>
+            <section>
+            
+            </section>
+          </div>
+          <footer>
+            
+            <aside class="source">
+              Source: <a href="talk.md">talk.md</a>
+            </aside>
+            
+            <aside class="page_number">
+              17/27
+            </aside>
+          </footer>
+        </div>
+      </div>
+      
+      <!-- slide source: talk.md -->
+      <div class="slide-wrapper">
+        <div class="slide">
+          <div class="inner">
+            
+            <header><h1>Compression algorithms</h1></header>
+            
+            
+            <section><ul>
+<li>new lzma module</li>
+<li>bz2 rewrite</li>
+</ul></section>
+            
+          </div>
+          <div class="presenter_notes">
+            <header><h1>Presenter Notes</h1></header>
+            <section>
+            
+            </section>
+          </div>
+          <footer>
+            
+            <aside class="source">
+              Source: <a href="talk.md">talk.md</a>
+            </aside>
+            
+            <aside class="page_number">
+              18/27
+            </aside>
+          </footer>
+        </div>
+      </div>
+      
+      <!-- slide source: talk.md -->
+      <div class="slide-wrapper">
+        <div class="slide">
+          <div class="inner">
+            
+            <header><h1>Filesystem manipulation</h1></header>
+            
+            
+            <section><ul>
+<li>os.replace API for cross-platform file replacement</li>
+</ul></section>
+            
+          </div>
+          <div class="presenter_notes">
+            <header><h1>Presenter Notes</h1></header>
+            <section>
+            
+            </section>
+          </div>
+          <footer>
+            
+            <aside class="source">
+              Source: <a href="talk.md">talk.md</a>
+            </aside>
+            
+            <aside class="page_number">
+              19/27
+            </aside>
+          </footer>
+        </div>
+      </div>
+      
+      <!-- slide source: talk.md -->
+      <div class="slide-wrapper">
+        <div class="slide">
+          <div class="inner">
+            
+            <header><h1>POSIX/Linux Features</h1></header>
+            
+            
+            <section><ul>
+<li>os.sendfile</li>
+<li>nanosecond timestamp support</li>
+<li>symlink handling support: <code>follow_symlinks</code></li>
+<li>symlink attack resistance: <code>dirfd</code></li>
+<li>And many more...</li>
+</ul></section>
+            
+          </div>
+          <div class="presenter_notes">
+            <header><h1>Presenter Notes</h1></header>
+            <section>
+            
+            </section>
+          </div>
+          <footer>
+            
+            <aside class="source">
+              Source: <a href="talk.md">talk.md</a>
+            </aside>
+            
+            <aside class="page_number">
+              20/27
+            </aside>
+          </footer>
+        </div>
+      </div>
+      
+      <!-- slide source: talk.md -->
+      <div class="slide-wrapper">
+        <div class="slide">
+          <div class="inner">
+            
+            <header><h1>Crypto Primitives</h1></header>
+            
+            
+            <section><ul>
+<li>hmac.compare_digest</li>
+<li>crypt.mksalt (Unix only)</li>
+<li>may have a cross-platform crypto primitive library in 3.4</li>
+</ul></section>
+            
+          </div>
+          <div class="presenter_notes">
+            <header><h1>Presenter Notes</h1></header>
+            <section>
+            
+            </section>
+          </div>
+          <footer>
+            
+            <aside class="source">
+              Source: <a href="talk.md">talk.md</a>
+            </aside>
+            
+            <aside class="page_number">
+              21/27
+            </aside>
+          </footer>
+        </div>
+      </div>
+      
+      <!-- slide source: talk.md -->
+      <div class="slide-wrapper">
+        <div class="slide">
+          <div class="inner">
+            
+            <header><h1>Socket &amp; SSL improvements</h1></header>
+            
+            
+            <section><ul>
+<li>sendmsg/recvmsg/rcvmsginto</li>
+<li></li>
+</ul></section>
+            
+          </div>
+          <div class="presenter_notes">
+            <header><h1>Presenter Notes</h1></header>
+            <section>
+            
+            </section>
+          </div>
+          <footer>
+            
+            <aside class="source">
+              Source: <a href="talk.md">talk.md</a>
+            </aside>
+            
+            <aside class="page_number">
+              22/27
+            </aside>
+          </footer>
+        </div>
+      </div>
+      
+      <!-- slide source: talk.md -->
+      <div class="slide-wrapper">
+        <div class="slide">
+          <div class="inner">
+            
+            <header><h1>Dynamic context management</h1></header>
+            
+            
+            <section><ul>
+<li>contextlib.ExitStack</li>
+<li>covers contextlib.nested use cases that weren't handled by
+  allowing multiple context managers in each with statement</li>
+<li>good for adapting between callback APIs and context management</li>
+</ul></section>
+            
+          </div>
+          <div class="presenter_notes">
+            <header><h1>Presenter Notes</h1></header>
+            <section>
+            
+            </section>
+          </div>
+          <footer>
+            
+            <aside class="source">
+              Source: <a href="talk.md">talk.md</a>
+            </aside>
+            
+            <aside class="page_number">
+              23/27
+            </aside>
+          </footer>
+        </div>
+      </div>
+      
+      <!-- slide source: talk.md -->
+      <div class="slide-wrapper">
+        <div class="slide">
+          <div class="inner">
+            
+            <header><h1>Delegating to a subgenerator</h1></header>
+            
+            
+            <section><ul>
+<li>yield from syntax</li>
+<li>gen.send() and gen.throw() passed to subgenerators</li>
+<li>expression result is retrieved from StopIteration</li>
+<li>generators are now allowed to return values</li>
+</ul></section>
+            
+          </div>
+          <div class="presenter_notes">
+            <header><h1>Presenter Notes</h1></header>
+            <section>
+            
+            </section>
+          </div>
+          <footer>
+            
+            <aside class="source">
+              Source: <a href="talk.md">talk.md</a>
+            </aside>
+            
+            <aside class="page_number">
+              24/27
+            </aside>
+          </footer>
+        </div>
+      </div>
+      
+      <!-- slide source: talk.md -->
+      <div class="slide-wrapper">
+        <div class="slide">
+          <div class="inner">
+            
+            <header><h1>Serialisation support</h1></header>
+            
+            
+            <section><ul>
+<li>Qualified names allows better serialisation of methods and nested classes</li>
+<li>Should be supported in new pickle protocol in 3.4</li>
+<li>Pickler objects now have a dispatch table </li>
+</ul></section>
+            
+          </div>
+          <div class="presenter_notes">
+            <header><h1>Presenter Notes</h1></header>
+            <section>
+            
+            </section>
+          </div>
+          <footer>
+            
+            <aside class="source">
+              Source: <a href="talk.md">talk.md</a>
+            </aside>
+            
+            <aside class="page_number">
+              25/27
+            </aside>
+          </footer>
+        </div>
+      </div>
+      
+      <!-- slide source: talk.md -->
+      <div class="slide-wrapper">
+        <div class="slide">
+          <div class="inner">
+            
+            <header><h1>Just an example</h1></header>
+            
+            
+            <section><div id="pias-just-an-example-player" class="pias_player"></div></section>
+            
+          </div>
+          <div class="presenter_notes">
+            <header><h1>Presenter Notes</h1></header>
+            <section>
+            
+            </section>
+          </div>
+          <footer>
+            
+            <aside class="source">
+              Source: <a href="talk.md">talk.md</a>
+            </aside>
+            
+            <aside class="page_number">
+              26/27
             </aside>
           </footer>
         </div>
@@ -243,7 +977,7 @@
             </aside>
             
             <aside class="page_number">
-              6/6
+              27/27
             </aside>
           </footer>
         </div>
@@ -270,26 +1004,152 @@
       
       
       <tr id="toc-row-3">
-        <th><a href="#slide3">Unicode Size and Speed (PEP 393)</a></th>
+        <th><a href="#slide3">Unicode Size and Speed</a></th>
         <td><a href="#slide3">3</a></td>
       </tr>
       
       
       <tr id="toc-row-4">
-        <th><a href="#slide4">PEP 414: Unicode Literal Prefix</a></th>
+        <th><a href="#slide4">Unicode Size (Demo)</a></th>
         <td><a href="#slide4">4</a></td>
       </tr>
       
       
       <tr id="toc-row-5">
-        <th><a href="#slide5">Error Reporting</a></th>
+        <th><a href="#slide5">Other Unicode Updates</a></th>
         <td><a href="#slide5">5</a></td>
       </tr>
       
       
       <tr id="toc-row-6">
-        <th><a href="#slide6">Q &amp; A</a></th>
+        <th><a href="#slide6">Error Reporting Enhancements</a></th>
         <td><a href="#slide6">6</a></td>
+      </tr>
+      
+      
+      <tr id="toc-row-7">
+        <th><a href="#slide7">Import system enhancements</a></th>
+        <td><a href="#slide7">7</a></td>
+      </tr>
+      
+      
+      <tr id="toc-row-8">
+        <th><a href="#slide8">Integrated virtual environments</a></th>
+        <td><a href="#slide8">8</a></td>
+      </tr>
+      
+      
+      <tr id="toc-row-9">
+        <th><a href="#slide9">Introspection improvements</a></th>
+        <td><a href="#slide9">9</a></td>
+      </tr>
+      
+      
+      <tr id="toc-row-10">
+        <th><a href="#slide10">Data structure improvements</a></th>
+        <td><a href="#slide10">10</a></td>
+      </tr>
+      
+      
+      <tr id="toc-row-11">
+        <th><a href="#slide11">Container ABCs</a></th>
+        <td><a href="#slide11">11</a></td>
+      </tr>
+      
+      
+      <tr id="toc-row-12">
+        <th><a href="#slide12">IP address manipulation</a></th>
+        <td><a href="#slide12">12</a></td>
+      </tr>
+      
+      
+      <tr id="toc-row-13">
+        <th><a href="#slide13">-</a></th>
+        <td><a href="#slide13">13</a></td>
+      </tr>
+      
+      
+      <tr id="toc-row-14">
+        <th><a href="#slide14">Time improvements</a></th>
+        <td><a href="#slide14">14</a></td>
+      </tr>
+      
+      
+      <tr id="toc-row-15">
+        <th><a href="#slide15">Datetime improvements</a></th>
+        <td><a href="#slide15">15</a></td>
+      </tr>
+      
+      
+      <tr id="toc-row-16">
+        <th><a href="#slide16">C accelerators</a></th>
+        <td><a href="#slide16">16</a></td>
+      </tr>
+      
+      
+      <tr id="toc-row-17">
+        <th><a href="#slide17">IO enhancements</a></th>
+        <td><a href="#slide17">17</a></td>
+      </tr>
+      
+      
+      <tr id="toc-row-18">
+        <th><a href="#slide18">Compression algorithms</a></th>
+        <td><a href="#slide18">18</a></td>
+      </tr>
+      
+      
+      <tr id="toc-row-19">
+        <th><a href="#slide19">Filesystem manipulation</a></th>
+        <td><a href="#slide19">19</a></td>
+      </tr>
+      
+      
+      <tr id="toc-row-20">
+        <th><a href="#slide20">POSIX/Linux Features</a></th>
+        <td><a href="#slide20">20</a></td>
+      </tr>
+      
+      
+      <tr id="toc-row-21">
+        <th><a href="#slide21">Crypto Primitives</a></th>
+        <td><a href="#slide21">21</a></td>
+      </tr>
+      
+      
+      <tr id="toc-row-22">
+        <th><a href="#slide22">Socket &amp; SSL improvements</a></th>
+        <td><a href="#slide22">22</a></td>
+      </tr>
+      
+      
+      <tr id="toc-row-23">
+        <th><a href="#slide23">Dynamic context management</a></th>
+        <td><a href="#slide23">23</a></td>
+      </tr>
+      
+      
+      <tr id="toc-row-24">
+        <th><a href="#slide24">Delegating to a subgenerator</a></th>
+        <td><a href="#slide24">24</a></td>
+      </tr>
+      
+      
+      <tr id="toc-row-25">
+        <th><a href="#slide25">Serialisation support</a></th>
+        <td><a href="#slide25">25</a></td>
+      </tr>
+      
+      
+      <tr id="toc-row-26">
+        <th><a href="#slide26">Just an example</a></th>
+        <td><a href="#slide26">26</a></td>
+      </tr>
+      
+      
+      <tr id="toc-row-27">
+        <th><a href="#slide27">Q &amp; A</a></th>
+        <td><a href="#slide27">27</a></td>
       </tr>
       
       

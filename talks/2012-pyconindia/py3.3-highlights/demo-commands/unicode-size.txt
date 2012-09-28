@@ -1,0 +1,11 @@
+python3.2
+--
+import sys
+हैलो_दुनिया = "हैलो दुनिया"
+sys.getsizeof(हैलो_दुनिया)
+हैलो_दुनिया = "Hello world"
+sys.getsizeof(हैलो_दुनिया)
+--
+~/devel/py3k/python
+--
+<As above>
