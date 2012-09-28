@@ -1,0 +1,29 @@
+cat trace1.py
+~/devel/py3k/python -m trace1
+cat trace2.py
+~/devel/py3k/python -m trace2
+cat trace3.py
+~/devel/py3k/python -m trace3
+~/devel/py3k/python
+--
+def f(a, b, c=10, *, d):
+    pass
+
+f()
+f(1)
+f(b=2)
+f(1, 2)
+f(1, 2, d=3)
+
+import os
+os.listdir("does not exist")
+os.listdir("/usr/bin/python")
+os.mkdir("/usr/bin/python")
+
+import faulthandler
+import threading
+faulthandler.dump_traceback_later(10, exit=True)
+a = threading.Thread(target=lambda: b.start() or b.join())
+b = threading.Thread(target=lambda: a.join())
+a.start()
+a.join()
