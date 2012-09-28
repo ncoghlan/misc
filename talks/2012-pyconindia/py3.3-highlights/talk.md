@@ -10,15 +10,26 @@
 * Nominated member of the Python Software Foundation
 * Red Hat toolsmith
 
+----
+
+# About this talk...
+
+* This is just my view of the highlights of the release
+* Actual highlights will depend greatly on how you're using Python 
+* We'll start by exploring a few items in depth
+* Finish with a lightning tour and see how far we get :)
+* This feature list is by no means comprehensive!
 
 ----
 
 # Unicode Size and Speed
 
 * Unicode bytes-per-code-point now varies
-* ASCII (or ASCII-escaped) and latin-1 text uses 1 byte per code point
-* Most text will use 2 bytes per code point
+* ASCII (or ASCII-escaped) text uses 1 byte per code point
+* latin-1 text uses 1 byte per code point
+* Most other text uses 2 bytes per code point
 * Will use 4 bytes per code point if needed
+* No more narrow/wide build distinction
 * Also a speed increase, due to reduced data copying
 * Additional work optimising codecs (especially UTF-8 & UTF-16)
 
@@ -55,6 +66,12 @@
 
 ----
 
+# Error Reporting (Demo)
+
+<div id="pias-error-reporting-player" class="pias_player"></div>
+
+----
+
 # Import system enhancements
 
 * Migrated to importlib - PEP 302 is finally Final!
@@ -62,8 +79,14 @@
 * import statement, runpy, pkgutil now use same code
 * Per-module import locks should reduce import lock contention
 * Full namespace package support
-* __init__.py files are now optional
-* if no __init__.py, whole sys.path is searched for portions
+* ``__init__.py`` files are now optional
+* if no ``__init__.py``, whole sys.path is searched for portions
+
+----
+
+# Namespace Packages (Demo)
+
+<div id="pias-namespace-packages-player" class="pias_player"></div>
 
 ----
 
@@ -76,32 +99,23 @@
 
 ----
 
+# Virtual Environments (Demo)
+
+<div id="pias-virtual-environments-player" class="pias_player"></div>
+
+----
+
 # Introspection improvements
 
-* inspect.signature
-* inspect.getclosurevars
-* inspect.getgeneratorstate
+* Callable signatures: ``inspect.signature``
+* Closure state: ``inspect.getclosurevars``
+* Generator state: ``inspect.getgeneratorstate``
 
 ----
 
-# Data structure improvements
+# Introspection improvements (Demo)
 
-* More bytes/bytearray methods accept integers where appropriate
-* collections.ChainMap added
-* hash randomisation is enabled by default
-* dict.setdefault() is now atomic
-* dictionaries now share key state when possible
-* types.MappingPrxoyType
-* types.SimpleNamespace
-* memoryview improvements
-
-----
-
-# Container ABCs
-
-* collections.abc created
-* range now supports equality checks (based on contents)
-* list and bytearray now provide copy() and clear() methods
+<div id="pias-introspection-player" class="pias_player"></div>
 
 ----
 
@@ -114,7 +128,13 @@
 
 ----
 
-Email policy framework
+# IP address manipulation (Demo)
+
+<div id="pias-ipaddress-player" class="pias_player"></div>
+
+----
+
+# Email policy framework
 
 * Allows flexible control of email parsing rules
 * Supports structured header processing
@@ -136,38 +156,75 @@ Email policy framework
 
 # Datetime improvements
 
-* New timestamp() method for easy conversion to POSIX timestamp
-* astimezone() argument is now optional, uses system TZ by default
-* Invalid equality comparisons now return False instead of raising
-
-----
-
-# C accelerators
-
-* decimal module now uses a C accelerator by default
-* xml.etree C accelerator is now used by default
-
-----
-
-# IO enhancements
-
-* 'x' mode for exclusive creation
-* 'opener' parameter to more easily create custom IO stacks
-* write_through option in TextIOWrapper to disable write caching
-* flush keyword argument to print
-
-----
-
-# Compression algorithms
-
-* new lzma module
-* bz2 rewrite
+* New ``timestamp()`` method for easy conversion to POSIX timestamp
+* ``astimezone()`` argument is now optional, uses system TZ by default
+* Invalid equality comparisons now return ``False`` instead of raising
 
 ----
 
 # Filesystem manipulation
 
-* os.replace API for cross-platform file replacement
+* ``os.replace`` API for cross-platform file replacement
+* ``stat.filemode`` to display ``-rwxrwxrwx`` style flags
+* ``shutil.disk_usage()``
+* ``shutil.chown()``
+* ``os.fwalk()``
+* symlink handling support: ``follow_symlinks``
+* symlink attack resistance: ``dirfd``
+
+----
+
+# Other IO enhancements
+
+* ``x`` mode in ``open()`` for exclusive creation
+* ``opener`` parameter to more easily create custom IO stacks
+* ``write_through`` option in TextIOWrapper to disable write caching
+* ``flush`` keyword argument to print
+
+----
+
+# Network protocols and formats
+
+* More robust HTML parsing
+* More flexible FTP link establishment
+* SSLContext support for SMTP and IMAP
+
+----
+
+# Data structure improvements
+
+* More bytes/bytearray methods accept integers where appropriate
+* collections.ChainMap added
+* hash randomisation is enabled by default
+* dict.setdefault() is now atomic
+* dictionaries now share key state when possible
+* Read only mapping views: ``types.MappingProxyType``
+* Lightweight attribute access: ``types.SimpleNamespace``
+* memoryview improvements
+
+----
+
+# Abstract base classes
+
+* collections.abc created
+* range now supports equality checks (based on contents)
+* list and bytearray now provide copy() and clear() methods
+* Properties now work correctly with abstract methods
+
+----
+
+# C accelerators
+
+* ``decimal`` module now uses a C accelerator by default
+* ``xml.etree`` C accelerator is now used by default
+
+s----
+
+# Compression algorithms
+
+* new ``lzma`` module
+* ``bz2`` rewrite
+* both support wrapping an existing file-like object
 
 ----
 
@@ -175,16 +232,16 @@ Email policy framework
 
 * os.sendfile
 * nanosecond timestamp support
-* symlink handling support: ``follow_symlinks``
-* symlink attack resistance: ``dirfd``
+* Linux extended attributes support
+* Python level access to pthread signalling
 * And many more...
 
 ----
 
 # Crypto Primitives
 
-* hmac.compare_digest
-* crypt.mksalt (Unix only)
+* ``hmac.compare_digest``
+* ``crypt.mksalt`` (Unix only)
 * may have a cross-platform crypto primitive library in 3.4
 
 ----
@@ -192,13 +249,14 @@ Email policy framework
 # Socket & SSL improvements
 
 * sendmsg/recvmsg/rcvmsginto
-* 
+* CANbus and RDS (Reliable Datagram Sockets) support
+* Support for more SSL options
 
 ----
 
 # Dynamic context management
 
-* contextlib.ExitStack
+* ``contextlib.ExitStack``
 * covers contextlib.nested use cases that weren't handled by
   allowing multiple context managers in each with statement
 * good for adapting between callback APIs and context management
@@ -207,8 +265,8 @@ Email policy framework
 
 # Delegating to a subgenerator
 
-* yield from syntax
-* gen.send() and gen.throw() passed to subgenerators
+* ``yield from`` syntax
+* ``gen.send()`` and ``gen.throw()`` passed to subgenerators
 * expression result is retrieved from StopIteration
 * generators are now allowed to return values
 
@@ -226,6 +284,9 @@ Email policy framework
 
 Questions about 3.4 plans are fair game, too :)
 
+Presentation source:
+
+    https://bitbucket.org/ncoghlan/misc/src/default/talks/2012-pyconindia/py3.3-highlights
 
 Presentation tools:
 

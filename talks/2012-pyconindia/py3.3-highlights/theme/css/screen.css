@@ -240,12 +240,12 @@ div.slide p {
 
 .slide.far-past {
   display: block;
-  margin-left: -2400px;
+  margin-left: -2450px;
 }
 
 .slide.past {
   display: block;
-  margin-left: -1400px;
+  margin-left: -1450px;
 }
 
 .slide.current {

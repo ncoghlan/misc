@@ -136,7 +136,6 @@ function main() {
 
         changeSlideElClass(currentSlideNo - 1, 'past');
         changeSlideElClass(currentSlideNo, 'current');
-        startPlayers(currentSlideNo);
         changeSlideElClass(currentSlideNo + 1, 'future');
 
         for (i=currentSlideNo+2; i<slides.length+1; i++) {
@@ -148,6 +147,8 @@ function main() {
         processContext();
 
         document.getElementsByTagName('title')[0].innerText = getSlideTitle(currentSlideNo);
+
+        if (!isPresenterView) startPlayers(currentSlideNo);
 
         updatePresenterNotes();
 
@@ -421,11 +422,13 @@ function main() {
                 break;
             case 37: // left arrow
             case 33: // page up
+                event.preventDefault() // See https://github.com/adamzap/landslide/issues/73
                 prevSlide();
                 break;
             case 39: // right arrow
             case 32: // space
             case 34: // page down
+                event.preventDefault() // See https://github.com/adamzap/landslide/issues/73
                 nextSlide();
                 break;
             case 50: // 2
