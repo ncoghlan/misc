@@ -105,43 +105,25 @@
 
 ----
 
-# Introspection improvements
+# Data structure improvements
 
-* Callable signatures: ``inspect.signature``
-* Closure state: ``inspect.getclosurevars``
-* Generator state: ``inspect.getgeneratorstate``
-
-----
-
-# Introspection improvements (Demo)
-
-<div id="pias-introspection-player" class="pias_player"></div>
-
-----
-
-# IP address manipulation
-
-* New ipaddress module
-* Can define addresses, networks and interfaces
-* IPv4 and IPv6
-* Convert to string or integer to pass to socket APIs
+* More bytes/bytearray methods accept integers where appropriate
+* collections.ChainMap added
+* hash randomisation is enabled by default
+* dict.setdefault() is now atomic
+* dictionaries now share key state when possible
+* Read only mapping views: ``types.MappingProxyType``
+* Lightweight attribute access: ``types.SimpleNamespace``
+* memoryview improvements
 
 ----
 
-# IP address manipulation (Demo)
+# Abstract base classes
 
-<div id="pias-ipaddress-player" class="pias_player"></div>
-
-----
-
-# Email policy framework
-
-* Allows flexible control of email parsing rules
-* Supports structured header processing
-* 3.2 compatible by default
-* Other policies offer stricter RFC compliance
-* SMTP policy suitable for SMTP agents
-* HTTP policy suitable for email serialisation
+* collections.abc created
+* range now supports equality checks (based on contents)
+* list and bytearray now provide copy() and clear() methods
+* Properties now work correctly with abstract methods
 
 ----
 
@@ -191,25 +173,31 @@
 
 ----
 
-# Data structure improvements
+# Email policy framework
 
-* More bytes/bytearray methods accept integers where appropriate
-* collections.ChainMap added
-* hash randomisation is enabled by default
-* dict.setdefault() is now atomic
-* dictionaries now share key state when possible
-* Read only mapping views: ``types.MappingProxyType``
-* Lightweight attribute access: ``types.SimpleNamespace``
-* memoryview improvements
+* Allows flexible control of email parsing rules
+* Supports structured header processing
+* 3.2 compatible by default
+* Other policies offer stricter RFC compliance
+* SMTP policy suitable for SMTP agents
+* HTTP policy suitable for email serialisation
 
 ----
 
-# Abstract base classes
+# IP address manipulation
 
-* collections.abc created
-* range now supports equality checks (based on contents)
-* list and bytearray now provide copy() and clear() methods
-* Properties now work correctly with abstract methods
+* New ipaddress module
+* Can define addresses, networks and interfaces
+* IPv4 and IPv6
+* Convert to string or integer to pass to socket APIs
+
+----
+
+# Socket & SSL improvements
+
+* sendmsg/recvmsg/rcvmsginto
+* CANbus and RDS (Reliable Datagram Sockets) support
+* Support for more SSL options
 
 ----
 
@@ -246,11 +234,11 @@ s----
 
 ----
 
-# Socket & SSL improvements
+# Introspection improvements
 
-* sendmsg/recvmsg/rcvmsginto
-* CANbus and RDS (Reliable Datagram Sockets) support
-* Support for more SSL options
+* Callable signatures: ``inspect.signature``
+* Closure state: ``inspect.getclosurevars``
+* Generator state: ``inspect.getgeneratorstate``
 
 ----
 
