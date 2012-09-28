@@ -127,12 +127,6 @@ function main() {
         }
     };
 
-/*
-<script type="text/javascript">
-var player = new PIAS.Player("#pias-unicode-size-player");
-alert("Created player")
-</script>
-*/
     var updateSlideClasses = function(updateOther) {
         window.location.hash = (isPresenterView ? "presenter" : "slide") + currentSlideNo;
 
