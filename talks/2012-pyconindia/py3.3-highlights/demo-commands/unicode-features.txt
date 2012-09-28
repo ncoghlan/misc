@@ -1,0 +1,7 @@
+~/devel/py3k/python
+--
+u"This works again in 3.3"
+'ß'.casefold()
+"\N{LATIN CAPITAL LETTER OI}\N{LATIN CAPITAL LETTER GHA}"
+import unicodedata
+unicodedata.lookup("LATIN CAPITAL LETTER A WITH MACRON AND GRAVE")

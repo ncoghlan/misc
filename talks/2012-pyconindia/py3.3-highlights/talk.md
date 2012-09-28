@@ -77,7 +77,13 @@
 * Migrated to importlib - PEP 302 is finally Final!
 * Import system is now defined in the language reference
 * import statement, runpy, pkgutil now use same code
+* Interpreter specific details set via ``sys.implementation``
 * Per-module import locks should reduce import lock contention
+
+----
+
+# Namespace packages
+
 * Full namespace package support
 * ``__init__.py`` files are now optional
 * if no ``__init__.py``, whole sys.path is searched for portions
@@ -99,9 +105,18 @@
 
 ----
 
-# Virtual Environments (Demo)
+# Testing improvements
 
-<div id="pias-virtual-environments-player" class="pias_player"></div>
+* ``unittest.mock`` now available
+* ``msg`` parameter for ``assertRaises``, etc
+
+----
+
+# Introspection improvements
+
+* Callable signatures: ``inspect.signature``
+* Closure state: ``inspect.getclosurevars``
+* Generator state: ``inspect.getgeneratorstate``
 
 ----
 
@@ -118,8 +133,9 @@
 
 ----
 
-# Abstract base classes
+# Data structures (continued)
 
+* sequence reference docs rewritten
 * collections.abc created
 * range now supports equality checks (based on contents)
 * list and bytearray now provide copy() and clear() methods
@@ -231,14 +247,6 @@ s----
 * ``hmac.compare_digest``
 * ``crypt.mksalt`` (Unix only)
 * may have a cross-platform crypto primitive library in 3.4
-
-----
-
-# Introspection improvements
-
-* Callable signatures: ``inspect.signature``
-* Closure state: ``inspect.getclosurevars``
-* Generator state: ``inspect.getgeneratorstate``
 
 ----
 
