@@ -68,7 +68,9 @@
 
 # Error Reporting (Demo)
 
-<div id="pias-error-reporting-player" class="pias_player"></div>
+Alas, this demo isn't working nicely in the embedded terminal emulator.
+
+To the terminal!
 
 ----
 
@@ -86,7 +88,7 @@
 
 * Full namespace package support
 * ``__init__.py`` files are now optional
-* if no ``__init__.py``, whole sys.path is searched for portions
+* if no ``__init__.py``, whole ``sys.path`` is searched for portions
 
 ----
 

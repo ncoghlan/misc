@@ -78,7 +78,7 @@
             </aside>
             
             <aside class="page_number">
-              1/31
+              1/32
             </aside>
           </footer>
         </div>
@@ -113,7 +113,7 @@
             </aside>
             
             <aside class="page_number">
-              2/31
+              2/32
             </aside>
           </footer>
         </div>
@@ -149,7 +149,7 @@
             </aside>
             
             <aside class="page_number">
-              3/31
+              3/32
             </aside>
           </footer>
         </div>
@@ -188,7 +188,7 @@
             </aside>
             
             <aside class="page_number">
-              4/31
+              4/32
             </aside>
           </footer>
         </div>
@@ -218,7 +218,7 @@
             </aside>
             
             <aside class="page_number">
-              5/31
+              5/32
             </aside>
           </footer>
         </div>
@@ -254,7 +254,7 @@
             </aside>
             
             <aside class="page_number">
-              6/31
+              6/32
             </aside>
           </footer>
         </div>
@@ -284,7 +284,7 @@
             </aside>
             
             <aside class="page_number">
-              7/31
+              7/32
             </aside>
           </footer>
         </div>
@@ -319,7 +319,7 @@
             </aside>
             
             <aside class="page_number">
-              8/31
+              8/32
             </aside>
           </footer>
         </div>
@@ -333,7 +333,8 @@
             <header><h1>Error Reporting (Demo)</h1></header>
             
             
-            <section><div id="pias-error-reporting-player" class="pias_player"></div></section>
+            <section><p>Alas, this demo isn't working nicely in the embedded terminal emulator.</p>
+<p>To the terminal!</p></section>
             
           </div>
           <div class="presenter_notes">
@@ -349,7 +350,7 @@
             </aside>
             
             <aside class="page_number">
-              9/31
+              9/32
             </aside>
           </footer>
         </div>
@@ -367,10 +368,8 @@
 <li>Migrated to importlib - PEP 302 is finally Final!</li>
 <li>Import system is now defined in the language reference</li>
 <li>import statement, runpy, pkgutil now use same code</li>
+<li>Interpreter specific details set via <code>sys.implementation</code></li>
 <li>Per-module import locks should reduce import lock contention</li>
-<li>Full namespace package support</li>
-<li><code>__init__.py</code> files are now optional</li>
-<li>if no <code>__init__.py</code>, whole sys.path is searched for portions</li>
 </ul></section>
             
           </div>
@@ -387,7 +386,41 @@
             </aside>
             
             <aside class="page_number">
-              10/31
+              10/32
+            </aside>
+          </footer>
+        </div>
+      </div>
+      
+      <!-- slide source: talk.md -->
+      <div class="slide-wrapper">
+        <div class="slide">
+          <div class="inner">
+            
+            <header><h1>Namespace packages</h1></header>
+            
+            
+            <section><ul>
+<li>Full namespace package support</li>
+<li><code>__init__.py</code> files are now optional</li>
+<li>if no <code>__init__.py</code>, whole <code>sys.path</code> is searched for portions</li>
+</ul></section>
+            
+          </div>
+          <div class="presenter_notes">
+            <header><h1>Presenter Notes</h1></header>
+            <section>
+            
+            </section>
+          </div>
+          <footer>
+            
+            <aside class="source">
+              Source: <a href="talk.md">talk.md</a>
+            </aside>
+            
+            <aside class="page_number">
+              11/32
             </aside>
           </footer>
         </div>
@@ -417,7 +450,7 @@
             </aside>
             
             <aside class="page_number">
-              11/31
+              12/32
             </aside>
           </footer>
         </div>
@@ -452,7 +485,7 @@
             </aside>
             
             <aside class="page_number">
-              12/31
+              13/32
             </aside>
           </footer>
         </div>
@@ -463,10 +496,13 @@
         <div class="slide">
           <div class="inner">
             
-            <header><h1>Virtual Environments (Demo)</h1></header>
+            <header><h1>Testing improvements</h1></header>
             
             
-            <section><div id="pias-virtual-environments-player" class="pias_player"></div></section>
+            <section><ul>
+<li><code>unittest.mock</code> now available</li>
+<li><code>msg</code> parameter for <code>assertRaises</code>, etc</li>
+</ul></section>
             
           </div>
           <div class="presenter_notes">
@@ -482,7 +518,41 @@
             </aside>
             
             <aside class="page_number">
-              13/31
+              14/32
+            </aside>
+          </footer>
+        </div>
+      </div>
+      
+      <!-- slide source: talk.md -->
+      <div class="slide-wrapper">
+        <div class="slide">
+          <div class="inner">
+            
+            <header><h1>Introspection improvements</h1></header>
+            
+            
+            <section><ul>
+<li>Callable signatures: <code>inspect.signature</code></li>
+<li>Closure state: <code>inspect.getclosurevars</code></li>
+<li>Generator state: <code>inspect.getgeneratorstate</code></li>
+</ul></section>
+            
+          </div>
+          <div class="presenter_notes">
+            <header><h1>Presenter Notes</h1></header>
+            <section>
+            
+            </section>
+          </div>
+          <footer>
+            
+            <aside class="source">
+              Source: <a href="talk.md">talk.md</a>
+            </aside>
+            
+            <aside class="page_number">
+              15/32
             </aside>
           </footer>
         </div>
@@ -521,7 +591,7 @@
             </aside>
             
             <aside class="page_number">
-              14/31
+              16/32
             </aside>
           </footer>
         </div>
@@ -532,10 +602,11 @@
         <div class="slide">
           <div class="inner">
             
-            <header><h1>Abstract base classes</h1></header>
+            <header><h1>Data structures (continued)</h1></header>
             
             
             <section><ul>
+<li>sequence reference docs rewritten</li>
 <li>collections.abc created</li>
 <li>range now supports equality checks (based on contents)</li>
 <li>list and bytearray now provide copy() and clear() methods</li>
@@ -556,7 +627,7 @@
             </aside>
             
             <aside class="page_number">
-              15/31
+              17/32
             </aside>
           </footer>
         </div>
@@ -591,7 +662,7 @@
             </aside>
             
             <aside class="page_number">
-              16/31
+              18/32
             </aside>
           </footer>
         </div>
@@ -625,7 +696,7 @@
             </aside>
             
             <aside class="page_number">
-              17/31
+              19/32
             </aside>
           </footer>
         </div>
@@ -663,7 +734,7 @@
             </aside>
             
             <aside class="page_number">
-              18/31
+              20/32
             </aside>
           </footer>
         </div>
@@ -698,7 +769,7 @@
             </aside>
             
             <aside class="page_number">
-              19/31
+              21/32
             </aside>
           </footer>
         </div>
@@ -732,7 +803,7 @@
             </aside>
             
             <aside class="page_number">
-              20/31
+              22/32
             </aside>
           </footer>
         </div>
@@ -769,7 +840,7 @@
             </aside>
             
             <aside class="page_number">
-              21/31
+              23/32
             </aside>
           </footer>
         </div>
@@ -804,7 +875,7 @@
             </aside>
             
             <aside class="page_number">
-              22/31
+              24/32
             </aside>
           </footer>
         </div>
@@ -838,7 +909,7 @@
             </aside>
             
             <aside class="page_number">
-              23/31
+              25/32
             </aside>
           </footer>
         </div>
@@ -878,7 +949,7 @@
             </aside>
             
             <aside class="page_number">
-              24/31
+              26/32
             </aside>
           </footer>
         </div>
@@ -914,7 +985,7 @@
             </aside>
             
             <aside class="page_number">
-              25/31
+              27/32
             </aside>
           </footer>
         </div>
@@ -948,41 +1019,7 @@
             </aside>
             
             <aside class="page_number">
-              26/31
-            </aside>
-          </footer>
-        </div>
-      </div>
-      
-      <!-- slide source: talk.md -->
-      <div class="slide-wrapper">
-        <div class="slide">
-          <div class="inner">
-            
-            <header><h1>Introspection improvements</h1></header>
-            
-            
-            <section><ul>
-<li>Callable signatures: <code>inspect.signature</code></li>
-<li>Closure state: <code>inspect.getclosurevars</code></li>
-<li>Generator state: <code>inspect.getgeneratorstate</code></li>
-</ul></section>
-            
-          </div>
-          <div class="presenter_notes">
-            <header><h1>Presenter Notes</h1></header>
-            <section>
-            
-            </section>
-          </div>
-          <footer>
-            
-            <aside class="source">
-              Source: <a href="talk.md">talk.md</a>
-            </aside>
-            
-            <aside class="page_number">
-              27/31
+              28/32
             </aside>
           </footer>
         </div>
@@ -1017,7 +1054,7 @@
             </aside>
             
             <aside class="page_number">
-              28/31
+              29/32
             </aside>
           </footer>
         </div>
@@ -1052,7 +1089,7 @@
             </aside>
             
             <aside class="page_number">
-              29/31
+              30/32
             </aside>
           </footer>
         </div>
@@ -1086,7 +1123,7 @@
             </aside>
             
             <aside class="page_number">
-              30/31
+              31/32
             </aside>
           </footer>
         </div>
@@ -1125,7 +1162,7 @@
             </aside>
             
             <aside class="page_number">
-              31/31
+              32/32
             </aside>
           </footer>
         </div>
@@ -1200,128 +1237,134 @@
       
       
       <tr id="toc-row-11">
-        <th><a href="#slide11">Namespace Packages (Demo)</a></th>
+        <th><a href="#slide11">Namespace packages</a></th>
         <td><a href="#slide11">11</a></td>
       </tr>
       
       
       <tr id="toc-row-12">
-        <th><a href="#slide12">Integrated virtual environments</a></th>
+        <th><a href="#slide12">Namespace Packages (Demo)</a></th>
         <td><a href="#slide12">12</a></td>
       </tr>
       
       
       <tr id="toc-row-13">
-        <th><a href="#slide13">Virtual Environments (Demo)</a></th>
+        <th><a href="#slide13">Integrated virtual environments</a></th>
         <td><a href="#slide13">13</a></td>
       </tr>
       
       
       <tr id="toc-row-14">
-        <th><a href="#slide14">Data structure improvements</a></th>
+        <th><a href="#slide14">Testing improvements</a></th>
         <td><a href="#slide14">14</a></td>
       </tr>
       
       
       <tr id="toc-row-15">
-        <th><a href="#slide15">Abstract base classes</a></th>
+        <th><a href="#slide15">Introspection improvements</a></th>
         <td><a href="#slide15">15</a></td>
       </tr>
       
       
       <tr id="toc-row-16">
-        <th><a href="#slide16">Time improvements</a></th>
+        <th><a href="#slide16">Data structure improvements</a></th>
         <td><a href="#slide16">16</a></td>
       </tr>
       
       
       <tr id="toc-row-17">
-        <th><a href="#slide17">Datetime improvements</a></th>
+        <th><a href="#slide17">Data structures (continued)</a></th>
         <td><a href="#slide17">17</a></td>
       </tr>
       
       
       <tr id="toc-row-18">
-        <th><a href="#slide18">Filesystem manipulation</a></th>
+        <th><a href="#slide18">Time improvements</a></th>
         <td><a href="#slide18">18</a></td>
       </tr>
       
       
       <tr id="toc-row-19">
-        <th><a href="#slide19">Other IO enhancements</a></th>
+        <th><a href="#slide19">Datetime improvements</a></th>
         <td><a href="#slide19">19</a></td>
       </tr>
       
       
       <tr id="toc-row-20">
-        <th><a href="#slide20">Network protocols and formats</a></th>
+        <th><a href="#slide20">Filesystem manipulation</a></th>
         <td><a href="#slide20">20</a></td>
       </tr>
       
       
       <tr id="toc-row-21">
-        <th><a href="#slide21">Email policy framework</a></th>
+        <th><a href="#slide21">Other IO enhancements</a></th>
         <td><a href="#slide21">21</a></td>
       </tr>
       
       
       <tr id="toc-row-22">
-        <th><a href="#slide22">IP address manipulation</a></th>
+        <th><a href="#slide22">Network protocols and formats</a></th>
         <td><a href="#slide22">22</a></td>
       </tr>
       
       
       <tr id="toc-row-23">
-        <th><a href="#slide23">Socket &amp; SSL improvements</a></th>
+        <th><a href="#slide23">Email policy framework</a></th>
         <td><a href="#slide23">23</a></td>
       </tr>
       
       
       <tr id="toc-row-24">
-        <th><a href="#slide24">C accelerators</a></th>
+        <th><a href="#slide24">IP address manipulation</a></th>
         <td><a href="#slide24">24</a></td>
       </tr>
       
       
       <tr id="toc-row-25">
-        <th><a href="#slide25">POSIX/Linux Features</a></th>
+        <th><a href="#slide25">Socket &amp; SSL improvements</a></th>
         <td><a href="#slide25">25</a></td>
       </tr>
       
       
       <tr id="toc-row-26">
-        <th><a href="#slide26">Crypto Primitives</a></th>
+        <th><a href="#slide26">C accelerators</a></th>
         <td><a href="#slide26">26</a></td>
       </tr>
       
       
       <tr id="toc-row-27">
-        <th><a href="#slide27">Introspection improvements</a></th>
+        <th><a href="#slide27">POSIX/Linux Features</a></th>
         <td><a href="#slide27">27</a></td>
       </tr>
       
       
       <tr id="toc-row-28">
-        <th><a href="#slide28">Dynamic context management</a></th>
+        <th><a href="#slide28">Crypto Primitives</a></th>
         <td><a href="#slide28">28</a></td>
       </tr>
       
       
       <tr id="toc-row-29">
-        <th><a href="#slide29">Delegating to a subgenerator</a></th>
+        <th><a href="#slide29">Dynamic context management</a></th>
         <td><a href="#slide29">29</a></td>
       </tr>
       
       
       <tr id="toc-row-30">
-        <th><a href="#slide30">Serialisation support</a></th>
+        <th><a href="#slide30">Delegating to a subgenerator</a></th>
         <td><a href="#slide30">30</a></td>
       </tr>
       
       
       <tr id="toc-row-31">
-        <th><a href="#slide31">Q &amp; A</a></th>
+        <th><a href="#slide31">Serialisation support</a></th>
         <td><a href="#slide31">31</a></td>
+      </tr>
+      
+      
+      <tr id="toc-row-32">
+        <th><a href="#slide32">Q &amp; A</a></th>
+        <td><a href="#slide32">32</a></td>
       </tr>
       
       
