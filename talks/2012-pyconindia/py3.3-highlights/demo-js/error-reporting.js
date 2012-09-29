@@ -369,7 +369,7 @@
     }, 
     {
       "act": "WRITE", 
-      "data": "Traceback (most recent call last):\r\nf  File \"<stdin>\", line 1, in <module>\r\nTypeError: f() missing 1 required keyword-only argument: 'd'\r\n>>>",
+      "data": "Traceback (most recent call last):\r\n  File \"<stdin>\", line 1, in <module>\r\nTypeError: f() missing 1 required keyword-only argument: 'd'\r\n>>>",
       "term": "d1f7b7fd72a44c0e9e3ecf2ebaa5406c"
     }, 
     {
@@ -384,7 +384,7 @@
     }, 
     {
       "act": "WRITE",
-      "data": ">>> \r\n>>> ", 
+      "data": "\r\n>>> \r\n>>> ", 
       "term": "d1f7b7fd72a44c0e9e3ecf2ebaa5406c"
     }, 
     {
@@ -434,7 +434,7 @@
     }, 
     {
       "act": "WRITE", 
-      "data": "Traceback (most recent call last):\r\no  File \"<stdin>\", line 1, in <module>\r\nFileNotFoundError: [Errno 2] No such file or directory: 'does not exist'\r\n>>> ",
+      "data": "Traceback (most recent call last):\r\n  File \"<stdin>\", line 1, in <module>\r\nFileNotFoundError: [Errno 2] No such file or directory: 'does not exist'\r\n>>> ",
       "term": "d1f7b7fd72a44c0e9e3ecf2ebaa5406c"
     }, 
     {
