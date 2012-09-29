@@ -221,10 +221,12 @@ To the terminal!
 
 # C accelerators
 
-* ``decimal`` module now uses a C accelerator by default
-* ``xml.etree`` C accelerator is now used by default
+* ``decimal`` module now uses ``cdecimal`` by default
+* Up to 120x faster than the pure Python version
+* ``xml.etree.cElementTree`` is now used automatically
+* Slight incompatibilities have been eliminated
 
-s----
+----
 
 # Compression algorithms
 
