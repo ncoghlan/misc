@@ -304,12 +304,12 @@
     }, 
     {
       "act": "WRITE", 
-      "data": ">>> f", 
+      "data": ">>> ",
       "term": "d1f7b7fd72a44c0e9e3ecf2ebaa5406c"
     }, 
     {
       "act": "ECHO", 
-      "data": "()", 
+      "data": "f()", 
       "term": "d1f7b7fd72a44c0e9e3ecf2ebaa5406c"
     }, 
     {
@@ -369,12 +369,12 @@
     }, 
     {
       "act": "WRITE", 
-      "data": "Traceback (most recent call last):\r\nf  File \"<stdin>\", line 1, in <module>\r\nTypeError: f() missing 1 required keyword-only argument: 'd'\r\n>>> f", 
+      "data": "Traceback (most recent call last):\r\nf  File \"<stdin>\", line 1, in <module>\r\nTypeError: f() missing 1 required keyword-only argument: 'd'\r\n>>>",
       "term": "d1f7b7fd72a44c0e9e3ecf2ebaa5406c"
     }, 
     {
       "act": "ECHO", 
-      "data": "(1, 2, d=3)", 
+      "data": "f(1, 2, d=3)", 
       "term": "d1f7b7fd72a44c0e9e3ecf2ebaa5406c"
     }, 
     {
@@ -409,12 +409,12 @@
     }, 
     {
       "act": "WRITE", 
-      "data": ">>> o", 
+      "data": ">>> ",
       "term": "d1f7b7fd72a44c0e9e3ecf2ebaa5406c"
     }, 
     {
       "act": "ECHO", 
-      "data": "s.listdir(\"does not exist\")", 
+      "data": "os.listdir(\"does not exist\")", 
       "term": "d1f7b7fd72a44c0e9e3ecf2ebaa5406c"
     }, 
     {
@@ -434,12 +434,12 @@
     }, 
     {
       "act": "WRITE", 
-      "data": "Traceback (most recent call last):\r\no  File \"<stdin>\", line 1, in <module>\r\nFileNotFoundError: [Errno 2] No such file or directory: 'does not exist'\r\n>>> o", 
+      "data": "Traceback (most recent call last):\r\no  File \"<stdin>\", line 1, in <module>\r\nFileNotFoundError: [Errno 2] No such file or directory: 'does not exist'\r\n>>> ",
       "term": "d1f7b7fd72a44c0e9e3ecf2ebaa5406c"
     }, 
     {
       "act": "ECHO", 
-      "data": "s.listdir(\"/usr/bin/python\")", 
+      "data": "os.listdir(\"/usr/bin/python\")", 
       "term": "d1f7b7fd72a44c0e9e3ecf2ebaa5406c"
     }, 
     {
@@ -509,12 +509,12 @@
     }, 
     {
       "act": "WRITE", 
-      "data": ">>> faulthandler.dump_traceback_later(10, e", 
+      "data": ">>> ",
       "term": "d1f7b7fd72a44c0e9e3ecf2ebaa5406c"
     }, 
     {
       "act": "ECHO", 
-      "data": "xit=True)", 
+      "data": "faulthandler.dump_traceback_later(10, exit=True)", 
       "term": "d1f7b7fd72a44c0e9e3ecf2ebaa5406c"
     }, 
     {
@@ -529,12 +529,12 @@
     }, 
     {
       "act": "WRITE", 
-      "data": ">>> a", 
+      "data": ">>> ",
       "term": "d1f7b7fd72a44c0e9e3ecf2ebaa5406c"
     }, 
     {
       "act": "ECHO", 
-      "data": " = threading.Thread(target=lambda: b.start() or b.join())", 
+      "data": "a = threading.Thread(target=lambda: b.start() or b.join())", 
       "term": "d1f7b7fd72a44c0e9e3ecf2ebaa5406c"
     }, 
     {
@@ -549,12 +549,12 @@
     }, 
     {
       "act": "WRITE", 
-      "data": ">>> b",
+      "data": ">>> ",
       "term": "d1f7b7fd72a44c0e9e3ecf2ebaa5406c"
     }, 
     {
       "act": "ECHO", 
-      "data": " = threading.Thread(target=lambda: a.join())", 
+      "data": "b = threading.Thread(target=lambda: a.join())", 
       "term": "d1f7b7fd72a44c0e9e3ecf2ebaa5406c"
     }, 
     {
@@ -569,12 +569,12 @@
     }, 
     {
       "act": "WRITE", 
-      "data": ">>> a.", 
+      "data": ">>> ",
       "term": "d1f7b7fd72a44c0e9e3ecf2ebaa5406c"
     }, 
     {
       "act": "ECHO", 
-      "data": "start()", 
+      "data": "a.start()", 
       "term": "d1f7b7fd72a44c0e9e3ecf2ebaa5406c"
     }, 
     {
@@ -589,12 +589,12 @@
     }, 
     {
       "act": "WRITE", 
-      "data": ">>> a.", 
+      "data": ">>> ",
       "term": "d1f7b7fd72a44c0e9e3ecf2ebaa5406c"
     }, 
     {
       "act": "ECHO", 
-      "data": "join()", 
+      "data": "a.join()", 
       "term": "d1f7b7fd72a44c0e9e3ecf2ebaa5406c"
     }, 
     {
