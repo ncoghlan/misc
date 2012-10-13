@@ -21,7 +21,8 @@ close some of the identified holes.
     The grand scheme below *doesn't* replace adding these core modules back in
     to the standard library. The legacy formats will be around for a good
     while yet (assuming they ever get replaced at all) and solid
-    infrastructure for reading and writing them will be essential.
+    infrastructure for reading and writing them will be essential. See the
+    section discussing `Near Term`_ efforts.
 
 I'm not one of the distutils2 maintainers, but I decided to start writing
 this up anyway to help ensure we don't get a repeat of what happened with
@@ -63,25 +64,30 @@ itself executable.
 setuptools took that already complicated system, and then layered *more*
 complications on top. This limited the adoption of setuptools to those
 users that *really* needed the features it provided. Many other parts of
-the Python community didn't the see the necessity, and instead rejected
+the Python community didn't see the necessity, and instead rejected
 setuptools as an opaque blob of magic that they didn't want anywhere near
 their systems. setuptools has also suffered PR problems due to its close
 association with ``easy_install``, the default behaviour of which violated
 many users and system administrators assumptions about how a language
 specific packaging tool should behave. The more recent ``pip`` project builds
 on the setuptools defined metadata and provides similar functionality to
-easy_install, but does so in a way that is far more palatable to a wider
+``easy_install``, but does so in a way that is far more palatable to a wider
 range of Python users.
 
-The setuptools project inherited many of distutils documentation problems,
-in particular the lack of specification of file formats. Even today, you
-won't find a clear specification of the expected contents of a Python
-``sdist`` archive.
+The setuptools project inherited many of the distutils documentation
+problems, in particular the lack of specification of file formats. Even
+today, you won't find a clear specification of the expected contents of
+a Python ``sdist`` archive.
 
 The way setuptools was written also coupled it tightly to internal details
 of the standard library's distutils package. This coupling has effectively
 frozen feature development within distutils itself, as changes have a
 very high risk of breaking previous versions of setuptools.
+
+The ``distribute`` project was created as a fork of setuptools that aims to
+act as a drop-in replacement for setuptools, with much clearer documentation
+and a broader developer base. However, this project is limited in its
+ability to move away from any undesirable default behaviours in setuptools.
 
 These issues led to the creation of the distutils2 project, as a way to
 start migrating to an updated packaging infrastructure. As the core
@@ -93,14 +99,14 @@ the rest of us were just happy that someone else had volunteered to handle
 the job).
 
 At the PyCon 2011 language summit, the decision was made to adopt distutils2
-wholesale into Python 3.3 as the "packaging" package. At `Éric Araujo's
+wholesale into Python 3.3 as the ``packaging`` package. At `Éric Araujo's
 recommendation`_, that decision was reversed late in the Python 3.3 release
 cycle, as he felt the distutils2 code, and the PEPs it was based on simply
 weren't ready as the systematic fix that was needed to convince the
 community as a whole to migrate to the new packaging infrastructure.
 
-In the ensuing discussion, many good points were raised. This essay is
-my attempt to take a step back and *clearly define the problem that needs
+In the ensuing discussion, many good points were raised. This essay started
+as my attempt to take a step back and *clearly define the problem that needs
 to be solved*. Past efforts have tried to work from a goal statement that
 consisted of little more than "fix Python packaging", and we can be
 confident that without a clearer understanding of the problems with the
@@ -110,6 +116,10 @@ works for all of these groups:
 * current distutils users
 * current satisfied setuptools/distribute users
 * users that are not happy with either setuptools *or* distutils
+
+In practice, the aspects of the problem that caught my interest turned out
+to be a few steps beyond the aspects that people are working on *right now*.
+However, I hope it will still prove interesting to at least some folks :)
 
 .. _Éric Araujo's recommendation: http://mail.python.org/pipermail/python-dev/2012-June/120430.html
 
@@ -132,20 +142,77 @@ distutils. (Relax, I said *almost*)
 
 However, I think it's possible for us to be more ambitious and create
 an alternative approach that *doesn't suck* (at least as far as any
-packaging system can not suck). If it genuinely doesn't suck,
-then it should be easier to encourage adoption, particularly if:
+packaging system can not suck).
 
-* new metadata can be distributed in parallel with legacy metadata
-* new metadata can be parsed and validated without requiring custom tools
-* new metadata can easily be parsed by non-Python code
-* legacy metadata can be generated from new metadata and vice-versa
-* the new system can be plugged into a platform specific packaging system
-  at the source archive level in an automated fashion
-* the new system can be plugged into a platform specific packaging system
-  at the binary archive level in an automated fashion
-* dependencies can be mapped to a platform specific packaging system in a
-  mostly automated fashion (modulo cases where the distro packagers have
-  split a PyPI distribution into multiple system packages)
+
+Near Term
+---------
+
+Others are working more directly on some key near term improvements. The
+``packaging``/``distutils2`` effort has split off a separate project
+called ``distlib``. The idea of ``distlib`` is for it to be the place
+where core APIs for manipulating the new metadata can go *as the stabilise*.
+This is in contrast to ``distutils2`` which includes a lot of legacy
+cruft from ``distutils`` which it had been attempting to refactor in place.
+
+Daniel Holth is working on a cross platform binary distribution format called
+``wheel``. This is already available on PyPI, with the draft format
+specification being documented in PEP 427. This effort is supported by a
+couple of other PEPs, most notably an update of the distribution metadata
+format to 1.3. The key additions in the new version of the metadata are
+"Setup-Requires-Dist" for build time dependencies, as well as a new
+extension mechanism allowing custom metadata to be included in the main
+metadata file without confusing distribution tools.
+
+This is a critical step, as it will finally allow the build systems to be
+decoupled from the installation systems - if ``pip`` can get its hands on
+a ``wheel`` file for a project, it will be possible to install it, even
+if it uses some arcane build tools that only run on specific systems.
+
+Other steps that are needed are a clearly defined scope and interface for
+the ``pysetup`` command line tool that should hopefully be added to the
+standard installation in 3.4, as well as a ``distlib`` API to simplify
+interacting with PyPI. I'm not sure if those are being actively worked
+on at the moment - best to check with the ``distlib`` folks.
+
+Replacing the complex distutils "command" system with something simpler is
+also highly desirable. The ``wheel`` format provides the opportunity to
+redefine Python's build step as "given an sdist archive, or equivalent
+directory layout, produce a wheel archive, or equivalent directory
+layout".
+
+The concepts described in this document are *not* an alternative to those
+efforts, they're either a follow on project or just background on where
+those projects fit into the larger scope of distribution in general.
+
+
+Longer Term
+-----------
+
+I'm personally more interested in the *long* term. One of the problems with
+the current distribution mechanisms in Python is that we have an import
+system that does everything it can to be filesystem agnostic, but a
+packaging and distribution system that is *only defined* for files and
+directories on disk. (Go read PEP 376 and ask yourself how you're meant
+to publish metadata for a distribution installed inside a zipfile or
+loaded from a database via an import hook).
+
+So, I'd like to eventually *abstract away* the filesystem for the
+distribution metadata, just as we have already done for the import system
+(starting with the introduction of import hooks in PEP 302, now largely
+completed in 3.3 with the migration to ``importlib`` as the machinery
+powering the import statement and the rest of the import system).
+
+The key step needed for *that* transition is to move away from a *file*
+based metadata format to a *data structure* based metadata format. This
+is the same transition that happened for configuration of the logging
+system when PEP 391 introduced a dictionary-based configuration format
+as an alternative to the existing ``ConfigParser`` based format.
+
+I'm also interested in making it easier for *non-Python* tools to process
+Python distribution metadata, which is another place where a data structure
+based metadata format can help: serialisation to standard formats (such
+as JSON) makes it easy for that data to be imported into other tools.
 
 
 The Phases of Distribution
@@ -195,8 +262,8 @@ directory, to whatever extra directories I needed, but it's also a long
 time since I needed to care about developing on Windows (outside CPython).
 
 A cleaner way to implement this feature as ``pysetup develop`` would be to
-simple add a ``pypi-dist-name.pth`` file with the absolute path of the
-current directory to site-packages when pysetup develop is run from a
+simply add a ``pypi-dist-name.pth`` file with the absolute path of the
+current directory to site-packages when ``pysetup develop`` is run from a
 directory contain a distribution metadata file (respecting any defined
 virtual environment).
 
@@ -210,11 +277,11 @@ With distutils/setuptools, source archive creation is handled by calling
 actually consists of a top level ``PKG-INFO`` file as well as all the source
 files that will be needed to build and install the distribution.
 
-The ``PKG-INFO`` format is itself not especially well-defined. It's an ad
-hoc semi-structured file format. The parsing rules for field content vary
-by header, so you can only read it effectively with custom tools like
-distutils and setuptools. There are no standard tools that can parse this
-file in a manner that is both useful and content neutral.
+The ``PKG-INFO`` format is defined in various PEPs. The latest draft is
+PEP 426 (v1.3), while the latest approved version is PEP 345 (v1.2, supported
+by pip, distribute and PyPI, but not setuptools or distutils) and the latest
+version supported by distutils is PEP 314 (v1.1 - supported since 2.5). For
+the purposes of this essay, assume I'm talking about v1.3 metadata.
 
 The way this step currently works is that the setup.py file will contain
 a call to setup(). It is this call which will actually generate the metadata
@@ -233,6 +300,11 @@ MANIFEST.in is still used to select files.
 By contrast, packaging systems like RPM use a single specification file
 is used for metadata throughout the entire packaging chain. None of the
 packaging steps alter this file - they just pass it along faithfully.
+
+.. note::
+
+    I'm currently rewriting this doc, everything below this note hasn't
+    been updated yet.
 
 I believe RPM offers a better source of inspiration here: we really want a
 single metadata definition that can be passed faithfully through all the
