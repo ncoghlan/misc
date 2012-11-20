@@ -99,7 +99,7 @@ the command line by filename rather than using the ``-m`` switch.
 Consider a simple package layout like the following (I typically use package
 layouts along these lines in my own projects - a lot of people hate nesting
 tests inside package directories like this, and prefer a parallel hierarchy,
-but I prefer the ability to use explicit relative imports to keep module
+but I favour the ability to use explicit relative imports to keep module
 tests independent of the package name)::
 
     project/
