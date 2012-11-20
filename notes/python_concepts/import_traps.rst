@@ -33,7 +33,7 @@ and including 3.2.
 
 Prior to Python 3.3, filesystem directories, and directories within zipfiles,
 *had* to contain an ``__init__.py`` in order to be recognised as Python
-package directories. Even if there is no initilisation code to run when
+package directories. Even if there is no initialisation code to run when
 the package is imported, an empty ``__init__.py`` file is still needed for
 the interpreter to find any modules or subpackages in that directory.
 
