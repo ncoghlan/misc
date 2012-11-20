@@ -176,9 +176,10 @@ While I'm using an embedded test case as an example here, similar issues
 arise any time you execute a script directly from inside a package without
 using the ``-m`` switch from the parent directory in order to ensure that
 ``sys.path`` is initialised correctly (e.g. the pre-1.4 Django project
-layout gets into trouble by running ``manage.py`` from inside a package -
-the 1.4+ layout solves that by moving ``manage.py`` outside the package
-directory).
+layout gets into trouble by running ``manage.py`` from inside a package,
+which puts the package directory on ``sys.path`` and leads to this double
+import problem - the 1.4+ layout solves that by moving ``manage.py`` outside
+the package directory).
 
 The fact that most methods of invoking Python code from the command line
 break when that code is inside a package, and the two that do work are highly
@@ -227,7 +228,8 @@ More exotic traps
 -----------------
 
 The above are the common traps, but there are others, especially if you
-start getting into the business of overriding the default import system.
+start getting into the business of extending or overriding the default
+import system.
 
 I may add more details on each of these over time:
 
@@ -243,5 +245,8 @@ I may add more details on each of these over time:
 * ``__main__`` is not always a top level module (thanks to ``-m``)
 * the fact modules are allowed to replace themselves in sys.modules
   during import
+* ``__file__`` may not refer to a real filesystem location
+* since 3.2, you can't just add ``c`` or ``o`` to get the cached bytecode
+  filename
 
 .. _issues with threads: http://docs.python.org/2/library/threading#importing-in-threaded-code
