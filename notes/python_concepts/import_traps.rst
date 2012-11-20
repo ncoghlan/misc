@@ -12,7 +12,7 @@ and may need to be understood in order to figure out how some third party
 frameworks operate.
 
 Furthermore, even without invoking any of the more exotic features of the
-import system, there are quite a few common misteps that come up regularly
+import system, there are quite a few common missteps that come up regularly
 on mailing lists and Q&A sites like Stack Overflow.
 
 This essay only officially covers Python versions back to Python 2.6. Much
@@ -45,7 +45,7 @@ contributing modules and subpackages to that package.
 The __init__.py trap
 --------------------
 
-This is an all new trap added in Python 3.3 as a consequence of fix the
+This is an all new trap added in Python 3.3 as a consequence of fixing the
 previous trap: if a subdirectory encountered on ``sys.path`` as part of
 a package import contains an ``__init__.py`` file, then the Python
 interpreter will create a *single directory* package containing only
