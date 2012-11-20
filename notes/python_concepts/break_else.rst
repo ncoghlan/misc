@@ -67,7 +67,7 @@ So what's going on? The truth is that the superficial similarity between
 ``if <iterable>`` and ``for <var> in <iterable>`` is rather deceptive. If
 we call the ``else`` clause on an ``if`` statement a "conditional else", then
 we can look to ``try`` statements for a different *kind* of ``else`` clause,
-an "exceptional else"::
+a "completion clause"::
 
     >>> try:
     ...     pass
@@ -78,16 +78,16 @@ an "exceptional else"::
     ...
     Else
 
-With an exceptional else, the question being asked has to do with how
+With a completion clause, the question being asked has to do with how
 an earlier suite of code *finished*, rather than checking the boolean value
 of an expression. Reaching the ``else`` clause in a ``try`` statement means
-that the try block didn't throw an exception or otherwise terminate before
-reaching the end of the suite.
+that the try block actually completed successfully - it didn't throw
+an exception or otherwise terminate before reaching the end of the suite.
 
 This is actually a much better model for what's going on in our ``for`` loop,
 since the condition the ``else`` is checking for is whether or not the loop
 was explicitly terminated by a ``break`` statement. While it's not legal
-syntax, it can be helpful to mentally insert an ``except break: pass``
+syntax, it may be helpful to mentally insert an ``except break: pass``
 whenever you encounter a loop with an associated ``else`` clause in order
 to help remember what it means::
 
@@ -178,7 +178,7 @@ Closing note: Not so different after all?
 
 Attentive readers may have noticed that the behaviour of ``while`` loops
 still makes sense regardless of whether you think of their ``else`` clause as
-a conditional else or as an exceptional else. We can think of a ``while``
+a conditional else or as a completion clause. We can think of a ``while``
 statement in terms of an infinite loop containing a ``break`` statement::
 
     while True:
@@ -189,13 +189,14 @@ statement in terms of an infinite loop containing a ``break`` statement::
             break
         ... # While loop body runs here
 
-If you dig deep enough, it's also possible to relate the exceptional else
+If you dig deep enough, it's also possible to relate the completion clause
 constructs in ``try`` statements and ``for`` loops back to the basic
 conditional else construct. The thing to remember though, is that it is
 only ``while`` loops and ``if`` statements that are checking the boolean
 value of an expression, while ``for`` loops and ``try`` statements are
-checking whether or not a section of code terminated gracefully.
+checking whether or not a section of code was aborted before completing
+normally.
 
 However, digging to that deeper level doesn't really provide much more
-enlightenment when it comes to understanding how the different forms of
-``else`` clause work in practice.
+enlightenment when it comes to understanding how the two different forms
+of ``else`` clause work in practice.
