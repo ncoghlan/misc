@@ -45,12 +45,12 @@ contributing modules and subpackages to that package.
 The __init__.py trap
 --------------------
 
-This particular trap is an all new trap added in Python 3.3: if a
-subdirectory encountered on ``sys.path`` as part of a package import contains
-an ``__init__.py`` file, then the Python interpreter will create a
-*single directory* package containing only modules from that directory,
-rather than finding all appropriately named subdirectories as described
-in the previous section.
+This is an all new trap added in Python 3.3 as a consequence of fix the
+previous trap: if a subdirectory encountered on ``sys.path`` as part of
+a package import contains an ``__init__.py`` file, then the Python
+interpreter will create a *single directory* package containing only
+modules from that directory, rather than finding all appropriately
+named subdirectories as described in the previous section.
 
 This happens *even if* there are other preceding subdirectories on
 ``sys.path`` that match the desired package name, but do not include an
