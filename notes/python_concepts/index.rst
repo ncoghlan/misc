@@ -25,5 +25,6 @@ explain it in ways that may be more intuitive than the official version.
 .. toctree::
    :maxdepth: 2
 
+   import_traps.rst
    break_else.rst
 
