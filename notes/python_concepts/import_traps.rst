@@ -127,14 +127,14 @@ that handled serialisation or an ``example.tests.unittest`` test runner)::
     # working directory: project/example/tests
     ./test_foo.py
     python test_foo.py
-    python -m package.tests.test_foo
-    python -c "from package.tests.test_foo import main; main()"
+    python -m test_foo
+    python -c "from test_foo import main; main()"
 
     # working directory: project/package
     tests/test_foo.py
     python tests/test_foo.py
-    python -m package.tests.test_foo
-    python -c "from package.tests.test_foo import main; main()"
+    python -m tests.test_foo
+    python -c "from tests.test_foo import main; main()"
 
     # working directory: project
     example/tests/test_foo.py
@@ -143,13 +143,17 @@ that handled serialisation or an ``example.tests.unittest`` test runner)::
     # working directory: project/..
     project/example/tests/test_foo.py
     python project/example/tests/test_foo.py
-    # The -m and -c approaches don't work from here either, but the failure
-    # to find 'package' correctly is easier to explain in this case
+    python -m project.example.tests.test_foo
+    python -c "from project.example.tests.test_foo import main; main()"
 
 That's right, that long list is of all the methods of invocation that are
 quite likely to *break* if you try them, and the error messages won't make
 any sense if you're not already intimately familiar not only with the way
-Python's import system works, but also with how it gets initialised.
+Python's import system works, but also with how it gets initialised. (Note
+that if the project exclusively uses explicit relative imports for
+intra-package references, the last two commands shown may actually work
+for Python 3.3 and later versions. Any absolute imports that expect
+"example" to be a top level package will still break though).
 
 For a long time, the only way to get ``sys.path`` right with this kind of
 setup was to either set it manually in ``test_foo.py`` itself (hardly
@@ -168,9 +172,9 @@ Since Python 2.6, however, the following also works properly::
 This last approach is actually how I prefer to use my shell when
 programming in Python - leave my working directory set to the project
 directory, and then use the ``-m`` switch to execute relevant submodules
-like test or command line tools. If I need to work in a different
+like tests or command line tools. If I need to work in a different
 directory for some reason, well, that's why I also like to have multiple
-shell session open.
+shell sessions open.
 
 While I'm using an embedded test case as an example here, similar issues
 arise any time you execute a script directly from inside a package without
