@@ -114,12 +114,12 @@ tests independent of the package name)::
 What's surprising about this layout is that all of the following
 ways to invoke ``test_foo.py`` *probably won't work* due to broken imports
 (either failing to find ``example`` for absolute imports like
-``import example.foo`` or ``from example import foo``, complaining about relative imports in a non-package
-or beyond the toplevel package for explicit relative imports like
-``from .. import foo``, or issuing even more obscure errors if some other
-submodule happens to shadow the name of a top-level module used by the
-test, such as an ``example.json`` module that handled serialisation or an
-``example.tests.unittest`` test runner)::
+``import example.foo`` or ``from example import foo``, complaining about
+relative imports in a non-package or beyond the top-level package for
+explicit relative imports like ``from .. import foo``, or issuing even more
+obscure errors if some other submodule happens to shadow the name of a
+top-level module used by the test, such as an ``example.json`` module
+that handled serialisation or an ``example.tests.unittest`` test runner)::
 
     # These commands will most likely *FAIL* due to problems with the way
     # the import state gets initialised, even if the test code is correct
