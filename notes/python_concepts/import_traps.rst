@@ -19,7 +19,7 @@ This essay only officially covers Python versions back to Python 2.6. Much
 of it applies to earlier versions as well, but I won't be qualifying any of
 the explanations with version details before 2.6.
 
-As will all my essays on this site, suggestions for improvement or
+As with all my essays on this site, suggestions for improvement or
 requests for clarification can be posted on BitBucket_.
 
 .. _BitBucket: https://bitbucket.org/ncoghlan/misc/issues
