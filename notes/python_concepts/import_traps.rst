@@ -204,7 +204,7 @@ However, even if there are improvements in this area in future versions of
 Python (see PEP 395), this trap will still exist in all current versions.
 
 
-Importing the main module twice
+Executing the main module twice
 -------------------------------
 
 This is a variant of the above double import problem that doesn't require any
@@ -216,16 +216,107 @@ under different names.
 
 As with any double-import problem, if the state stored in ``__main__`` is
 significant to the correct operation of the program, or if there is
-top-level code in the main module that has non-idempotent side effects,
-then this duplication can cause obscure and surprising errors.
+top-level code in the main module that has undesirable side effects if
+executed more than once, then this duplication can cause obscure and
+surprising errors.
 
 This is just one more reason why main modules in more complex applications
 should be kept fairly minimal - it's generally far more robust to move most
 of the functionality to a function or object in a separate module, and just
-import and load that from the main module. That way, importing the main
-module twice becomes harmless. Keeping main modules small and simple also
-helps to avoid a few potential problems with object serialisation as well
-as with the multiprocessing package.
+import and load that from the main module. That way, inadvertently executing
+the main module twice becomes harmless. Keeping main modules small and
+simple also helps to avoid a few potential problems with object
+serialisation as well as with the multiprocessing package.
+
+
+The name shadowing trap
+-----------------------
+
+Another common trap, especially for beginners, is using a local module name
+that shadows the name of a standard library or third party package or module
+that the application relies on. One particularly surprising way to run afoul
+of this trap is by using such a name for a *script*, as this then combines
+with the previous "executing the main module twice" trap to cause trouble.
+For example, if experimenting to learn more about Python's :mod:`socket`
+module, you may be inclined to call your experimental script ``socket.py``.
+It turns out this is a really bad idea, as using such a name means the
+Python interpreter can no longer find the *real* socket module in the
+standard library, as the apparent socket module in the current directory
+gets in the way::
+
+    $ python -c 'from socket import socket; print("OK!")'
+    OK!
+    $ echo 'from socket import socket; print("OK!")' > socket.py
+    $ python socket.py
+    Traceback (most recent call last):
+      File "socket.py", line 1, in <module>
+        from socket import socket
+      File "/home/ncoghlan/devel/socket.py", line 1, in <module>
+        from socket import socket
+    ImportError: cannot import name socket
+
+
+The stale bytecode file trap
+----------------------------
+
+Following on from the example in the previous section, suppose we decide to
+fix our poor choice of script name by renaming the file. In Python 2, we'll
+find that still doesn't work::
+
+    $ mv socket.py socket_play.py
+    $ python socket_play.py
+    Traceback (most recent call last):
+      File "socket_play.py", line 1, in <module>
+        from socket import socket
+      File "/home/ncoghlan/devel/socket.py", line 1, in <module>
+        # Wrapper module for _socket, providing some additional facilities
+    ImportError: cannot import name socket
+
+There's clearly something strange going on here, as we're seeing a traceback
+that claims to be caused by a *comment* line. In reality, what has happened
+is that the cached bytecode file from our previous failed import attempt is
+still present and causing trouble, but when Python tries to display the
+source line for the traceback, it finds the source line from the standard
+library module instead. Removing the stale bytecode file makes things work as
+expected::
+
+    $ rm socket.pyc
+    $ python socket_play.py
+    OK!
+
+This particular trap has been largely eliminated in Python 3.2 and later. In
+those versions, the interpreter makes a distinction between standalone
+bytecode files (such as ``socket.pyc`` above) and cached bytecode files
+(stored in automatically created ``__pycache__`` directories). The latter
+will be ignored by the interpreter if the corresponding source file is
+missing, so the above renaming of the source file works as intended::
+
+    $ echo 'from socket import socket; print("OK!")' > socket.py
+    $ python3 socket.py
+    Traceback (most recent call last):
+      File "socket.py", line 1, in <module>
+        from socket import socket
+      File "/home/ncoghlan/devel/socket.py", line 1, in <module>
+        from socket import socket
+    ImportError: cannot import name socket
+    $ mv socket.py socket_play.py
+    $ python3 socket_play.py
+
+Note, however, that mixing Python 2 and Python 3 can cause trouble if
+Python 2 has left a standalone bytecode file lying around::
+
+    $ python3 socket_play.py
+    Traceback (most recent call last):
+      File "socket_play.py", line 1, in <module>
+        from socket import socket; print("OK!")
+    ImportError: Bad magic number in /home/ncoghlan/devel/socket.pyc
+
+If you're not a core developer on a Python implementation, the problem of
+importing stale bytecode is most likely to arise when renaming Python source
+files. For Python implementation developers, it can also arise any time
+we're working on the compiler components that are responsible for
+generating the bytecode in the first place - that's the main reason
+the CPython ``Makefile`` includes a ``make pycremoval`` target.
 
 
 More exotic traps
