@@ -14,6 +14,13 @@ Rather than just documenting this for my own use, I decided to write up and
 publish what I figured out. Besides, it gives me an excuse to try out
 Kenneth Reitz's famous `requests`_ module :)
 
+.. note:
+
+    After I originally wrote this article, Kenneth accepted a `pull request`_
+    that added Kerberos authentication support directly to ``requests``. With
+    the refactored 1.0 release, that support has been moved out to a separate
+    `requests-kerberos`_ project.
+
 All examples in this document are from a Python 2 interactive session. As far
 as I know, there is not yet a Python 3 compatible version of the `kerberos`_
 module available.
@@ -24,6 +31,8 @@ module available.
 .. _test case: http://trac.calendarserver.org/browser/PyKerberos/trunk/test.py
 .. _kobo: http://git.fedorahosted.org/git/?p=kobo.git;a=blob;f=kobo/xmlrpc.py
 .. _requests: http://docs.python-requests.org/en/latest/index.html
+.. _pull request: https://github.com/kennethreitz/requests/pull/647
+.. _requests-kerberos: http://pypi.python.org/pypi/requests-kerberos/
 
 
 Kerberos Basics
