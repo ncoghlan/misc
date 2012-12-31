@@ -16,18 +16,21 @@ four submodules almost made it in. Those modules will be the first to make
 their reappearance in 3.4, once the PEPs they implement have been tweaked to
 close some of the identified holes.
 
+The project focused on identifying the functionality that is sufficiently
+mature for stdlib inclusion is ``distlib``.
+
 .. note::
 
-    The grand scheme below *doesn't* replace adding these core modules back in
-    to the standard library. The legacy formats will be around for a good
+    The grand scheme below *doesn't* replace adding these core modules back
+    in to the standard library. The legacy formats will be around for a good
     while yet (assuming they ever get replaced at all) and solid
     infrastructure for reading and writing them will be essential. See the
     section discussing `Near Term`_ efforts.
 
-I'm not one of the distutils2 maintainers, but I decided to start writing
-this up anyway to help ensure we don't get a repeat of what happened with
-3.3. I also want to make sure that any new packaging system doesn't end up
-falling into the same trap of implementation defined behaviour that is
+I'm not one of the distutils2 or distlib maintainers, but I decided to start
+writing this up anyway to help ensure we don't get a repeat of what happened
+with 3.3. I also want to make sure that any new packaging system doesn't end
+up falling into the same trap of implementation defined behaviour that is
 such a pain with the status quo.
 
 
@@ -112,7 +115,7 @@ consisted of little more than "fix Python packaging", and we can be
 confident that without a clearer understanding of the problems with the
 status quo, we aren't going to be able to devise a path forward that
 works for all of these groups:
-    
+
 * current distutils users
 * current satisfied setuptools/distribute users
 * users that are not happy with either setuptools *or* distutils
@@ -255,7 +258,7 @@ file.
 Working In Development
 ----------------------
 
-setuptools offers the ``./setup.py develop`` command. This hacks a *.pth file
+setuptools offers the ``./setup.py develop`` command. This hacks a \*.pth file
 created by setuptools in order to add additional directories to the Python
 path. Personally, I've always just created symlinks from my working
 directory, to whatever extra directories I needed, but it's also a long
@@ -298,7 +301,7 @@ contortions in order to properly represent structured data. I believe
 MANIFEST.in is still used to select files.
 
 By contrast, packaging systems like RPM use a single specification file
-is used for metadata throughout the entire packaging chain. None of the
+for metadata throughout the entire packaging chain. None of the
 packaging steps alter this file - they just pass it along faithfully.
 
 .. note::
@@ -346,7 +349,7 @@ data. Instead, structured data support must be predefined for each field
 that needs it.
 
 ``pysetup sdist`` would:
-    
+
 * choose the files to include based on MANIFEST, MANIFEST.in and the JSON metadata
 * generate a legacy PKG-INFO from the JSON metadata
 * bundle everything up into a source archive
