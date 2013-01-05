@@ -121,6 +121,15 @@ my level of interest in those varies greatly :)
 
 .. _tracker issues I am following: http://bugs.python.org/issue?@columns=title,id,activity,nosy,status&@sort=-activity&@group=priority&@filter=nosy,status&@pagesize=50&@startwith=0&status=1&nosy=1309&@dispname=My%20Nosy%20List
 
+In relation to Guido's async PEP, I had a few suggestions that he felt
+weren't appropriate for the PEP itself. For lack of a better location,
+I've posted them here:
+
+.. toctree::
+   :maxdepth: 2
+
+   async_programming.rst
+
 
 Tinkering with Ideas
 --------------------
