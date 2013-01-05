@@ -45,10 +45,9 @@ about that for Python 3.4:
 Potentially following on from that are various ideas people have had (most
 notably Graham Dumpleton) to make subinterpreters more robust. I'm
 considering following up PEP 432 with additional work on that, including
-finally pushing module cleanup completely over to dependence on the cyclic
-GC (which should help with misbehaviour at interpreter shutdown, but
-needs to be done with great care to avoid creating ridiculous amounts of
-uncollectable garbage).
+`making better use of the cyclic GC`_ when destroying modules (which should
+help with misbehaviour at interpreter shutdown, but needs to be done with
+great care to avoid creating ridiculous amounts of uncollectable garbage).
 
 The test helpers in our regression test suite currently suffer from
 discoverability problems, so I've been working with Chris Jerdonek to
@@ -64,25 +63,35 @@ binary ``wheel`` format and related PEPs:
 * :pep:`426` (updated package metadata format)
 * :pep:`427` (the ``wheel`` format itself)
 
+.. _making better use of the cyclic GC: http://bugs.python.org/issue812369
 
 Help Needed
 -----------
 
-These are things I'd really like to see happen for 3.4, but I'm not
+These are things I'd quite like to see happen for 3.4, but I'm not
 actively working on them and, as far as I'm aware, neither is anyone else:
 
 * `Bytes and Text Transform API`_ (``codecs.encode`` and ``codecs.decode``)
 * `Changing IO encodings`_ (mostly for stdin/stdout/stderr)
 * :pep:`422` (a simple class initialisation hook)
+* `Python level buffer API`_ (based on the enhanced :class:`memoryview` in 3.3+)
+* `Fixing operand precedence`_ for sequences implemented in C
 
 .. _Bytes and Text Transform API: http://bugs.python.org/issue7475#msg165435
 .. _Changing IO encodings: http://bugs.python.org/issue15216
+.. _Python level buffer API: http://bugs.python.org/issue13797
+.. _Fixing operand precedence: http://bugs.python.org/issue11477
 
 I think the first two items above will close a couple of important gaps in
-the Python 3 unicode support, while the last will resolve a regression in
-functionality that complicates the porting of some code from Python 2, as
-well as making certain forms of metaprogramming significantly simpler to
-read, write and use.
+the Python 3 unicode support, while the third will resolve a regression in
+language capability that complicates the porting of some code from Python 2.
+PEP 422 would also make certain forms of metaprogramming significantly
+simpler to read, write and use. (I'm actually talking to someone about
+handing over the reins for PEP 422)
+
+The others are miscellaneous gaps in language functionality and problems
+with CPython's implementation that aren't causing major dramas at the moment
+but would still be nice to clean up.
 
 However, they don't impact me directly the way the way the startup and test
 suite issues do, so they drop a bit further down my personal priority list.
