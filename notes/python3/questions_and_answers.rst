@@ -21,6 +21,13 @@ core developer on every point.
 I am also not writing on behalf of the Python Software Foundation (of which
 I am a nominated member) nor on behalf of Red Hat (my current employer).
 
+As with all essays on these pages, feedback is welcome via the
+`issue tracker`_ or `Twitter`_.
+
+.. _issue tracker: https://bitbucket.org/ncoghlan/misc/issues
+.. _Twitter: https://twitter.com/ncoghlan_dev
+
+
 TL;DR Version
 -------------
 
@@ -180,7 +187,7 @@ Since 3.0 turned out to be a false start due to its IO stack being unusably
 slow, I start that counter from the release of 3.1: June 27, 2009.
 At time of first writing (June 28, 2012), that puts us 3 years into the
 process, with the 3.3 release just a few months away. If we haven't put this
-largely behind us by the end of June, 2014, I'll be disappointed. 
+largely behind us by the end of June, 2014, I'll be disappointed.
 
 In the past year or so, key parts of the ecosystem have successfully made
 the transition. NumPy/SciPy is now supported in both versions, as are
@@ -493,7 +500,7 @@ applications, our own colleagues and other associates, employees of key
 vendors, Python trainers, attendees at Python conferences, and, well, just
 about anyone that cares enough to sign up to the python-dev or python-ideas
 mailing lists or add their Python-related blog to the Planet Python feed,
-or simply rant about Python on the internet such that the feedback
+or simply discuss Python on the internet such that the feedback
 eventually makes it way back to a place where we see it.
 
 Some notable changes within the Python 3 series, specifically PEP 3333 (which
@@ -554,7 +561,7 @@ either:
   CLR components, they are also free threaded thanks to the cross-platform
   threading primitives provide by the underlying virtual machines)
 * use a language other than Python
-  
+
 Many Python developers find this annoying - they want to use threads *and*
 they want to use Python, but they have the CPython core developers in their
 way saying "Sorry, we don't support that style of programming".
