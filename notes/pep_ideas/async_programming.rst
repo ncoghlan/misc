@@ -145,7 +145,7 @@ code:
 
 * Thread pools: :pep:`3156` will allow operations to be passed to separate
   threads, allowing blocking operations to be executed without suspending the
-  main thread. This will allows explicitly asynchronous code to take advantage
+  main thread. This will allow explicitly asynchronous code to take advantage
   of existing blocking operations without blocking the main loop.
 * Blocking: one of the capabilities anticipated in :pep:`3156` is the
   ability to effectively block on an asynchronous operation, running the event
@@ -202,6 +202,7 @@ boolean query::
     while (yield from check_async()):
         # check_async() always returns a Future or coroutine
         # The loop will suspend if necessary when evaluating the condition
+
 
 Asynchronous Iterators
 ~~~~~~~~~~~~~~~~~~~~~~
