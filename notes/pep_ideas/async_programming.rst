@@ -117,8 +117,8 @@ support added to the language for using generators as coroutines in
 PEP 342 and PEP 380, as well as aligning with the API for the OS level
 parallel execution techniques supported by the ``concurrent.futures``
 standard library module added in PEP 3148. I've occasionally spoken of
-the changes to Python's generators over the years as "a way to make writing
-Twisted code less painful", and see the new PEP as a natural continuation of
+the changes to Python's generators over the years as a way to make writing
+Twisted code less painful, and see the new PEP as a natural continuation of
 that effort.
 
 
