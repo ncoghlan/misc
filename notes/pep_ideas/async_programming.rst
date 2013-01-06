@@ -161,7 +161,7 @@ code:
 
 
 Using Special Methods in Explicitly Asynchronous Code
-=====================================================
+-----------------------------------------------------
 
 One challenge that arises when writing explicitly asynchronous code is
 how to compose it with other elements of Python syntax like operators,
@@ -177,7 +177,7 @@ avoiding the overhead of a trip through the event loop.
 
 
 Naming conventions
-------------------
+~~~~~~~~~~~~~~~~~~
 
 The examples below follow Guido's convention in NDB, where it is assumed
 that synchronous and asynchronous versions of operations are offered in the
@@ -193,7 +193,7 @@ world usage of that convention.
 
 
 Asynchronous conditional expressions
-------------------------------------
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 While loops and if statements are a very simple case, as it's merely a
 matter of using an asynchronous expression in place of the normal
@@ -204,7 +204,7 @@ boolean query::
         # The loop will suspend if necessary when evaluating the condition
 
 Asynchronous Iterators
-----------------------
+~~~~~~~~~~~~~~~~~~~~~~
 
 Asynchronous iterators work by producing Futures or coroutines at each
 step. These are then waited for explicitly in the body of the loop::
@@ -228,7 +228,7 @@ suspension point ``yield from f``.
 
 
 Asynchronous Context Managers
------------------------------
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Asynchronous context managers are able to cope with blocking
 operations on entry to a with statement by implementing them as a
@@ -269,7 +269,7 @@ revert to the explicit try statement form::
 
 
 Asynchronous Operators
-----------------------
+~~~~~~~~~~~~~~~~~~~~~~
 
 The approach described above generalises to other operators, such as
 addition or attribute access: rather than returning a result directly,
