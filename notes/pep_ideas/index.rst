@@ -74,6 +74,7 @@ actively working on them and, as far as I'm aware, neither is anyone else:
 * `Bytes and Text Transform API`_ (``codecs.encode`` and ``codecs.decode``)
 * `Changing IO encodings`_ (mostly for stdin/stdout/stderr)
 * :pep:`422` (a simple class initialisation hook)
+* importlib based support for post-import hooks (see :pep:`369`)
 * `Python level buffer API`_ (based on the enhanced :class:`memoryview` in 3.3+)
 * `Fixing operand precedence`_ for sequences implemented in C
 
@@ -89,11 +90,16 @@ PEP 422 would also make certain forms of metaprogramming significantly
 simpler to read, write and use. (I'm actually talking to someone about
 handing over the reins for PEP 422)
 
+Lazy loading of modules is something pretty much every large Python
+command line application reinvents in order to improve startup times. With
+``importlib`` now used as the basis for the import system, it would be good
+to take advantage of that to add a robust post-import hook mechanism.
+
 The others are miscellaneous gaps in language functionality and problems
 with CPython's implementation that aren't causing major dramas at the moment
 but would still be nice to clean up.
 
-However, they don't impact me directly the way the way the startup and test
+However, they don't impact me directly the way the startup and test
 suite issues do, so they drop a bit further down my personal priority list.
 
 
