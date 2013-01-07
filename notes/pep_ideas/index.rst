@@ -57,7 +57,8 @@ a series of patches on the tracker for this, and we're just waiting for
 the final 3.2 maintenance release to be published before we apply them.
 
 Finally, I've been taking an active interest in Daniel Holth's work on the
-binary ``wheel`` format and related PEPs:
+binary ``wheel`` format and related PEPs (I am now the BDFL delegate with
+final approval rights over these PEPs):
 
 * :pep:`425` (binary compatibility tags)
 * :pep:`426` (updated package metadata format)
@@ -76,12 +77,16 @@ actively working on them and, as far as I'm aware, neither is anyone else:
 * :pep:`422` (a simple class initialisation hook)
 * importlib based support for post-import hooks (see :pep:`369`)
 * `Python level buffer API`_ (based on the enhanced :class:`memoryview` in 3.3+)
+* `Multi-dimensional memoryview indexing and slicing`
 * `Fixing operand precedence`_ for sequences implemented in C
+* `Improved disassembly tools`
 
 .. _Bytes and Text Transform API: http://bugs.python.org/issue7475#msg165435
 .. _Changing IO encodings: http://bugs.python.org/issue15216
 .. _Python level buffer API: http://bugs.python.org/issue13797
+.. _Multi-dimensional memoryview indexing and slicing: http://bugs.python.org/issue14130
 .. _Fixing operand precedence: http://bugs.python.org/issue11477
+.. _Improved disassembly tools: http://bugs.python.org/issue11816
 
 I think the first two items above will close a couple of important gaps in
 the Python 3 unicode support, while the third will resolve a regression in
