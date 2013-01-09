@@ -287,3 +287,59 @@ a Future or coroutine rather than producing the result directly.
 Synchronous-to-asynchronous adapters also have a role to play here
 in allowing code that relies heavily on operator overloading to
 interact cleanly with asynchronous libraries.
+
+
+Additional Asynchronous Syntax
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. note:
+
+    This is *not* an active proposal. The `question was asked`_ on
+    python-ideas if the asynchronous database transaction problem noted
+    above was even solvable "in principle". The draft design below is the
+    reason I said "yes, I think so".
+
+    The idea isn't being actively pursued yet because PEP 3156 is already
+    a complex proposal and given the existence of sync-to-async adapters
+    like gevent, it isn't clear how much demand there will be for this
+    feature.
+
+.. _question was asked: https://mail.python.org/pipermail/python-ideas/2013-January/018528.html
+
+The ``yield`` and ``yield from`` keywords apply directly to the
+subsequent expression. As noted above, this means they can't easily be
+used to affect the operation of magic methods invoked implicitly as part
+of other syntax. Accordingly, that you means you can't have an asynchronous
+context manager that needs to suspend in ``__exit__``, nor can you
+easily write an asynchronous comprehension.
+
+However, a new keyword should allow certain subexpressions in ``for`` loops,
+``with`` statements and comprehensions to be flagged for invocation as
+``yield from expr`` rather than using the result of the expression directly.
+
+Using ``yielding`` as the example keyword, usage would look like the
+following::
+
+    for x in yielding async_iterable:
+        # Current generator may be suspended each time __next__ is called.
+        # Semantics are exactly the same as the workaround noted above:
+        # the __next__ is expected to return a Future or coroutine, which
+        # the interpreter will then invoke with "yield from". The difference
+        # is that in this case the invocation is implied by the "yielding"
+        # keyword, avoid the need to spell out the temporary varibale
+
+    # Similarly, in the following comprehensions, the current generator
+    # may be suspended as each value is retrieved from the iterable
+    x = [x for x in yielding async_iterable]
+    y = {x for x in yielding async_iterable}
+    z = {k:v for k, v in yielding async_iterable}
+
+    with yielding async_cm as x:
+        # Current generator may be suspended when __enter__ and __exit__
+        # are called. As with _iter__, for __enter__, the semantics are the
+        # same as in the workaround noted above, except that the temporary
+        # variable is hidden in the interpreter.
+        # Unlike the workaround, the dedicated syntax means __exit__ is
+        # also invoked asynchronously, so it can be used to implement
+        # asynchronous database transactions.
+
