@@ -77,9 +77,9 @@ actively working on them and, as far as I'm aware, neither is anyone else:
 * :pep:`422` (a simple class initialisation hook)
 * importlib based support for post-import hooks (see :pep:`369`)
 * `Python level buffer API`_ (based on the enhanced :class:`memoryview` in 3.3+)
-* `Multi-dimensional memoryview indexing and slicing`
+* `Multi-dimensional memoryview indexing and slicing`_
 * `Fixing operand precedence`_ for sequences implemented in C
-* `Improved disassembly tools`
+* `Improved disassembly tools`_
 
 .. _Bytes and Text Transform API: http://bugs.python.org/issue7475#msg165435
 .. _Changing IO encodings: http://bugs.python.org/issue15216
