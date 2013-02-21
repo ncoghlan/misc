@@ -20,6 +20,8 @@ logger = logging.getLogger(__name__)
 PEP426_VERSION_RE = re.compile('^(\d+(\.\d+)*)((a|b|c|rc)(\d+))?'
                                '(\.(post)(\d+))?(\.(dev)(\d+))?$')
 
+PEP426_PRERELEASE_RE = re.compile('(a|b|c|rc|dev)\d+')
+
 def pep426_key(s):
     s = s.strip()
     m = PEP426_VERSION_RE.match(s)
@@ -59,6 +61,9 @@ def pep426_key(s):
         dev = ('final',)
 
     return nums, pre, post, dev
+
+def is_release_version(s):
+    return not bool(PEP426_PRERELEASE_RE.search(s))
 
 def cache_projects(cache_name):
     logger.info("Retrieving package data from PyPI")
@@ -116,28 +121,28 @@ SORT_KEYS = {
 
 class Analysis:
 
-    def __init__(self, title, projects):
+    def __init__(self, title, projects, releases_only=False):
         self.title = title
         self.projects = projects
 
         num_projects = len(projects)
 
-        null_projects = Category("No releases", num_projects)
         compatible_projects = Category("Compatible", num_projects)
         translated_projects = Category("Compatible with translation", num_projects)
         filtered_projects = Category("Compatible with filtering", num_projects)
-        sort_error_translated_projects = Category("Translations sort differently", num_projects)
-        sort_error_compatible_projects = Category("Incompatible due to sorting errors", num_projects)
-        incompatible_projects = Category("Incompatible", num_projects)
+        incompatible_projects = Category("No compatible versions", num_projects)
+        sort_error_translated_projects = Category("Sorts differently (after translations)", num_projects)
+        sort_error_compatible_projects = Category("Sorts differently (no translations)", num_projects)
+        null_projects = Category("No applicable versions", num_projects)
 
         self.categories = [
-            null_projects,
             compatible_projects,
             translated_projects,
             filtered_projects,
+            incompatible_projects,
             sort_error_translated_projects,
             sort_error_compatible_projects,
-            incompatible_projects,
+            null_projects,
         ]
 
         sort_key = SORT_KEYS[pepno]
@@ -147,20 +152,22 @@ class Analysis:
                 sys.stderr.write('%s / %s\r' % (i, num_projects))
                 sys.stderr.flush()
             if not versions:
-                logger.debug('%-15.15s has no releases', pname)
+                logger.debug('%-15.15s has no versions', pname)
                 null_projects.add(pname)
                 continue
             # list_legacy and list_pep will contain 2-tuples
             # comprising a sortable representation according to either
             # the setuptools (legacy) algorithm or the PEP algorithm.
             # followed by the original version string
-            list_legacy = [(legacy_key(v), v) for v in versions]
             # Go through the PEP 386/426 stuff one by one, since
             # we might get failures
             list_pep = []
+            release_versions = set()
+            prerelease_versions = set()
             excluded_versions = set()
             translated_versions = set()
             for v in versions:
+                s = v
                 try:
                     k = sort_key(v)
                 except Exception:
@@ -180,15 +187,28 @@ class Analysis:
                             continue
                     logger.debug('%-15.15s translated %r to %r', pname, v, s)
                     translated_versions.add(v)
+                if is_release_version(s):
+                    release_versions.add(v)
+                else:
+                    prerelease_versions.add(v)
+                    if releases_only:
+                        logger.debug('%-15.15s ignoring pre-release %r', pname, s)
+                        continue
                 list_pep.append((k, v))
+            if releases_only and prerelease_versions and not release_versions:
+                logger.debug('%-15.15s has no release versions', pname)
+                null_projects.add(pname)
+                continue
             if not list_pep:
-                logger.debug('%-15.15s has no compatible releases', pname)
+                logger.debug('%-15.15s has no compatible versions', pname)
                 incompatible_projects.add(pname)
                 continue
-            # Now check the versions sort as expected
-            if excluded_versions:
-                list_legacy = [(k, v) for k, v in list_legacy
-                                                  if v not in excluded_versions]
+            # The legacy approach doesn't refuse the temptation to guess,
+            # so it *always* gives some kind of answer
+            if releases_only:
+                excluded_versions |= prerelease_versions
+            accepted_versions = set(versions) - excluded_versions
+            list_legacy = [(legacy_key(v), v) for v in accepted_versions]
             assert len(list_legacy) == len(list_pep)
             sorted_legacy = sorted(list_legacy)
             sorted_pep = sorted(list_pep)
@@ -206,7 +226,7 @@ class Analysis:
                 continue
             # The project is compatible to some degree,
             if excluded_versions:
-                logger.debug('%-15.15s has some compatible releases', pname)
+                logger.debug('%-15.15s has some compatible versions', pname)
                 filtered_projects.add(pname)
                 continue
             if translated_versions:
@@ -217,18 +237,21 @@ class Analysis:
             compatible_projects.add(pname)
 
     def print_report(self):
-        print("Analysing {} versions".format(self.title))
+        print("Analysing {}".format(self.title))
         for category in self.categories:
-            print(category)
+            print(" ", category)
 
 
 def main(pepno = '426'):
     print('Comparing PEP %s version sort to setuptools.' % pepno)
 
     projects, public = get_projects(VERSION_CACHE)
-    Analysis("all", projects).print_report()
     print()
-    Analysis("public", public).print_report()
+    Analysis("release versions", public, releases_only=True).print_report()
+    print()
+    Analysis("public versions", public).print_report()
+    print()
+    Analysis("all versions", projects).print_report()
     # Uncomment the line below to explore differences in details
     # import pdb; pdb.set_trace()
     # Grepping the log files is also informative
