@@ -67,7 +67,7 @@ March 2013, this is it:
 Unfortunately, there are a couple of qualifications required on that simple
 advice:
 
-* use `easy_install`_ or `zc.buildout`_ if you need to install from the
+* use ``easy_install`` or `zc.buildout`_ if you need to install from the
   binary ``egg`` format, which ``pip`` can't handle (``zc.buildout`` also
   has several other interesting features for application deployment)
 * aside from using ``distribute`` over the original ``setuptools`` (again,

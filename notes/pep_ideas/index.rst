@@ -64,6 +64,14 @@ final approval rights over these PEPs):
 * :pep:`426` (updated package metadata format)
 * :pep:`427` (the ``wheel`` format itself)
 
+Related to this is my current view on the overall direction I think Python's
+packaging ecosystem needs to take over the next couple of years:
+
+.. toctree::
+   :maxdepth: 2
+
+   core_packaging_api.rst
+
 .. _making better use of the cyclic GC: http://bugs.python.org/issue812369
 
 Help Needed
@@ -173,7 +181,6 @@ idea after all)
    :maxdepth: 2
 
    release_cadence.rst
-   core_packaging_api.rst
 
 
 Ideas for PyPI Prototype Packages
