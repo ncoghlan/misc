@@ -8,3 +8,4 @@ reStructured text on Bitbucket.
    :maxdepth: 2
 
    pyconau2012/index.rst
+   pyconus2013/index.rst
