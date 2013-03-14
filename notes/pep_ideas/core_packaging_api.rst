@@ -37,7 +37,7 @@ HALP! MAKE IT STOP!
 TL;DR
 -----
 
-The current situation *is* messy. especially sinces it makes it hard for
+The current situation *is* messy, especially sinces it makes it hard for
 users to find good, clearly authorative, guides to packaging Python
 software. While many people are actively working on improving the
 situation, it's going to take a while for those improvements to be fully
@@ -101,15 +101,16 @@ automatically get my way - even Guido van Rossum doesn't automatically get his
 way in regards to Python, and he's Python's actual Benevolent Dictator for
 Life! This is a large part of why we call him a *benevolent* dictator -
 most of the time he only needs to invoke his BDFL status to cut short
-otherwise interminable arguments.
+otherwise interminable arguments where there are several possible answers,
+any of which qualifies as "good enough".
 
 Instead, being a BDFL-Delegate means I get to decide when "rough consensus"
 has been achieved in relation to such PEPs. I'm trusted to listen to feedback
 on PEPs that are being proposed for acceptance (including any where I am both
 author and BDFL-Delegate) and exercise good judgement on which criticisms I
 think are valid, and need to be addressed before I accept the PEP, and which
-criticisms can be safely ignored (or deferred), deeming the contents of the PEP "good
-enough" (or "good enough for now").
+criticisms can be safely ignored (or deferred), deeming the contents of the
+PEP "good enough" (or at least "good enough for now").
 
 In the case of packaging PEPs, I have identified a core set of projects whose
 involvement I consider essential in assessing any proposals (in particular
