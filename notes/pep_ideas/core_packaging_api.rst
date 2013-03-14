@@ -7,7 +7,7 @@ Incremental Plans to Improve Python Packaging
 
 .. _issue tracker: https://bitbucket.org/ncoghlan/misc/issues?status=new&status=open
 
-As of February 2013, the Python packaging ecosystem is currently in a rather
+As of March 2013, the Python packaging ecosystem is currently in a rather
 confusing state. If you're starting a new Python project, should you use the
 ``distutils`` system in the standard library to publish your software? Or
 should you use ``setuptools``? If you decide to use ``setuptools``, should
