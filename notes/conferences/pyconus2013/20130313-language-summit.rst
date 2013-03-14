@@ -16,6 +16,7 @@ Armin Rigo and Maciej Fijalkowski
   fixes to related tools)
 * ARM support in progress, will chat to Trent regarding better access to ARM
   machines through Snakebite
+* making good progress on Py3k support
 
 
 State of Jython
@@ -25,9 +26,9 @@ Phillip Envey
 
 * Jython 2.7b1 released last month
 * Will look at 3.3 support after 2.7 is released
-* Java 7 "invoke dynamic" support doesn't work yet (JRuby tried it), but
-  once it is working then it should make for substantial performance
-  improvements
+* Java 7 "invoke dynamic" support doesn't actually work yet (JRuby tried it),
+  but once it is working and Jython has been updated to use it, then it
+  should make for substantial performance improvements
 
 
 State of IronPython
@@ -36,7 +37,7 @@ State of IronPython
 Jeff Hardy
 
 * Already supports 2.7
-* Jeff's made some attempts at Python 3 support, hoping to take another
+* Jeff's made some attempts at Python 3 support, hopes to take another
   look this year
 * Not many contributors, definitely welcome more
 * Now Apache licensed on Github (shared repo with IronRuby)
@@ -71,6 +72,8 @@ Brett Cannon
 * Hard to decide how to update the standard library appropriately
 * "Secure-by-default" is highly desirable, but some things are inherently
   dangerous (e.g. pickle, XML)
+* May settle for readily available "safer XML parsing" config options that
+  frameworks may choose to enable by default
 * Also some communication issues with being clear on what is currenty
   blocking CPython point releases
 
@@ -81,16 +84,20 @@ Tulip and enhanced async programming support in the standard library
 
 Guido van Rossum
 
-* PEP 380 almost made it into 2.7. Integration issues (e.g. no unit tests or
-  docs) and the language moratorium meant it ended up being delayed until 3.3
+* PEP 380 almost made it into 2.7. Integration issues (such as the lack of
+  unit tests and docs) and the language moratorium meant it ended up being
+  delayed until 3.3
 * Non-blocking socket support and asyncore exist, but not a great foundation
+  for robust async IO infrastructure
 * Twisted and Tornado show how event based async IO can be succesful in
   Python
 * Guido still doesn't like callback based programming :)
 * Aim to create a universal event loop API for Tornado/Twisted/et al
   to interoperate
 * Also aim to make it possible to write yield-from based async code
-* Read PEP 3156 and related discussions :)
+* Read PEP 3156 and related discussions, we mostly just rehashed those
+  for the benefit of those that hadn't been following along through the
+  many, many threads on python-ideas :)
 
 
 Parallelizing the Python Interpreter
@@ -124,6 +131,8 @@ Trent Nelson
 * Main thread *stops* while the parallel threads are running, so it can't
   steal things out from underneath the parallel threads
 * Wraps objects with async-protected equivalents
+* Ultimately, current version is highly experimental, and it's not yet clear
+  if it can be made sufficiently robust to be useful in general.
 
 (There are some promising notions here that may fit with some vague ideas
 I've had regarding subinterpreters, but there are a lot of real problems
@@ -131,7 +140,7 @@ with the current approach, especially relating to references to mutable
 containers that are modified after the parallel context starts. May still be
 worth pursuing for the benefif of platforms where multiple processes are a
 significant problem for performance especially memory usage. I suggested
-Trent look into supinterpreters and the Rust memory model for ways this
+Trent look into subinterpreters and the Rust memory model for ways this
 could be hardened against the many possible segfault inducing behaviours
 in the current imlementation)
 
@@ -286,12 +295,11 @@ Nick Coghlan
 Things we didn't cover
 ----------------------
 
-These didn't get covered either because we forgot to put them on the agenda,
-or they're not particularly controversial, they just need effort to implement
-and test them:
+These didn't get covered because I forgot to put them on the agenda.
+I'll probably be chatting to people about them during the week anyway:
 
 * PEP 422 (simple customisation of class creation)
+* PEP 432 (CPython interpreter initialization)
 * Unicode improvements (change stream encodings, better encoding specification
   in subprocess, restore type agnostic convenience access to the codecs
   module)
-* PEP 432 (CPython interpreter initialization)
