@@ -30,6 +30,18 @@ cheering on those doing the work).
    posts.
 
 
+Development Philosophy
+----------------------
+
+This sections covers my general development philosophy
+as it applies to Python and CPython in particular.
+
+.. toctree::
+   :maxdepth: 2
+
+   python_users.rst
+
+
 Current Activities
 ------------------
 
