@@ -534,6 +534,10 @@ of both of these tools. The merger will also make it easier to make
 incremental changes to the default behaviour (especially of
 ``easy_install``) without abruptly breaking anyone's tools.
 
+Our `Q & A panel`__ at PyCon US 2013 is worth a look for interested folks.
+
+.. __: http://www.pyvideo.org/video/1731/panel-directions-for-packaging
+
 
 My Position
 ~~~~~~~~~~~
