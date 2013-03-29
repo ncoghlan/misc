@@ -59,7 +59,7 @@ March 2013, this is as clear as it gets:
 * use `virtualenv`_ to isolate application specific dependencies from the
   system Python installation
 * use `zc.buildout`_ (primarily focused on the web development community)
-  or `hashdist`_ and `conda_` (primarily focused on the scientific community)
+  or `hashdist`_ and `conda`_ (primarily focused on the scientific community)
   if you want fully intregrated software stacks, without worrying about
   interoperability with platform provided package management systems
 * if you're on Linux, the versions of these tools provided as platform
