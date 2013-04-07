@@ -22,7 +22,7 @@ Armin Rigo and Maciej Fijalkowski
 State of Jython
 ---------------
 
-Phillip Envey
+Phillip Jenvey
 
 * Jython 2.7b1 released last month
 * Will look at 3.3 support after 2.7 is released
