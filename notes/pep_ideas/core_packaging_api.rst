@@ -1,3 +1,5 @@
+.. _packaging-plans:
+
 Incremental Plans to Improve Python Packaging
 =============================================
 

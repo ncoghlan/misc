@@ -1,3 +1,5 @@
+.. _pycon-language-summit-2013:
+
 Python Language Summit
 ======================
 
