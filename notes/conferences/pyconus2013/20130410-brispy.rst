@@ -5,9 +5,9 @@ Brisbane Python User Group - PyCon US Review
 About me
 --------
 
-Nick Coghlan (Twitter: @ncoghlan_dev)
-CPython core developer (commit privileges ~2005)
-Red Hat toolsmith (since mid 2011)
+* Nick Coghlan (Twitter: @ncoghlan_dev)
+* CPython core developer (commit privileges ~2005)
+* Red Hat toolsmith (since Jun 2011)
 
 
 A litany of links
@@ -31,23 +31,23 @@ The basics
 Almost all the slides and videos for the talks and tutorials are freely
 available online
 
-Tutorial schedule: https://us.pycon.org/2013/schedule/tutorials/
-Talk schedule: https://us.pycon.org/2013/schedule/talks/
-Talk & tutorial slides: https://speakerdeck.com/pyconslides
-Talk & tutorial videos: http://www.pyvideo.org/category/33/pycon-us-2013
+* Tutorial schedule: https://us.pycon.org/2013/schedule/tutorials/
+* Talk schedule: https://us.pycon.org/2013/schedule/talks/
+* Talk & tutorial slides: https://speakerdeck.com/pyconslides
+* Talk & tutorial videos: http://www.pyvideo.org/category/33/pycon-us-2013
 
 
 My PyCon
 --------
 
-Python Language Summit: :ref:`pycon-language-summit-2013`
-Post conference report: http://community.redhat.com/change-the-future-one-small-slice-of-pycon-us-2013/
-Plans for Python packaging: :ref:`packaging-plans`
+* Python Language Summit: :ref:`pycon-language-summit-2013`
+* Post conference report: http://community.redhat.com/change-the-future-one-small-slice-of-pycon-us-2013/
+* Plans for Python packaging: :ref:`packaging-plans`
 
 
-Changing the Future
+Changing the future
 -------------------
 
-Raspberry Pi: http://raspberry.io/
-Diversity & outreach: http://adainitiative.org/2013/03/pycon-feminist-hacker-lounge-report-out/
-Revamped python.org: http://preview.python.org/
+* Raspberry Pi: http://raspberry.io/
+* Diversity & outreach: http://adainitiative.org/2013/03/pycon-feminist-hacker-lounge-report-out/
+* Revamped python.org: http://preview.python.org/
