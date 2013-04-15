@@ -767,7 +767,7 @@ in the absence of a corporate sponsor willing to pay for the development and
 maintenance of the necessary high performance cross-platform threading
 primitives, their incorporation into a fork of CPython, and the extensive
 testing needed to ensure compatibility with the existing CPython ecosystem,
-and then persuading python-dev to accept the additional maitenance burden
+and then persuading python-dev to accept the additional maintenance burden
 imposed by accepting such changes back into the reference implementation.
 
 I personally expect most potential corporate sponsors with a vested interest
