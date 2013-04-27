@@ -289,6 +289,14 @@ Note that the difficulty of editing this field in a raw JSON file is one of
 the main reasons this metadata interchange format is NOT recommended for use
 as an input format for build tools.
 
+.. note::
+    
+   Including this field directly has the potential to make metadata files
+   much larger than they would otherwise be. Perhaps this should instead
+   be a relative file path, specifying a flat text file containing the
+   long description? (For example, ``"./README"`` or "``./README.rst``"
+   for a colocated file)
+
 
 Keywords
 --------
@@ -392,6 +400,13 @@ Example::
         {"name": "Graeme C"},
         {"name": "Terry J"}
     ]
+
+.. note::
+    
+   Similar to the long description, we may not want to encouraging including
+   the contributor list in the main metadata, since it's rarely going to be
+   of programmatic interest. A file reference (such as ``./AUTHORS``) may be
+   a better idea here as well.
 
 
 Project URL
@@ -509,6 +524,11 @@ is not supported by the distribution being installed, MUST at least emit
 a warning, and MAY allow the user to force the installation to proceed
 regardless.
 
+.. note::
+    
+   Open question: Recommended handling of distributions with no Python
+   support specified at all?
+
 Examples::
 
     supports-python: ["3.3"]
@@ -526,6 +546,38 @@ was introduced on Windows).
     
     This field replaces the old Requires-Python, and has been redesigned to
     better handle 2+3 single source distributions
+
+
+Supports Platform
+-----------------
+
+A list of strings specifying the platforms that the distribution
+explicitly supports. A platform is considered supported if it
+matches at least one of the environment markers given. If this field is
+not used in the metadata, it is assumed that the distribution supports any
+platform supported by Python.
+
+Individual entries are environment markers, as described in
+`Conditional metadata (environment markers)`_.
+
+Installation tools SHOULD report an error if the underlying platform
+is not supported by the distribution being installed, MUST at least emit
+a warning, and MAY allow the user to force the installation to proceed
+regardless.
+
+Examples::
+
+   "supports-platform": ["sys.platform == 'win32'"]
+   "supports-platform": ["sys.platform != 'win32'"]
+   "supports-platform": ["'linux' in sys.platform", "'bsd' in sys.platform"]
+
+
+.. note:: 
+
+   This field replaces the old Platform and Requires-Platform fields and
+   has been redesigned with environment marker based semantics that should
+   make it possible to reliably flag, for example, Unix specific or Windows
+   specific modules.
 
 
 Provides
@@ -793,8 +845,8 @@ error.
 Legacy metadata
 ===============
 
-The fields described in this section are poorly defined, of dubious utility,
-and may be dropped or replaced entirely...
+A temporary home for fields that are poorly defined, of dubious utility,
+and may be dropped or replaced entirely, but aren't quite dead yet...
 
 
 Requires-External (multiple use)
@@ -822,36 +874,14 @@ Examples::
 
     Requires-External: C
     Requires-External: libpng (>=1.5)
-
-
-Platform (multiple use)
------------------------
-
-A Platform specification describing an operating system supported by
-the distribution which is not listed in the "Operating System" Trove
-classifiers. See `Classifier`__ above.
-
-__ `Classifier (multiple use)`_
-
-Examples::
-
-    Platform: ObscureUnix
-    Platform: RareDOS
-
-
-Supported-Platform (multiple use)
----------------------------------
-
-Binary distributions containing a metadata file will use the
-Supported-Platform field in their metadata to specify the OS and
-CPU for which the binary distribution was compiled.  The semantics of
-the Supported-Platform field are not specified in this PEP.
-
-Example::
-
-    Supported-Platform: RedHat 7.2
-    Supported-Platform: i386-win32-2791
-
+    
+    
+.. note::
+    
+   External dependencies are such a complex beast, I'm inclined to kill
+   this field completely, and instead recommend that external dependencies
+   (and ensuring their presence) be handled in the post-install hook. It's
+   just too platform dependent for us to handle in a generic way.
 
 
 Updating the metadata specification
