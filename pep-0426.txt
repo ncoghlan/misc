@@ -586,11 +586,11 @@ and specification scheme defined in PEP 440.
 
 .. note::
     
-    This heavily revises the old two-phase setup vs runtime dependency model
-    in metadata 1.2. The rough mapping is that dev-requires,
-    build-requires and test-requires would all map to Setup-Requires-Dist
-    in 1.2, while requires maps to Requires-Dist. test-requires could also
-    map to an explicit setuptools based "test" extra
+    This substantially changes the old two-phase setup vs runtime dependency
+    model in metadata 1.2. The rough mapping is that dev-requires and
+    build-requires would all map to Setup-Requires-Dist
+    in 1.2, while requires maps to Requires-Dist.
+    
 
 
 Dependency specifications
@@ -610,6 +610,7 @@ Example dependency specifications::
 
     "Flask"
     "Django"
+    "Pyramid"
     "SciPy (0.12)"
     "ComfyChair[warmup]"
     "ComfyChair[warmup] (> 0.1)"
@@ -620,21 +621,30 @@ Conditional dependencies
 
 While many dependencies will be needed to use a distribution at all, others
 are needed only on particular platforms or only when particular optional
-features of the distribution are needed. To enable this, dependencies are
-identified as either unconditional (indicated by ``requires`` in the field
+features of the distribution are needed. To enable this, dependency fields
+are marked as either unconditional (indicated by ``requires`` in the field
 name) or conditional (indicated by ``may-require``) in the field name.
 
-While unconditional dependencies are simple strings, conditional
-dependencies are represented as a mapping with the following fields:
-    
-* ``dependency``: the relevant dependency specification
-* ``feature``: the optional feature that needs this dependency
-* ``environment``: the environment that needs this dependency
+Unconditional dependency fields are lists of simple strings, with each entry
+indicated a required dependency.
 
-The ``dependency`` field is required, as is at least one of ``feature`` and
+Conditional dependencies are lists of mappings with the following fields
+(all three fields contain a string value):
+
+* ``dependencies``: a list of relevant dependency specifications
+* ``extra``: the name of the optional feature that needs these dependencies.
+  See `Extras (optional features)`_ for details.
+* ``environment``: an environment marker defining the environment that
+  needs these dependencies. See `Environment markers`_ for details.
+
+The ``dependencies`` field is required, as is at least one of ``extra`` and
 ``environment``. All three fields may be supplied, indicating that the
 dependency is needed only for a particular optional feature when in a
 particular environment.
+
+Note that the same extras and environment markers MAY appear in multiple
+conditional dependencies. This may happen, for example, if an extra itself
+only needs some of its dependencies in specific environments.
 
 .. note::
     
@@ -651,97 +661,209 @@ The different categories of dependency are based on the various distribution
 and development activities identified above, and govern which dependencies
 should be installed for the specified activities:
 
-* Deployment:
+* Deployment dependencies:
     
-    * requires, may-require (if applicable)
+    * ``requires``
+    * ``may-require`` (checks runtime extras and environment markers)
+    * install the ``test`` extra to get the test dependencies
 
-* Deployment (when "test" feature is requested):
+* Build dependencies:
     
-    * requires, may-require (if applicable)
-    * test-requires, test-may-require (if applicable)
+    * ``build-requires``
+    * ``build-may-require`` (checks build extras and environment markers)
+    * install the ``docs`` extra to be able to build the documentation
 
-* Build:
+* Development dependencies:
     
-    * build-requires, build-may-require (if applicable)
+    * ``requires``
+    * ``may-require`` (all runtime extras, checks environment markers)
+    * ``build-requires``
+    * ``build-may-require`` (all build extras, checks environment markers)
+    * ``dev-requires``
 
-* Development:
+Installation tools SHOULD allow users to request at least the following
+operations for a named distribution:
     
-    * requires, may-require (if applicable)
-    * test-requires, test-may-require (if applicable)
-    * build-requires, build-may-require (if applicable)
-    * dev-requires, dev-may-require (if applicable)
+* Install the distribution and any deployment dependencies.
+* Install just the build dependencies without installing the distribution
+* Install just the development dependencies without installing
+  the distribution
+
+The notation described in `Extras (optional features)`_ SHOULD be used to
+request additional optional dependencies when installing deployment
+or distribution dependencies.
+
+Installation tools SHOULD report an error if dependencies cannot be found,
+MUST at least emit a warning, and MAY allow the user to force the
+installation to proceed regardless.
+
+.. note::
+    
+    As an example of mapping this to Linux distro packages, assume an
+    example project with documentation but no optional features is split
+    into 3 RPMs in a SPEC file: example, example-devel and example-docs
+    
+    The requires and applicable may-require dependencies would be mapped
+    to the Requires dependencies for the "example" RPM (a mapping from
+    environment markers to SPEC file conditions would also allow those to
+    be handled correctly)
+    
+    The build-requires and build-may-require dependencies would be mapped
+    to the BuildRequires dependencies for the "example" RPM *except* for
+    the "[docs]" build dependencies (i.e. any entries in build-may-require
+    where the feature subfield is set to "docs").
+    
+    The "[docs]" build dependencies would instead be mapped to the
+    BuildRequires for the "example-docs" RPM
+    
+    All defined dependencies relevant to Linux would become Requires
+    dependencies for the "example-devel" RPM.
+    
+    If a project defines optional features that need additional
+    dependencies, those could be mapped to additional virtual RPMs with
+    no BuildRequires but appropriate Requires entries.
 
 
 Requires
 --------
 
-A list of strings, with each string naming some other distutils
-project required for this distribution to work correctly.
-
-The format of a requirement string is identical to that of 
-
-Version specifications must follow the rules described in PEP 440
-
-Distributions may also depend on optional features of other distributions.
-See `Extras (optional features)`_ for details.
+A list of other distributions needed when this distribution is deployed.
 
 Example::
 
-    "requires": ["pkginfo", "PasteDeploy", "zope.interface (>3.5.0)]
+    "requires": ["SciPy", "PasteDeploy", "zope.interface (>3.5.0)"]
 
-Dependencies mentioned in ``requires`` may be installed exclusively
-at run time and are not guaranteed to be available when creating or
-installing a package. If a dependency is needed during distribution
-creation or installation *and* at run time, it should be listed under
-both ``requires`` and ``setup-requires``.
-
-Installation tools SHOULD report an error if dependencies cannot be found,
-MUST at least emit a warning, and MAY allow the user to force the
-installation to proceed regardless.
 
 May require
 -----------
 
-A list of conditional 
+A list of other distributions that may be needed when this distribution
+is deployed, based on the features requested and the target deployment
+environment.
+
+Any extras referenced from this field MUST be named in the `Extras`_ field.
+The one exception is ``test``, which is implicitly defined for all
+distributions.
+
+Example::
+
+        "may-require": [
+          {
+            "dependencies": ["pywin32 (>1.0)"],
+            "environment": "sys.platform == 'win32'"
+          },
+          {
+            "dependencies": ["SoftCushions"],
+            "extra": "warmup"
+          },
+          {
+            "dependencies": ["unittest2"],
+            "extra": "test"
+          }
+        ]
+
+Extras
+------
+
+A list of optional runtime feature names that may be used in conditional
+dependencies in ``"may-require"``.
+
+The runtime extra ``"test"`` is implicitly defined for all distributions
+and MUST NOT be recorded explicitly in this field.
+
+Example::
+    
+    "extras": ["warmup"]
 
 
-`Conditional metadata (environment markers)`_ may be used to selectively
-require additional dependencies based on the underlying platform.
-
-
-Setup requires
+Build requires
 --------------
 
-This field is similar to ``requires``, but names dependencies that are
-needed in order to build, package or install the distribution. When using
-``distutils``, this means a dependency imported by ``setup.py`` itself
-(hence the name).This field may be used to bring in extra compiler
-support, package needed to generate a manifest from version control or
-even an entire alternative build system.
+A list of other distributions needed when this distribution is being built
+(creating a binary archive from a source archive).
 
-`Conditional metadata (environment markers)`_ may be used to selectively
-require additional dependencies based on the underlying platform.
+Example::
 
-Distributions may also depend on optional features of other distributions.
-See `Extras (optional features)`_ for details.
+    "build-requires": ["setuptools (>= 0.7)"]
 
-Examples::
 
-    "setup-requires": ["setuptools"]
+Build may require
+-----------------
 
-Dependencies mentioned in ``setup-requires`` may be installed
-exclusively for setup and are not guaranteed to be available at run time.
-If a dependency is needed during distribution creation or installation
-*and* at run time, it should be listed under both ``requires`` and
-``setup-requires``.
+A list of other distributions that may be needed when this distribution
+is built (creating a binary archive from a source archive), based on the
+features requested and the build environment.
 
-Installation tools SHOULD report an error if dependencies cannot be found,
-MUST at least emit a warning, and MAY allow the user to force the
-installation to proceed regardless.
+Any extras referenced from this field MUST be named in the `Build extras`_
+field. The one exception is ``docs``, which is implicitly defined for all
+distributions.
+
+Example::
+
+        "build-may-require": [
+          {
+            "dependencies": ["pywin32 (>1.0)"],
+            "environment": "sys.platform == 'win32'"
+          },
+          {
+            "dependencies": ["cython"],
+            "extra": "c-accelerators"
+          },
+          {
+            "dependencies": ["sphinx (>= 1.0)"],
+            "extra": "docs"
+          }
+        ]
+
+
+Build extras
+------------
+
+A list of optional build feature names that may be used in conditional
+dependencies in ``"build-may-require"``.
+
+The build extra ``"docs"`` is implicitly defined for all distributions
+and MUST NOT be recorded explicitly in this field.
+
+Example::
+    
+    "build-extras": ["c-accelerators"]
+
+
+Dev requires
+------------
+
+A list of any additional distributions needed during development of this
+distribution that aren't already covered by the deployment and build
+dependencies.
+
+This is generally limited to the distributions specifically needed to
+create a source archive.
+
+Example::
+
+    "dev-requires": ["hgtools"]
+
+.. note::
+
+   Only unconditional development dependencies are supported, as I am not
+   aware of any use cases where generating a source archive is likely to
+   require environment specific dependencies. Instead, those are more
+   likely to be environment specific runtime dependencies of the tool
+   that supports creation of the source archive.
+
 
 
 Supports Python
 ---------------
+
+.. note::
+    
+   This field replaces the old Requires-Python, and has been redesigned to
+   better handle 2+3 single source distributions
+   
+   Alternatively, perhaps this entire field should just go away, with people
+   directed to use the appropriate Trove classifiers instead?
 
 A list of strings specifying the Python version(s) that the distribution
 explicitly supports. A version of Python is considered support if it
@@ -761,8 +883,7 @@ regardless.
     
    Open question: Recommended handling of distributions with no Python
    support specified at all?  (Incredibly common -- assume they are
-   compatible.  FWIW the classifiers field is much more likely to contain
-   the compatible Python versions considered by the author.)
+   compatible.)
 
 Examples::
 
@@ -776,11 +897,6 @@ Examples::
 support additional Python versions based on the underlying platform (for
 example, if a required feature was introduced for Unix systems before it
 was introduced on Windows).
-
-.. note::
-    
-    This field replaces the old Requires-Python, and has been redesigned to
-    better handle 2+3 single source distributions
 
 
 Supports Platform
@@ -888,6 +1004,11 @@ Examples::
 Extras (optional features)
 ==========================
 
+.. note::
+    
+   This needs to be revised based on the updated dependency
+   metadata design.
+
 Extras are additional dependencies that enable optional features
 of the distribution, generally corresponding to a ``try: import
 optional_dependency ...`` block in the code.  To support the use of the
@@ -949,6 +1070,12 @@ for the benefit of dependent distributions.
 
 Conditional metadata (environment markers)
 ==========================================
+
+.. note::
+    
+   This needs to be retitled and heavily revised based on the updated
+   dependency metadata design. It's really just about describing the
+   environment markers now.
 
 Conditional metadata is provided under a top level ``conditional`` field
 that references a mapping of field names to conditional entries in those
