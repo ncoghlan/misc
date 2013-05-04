@@ -853,6 +853,81 @@ Example::
    that supports creation of the source archive.
 
 
+Provides
+--------
+
+A list of strings naming additional dependency requirements that are
+satisfied by installing this distribution. These strings must be of the
+form ``Name`` or ``Name (Version)``, as for the ``requires`` field.
+
+While dependencies are usually resolved based on distribution names and
+versions, a distribution may provide additional names explicitly in the
+``provides`` field.
+
+For example, this may be used to indicate that multiple projects have
+been merged into and replaced by a single distribution or to indicate
+that this project is a substitute for another.
+
+For instance, distribute (a one time fork of setuptools) could include a
+``"provides": ["setuptools"]`` entry to prevent the conflicting package from
+being downloaded and installed when distribute is already
+installed.
+
+With distribute merged back into setuptools, the merged project is able to
+include a ``"provides": ["distribute"]`` entry to satisfy any projects that
+require the now obsolete distribution's name.
+
+A distribution may also provide a "virtual" project name, which does
+not correspond to any separately-distributed project:  such a name
+might be used to indicate an abstract capability which could be supplied
+by one of multiple projects.  For example, multiple projects might supply
+RDBMS bindings for use by a given ORM:  each project might declare
+that it provides ``ExampleORM-somedb-bindings``, allowing other
+projects to depend only on having at least one of them installed.
+
+A version declaration may be supplied and must follow the rules described
+in `Version scheme`_. The distribution's version identifier will be implied
+if none is specified.
+
+Example::
+
+    "provides": ["AnotherProject (3.4)", "virtual_package"]
+
+.. note::
+    
+   Under the revised metadata design, conditional "provides" based on
+   runtime features or the environment would go in a separate "may-provide"
+   field. However, I'm not convinced there's a great use case for that,
+   so I'm inclined to leave the addition of such a field to v2.1 of the
+   metadata spec (at the earliest, and only if someone comes up with a
+   compelling use case)
+
+
+Obsoleted by
+------------
+
+A string that indicates that this project is no longer being developed.  The
+named project provides a substitute or replacement.
+
+A version declaration may be supplied and must follow the rules described
+in `Version specifiers`_.
+
+Possible uses for this field include handling project name changes and
+project mergers.
+
+Unlike ``provides``, there is no expectation that the replacement project
+will be a "drop-in" replacement for the obsolete project - at the very
+least, upgrading to the new distribution is likely to require changes
+to import statements.
+
+Examples::
+
+    "name": "BadName",
+    "obsoleted-by": "AcceptableName"
+
+    "name": "SeparateProject",
+    "obsoleted-by": "MergedProject (>=4.0.0)"
+
 
 Supports Python
 ---------------
@@ -929,76 +1004,6 @@ Examples::
    has been redesigned with environment marker based semantics that should
    make it possible to reliably flag, for example, Unix specific or Windows
    specific modules.
-
-
-Provides
---------
-
-A list of strings naming additional dependency requirements that are
-satisfied by installing this distribution. These strings must be of the
-form ``Name`` or ``Name (Version)``, as for the ``requires`` field.
-
-While dependencies are usually resolved based on distribution names and
-versions, a distribution may provide additional names explicitly in the
-``provides`` field.
-
-For example, this may be used to indicate that multiple projects have
-been merged into and replaced by a single distribution or to indicate
-that this project is a substitute for another.
-
-For instance, distribute (a one time fork of setuptools) could include a
-``provides: ["setuptools"]`` entry to prevent the conflicting package from
-being downloaded and installed when distribute is already
-installed.
-
-With distribute merged back into setuptools, the merged project is able to
-include a ``provides: ["distribute"]`` entry to satisfy any projects that
-require the now obsolete distribution's name.
-
-A distribution may also provide a "virtual" project name, which does
-not correspond to any separately-distributed project:  such a name
-might be used to indicate an abstract capability which could be supplied
-by one of multiple projects.  For example, multiple projects might supply
-RDBMS bindings for use by a given ORM:  each project might declare
-that it provides ``ExampleORM-somedb-bindings``, allowing other
-projects to depend only on having at least one of them installed.
-
-A version declaration may be supplied and must follow the rules described
-in `Version scheme`_. The distribution's version identifier will be implied
-if none is specified.
-
-`Conditional metadata (environment markers)`_ may be used to selectively
-provide additional features based on the underlying platform.
-
-Example::
-
-    "provides": ["AnotherProject (3.4)", "virtual_package"]
-
-
-Obsoleted by
-------------
-
-A string that indicates that this project is no longer being developed.  The
-named project provides a substitute or replacement.
-
-A version declaration may be supplied and must follow the rules described
-in `Version specifiers`_.
-
-Possible uses for this field include handling project name changes and
-project mergers.
-
-Unlike ``provides``, there is no expectation that the replacement project
-will be a "drop-in" replacement for the obsolete project - at the very
-least, upgrading to the new distribution is likely to require changes
-to import statements.
-
-Examples::
-
-    "name": "BadName",
-    "obsoleted-by": "AcceptableName"
-
-    "name": "SeparateProject",
-    "obsoleted-by": "MergedProject (>=4.0.0)"
 
 
 Extras (optional features)
