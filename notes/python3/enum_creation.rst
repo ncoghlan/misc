@@ -5,6 +5,10 @@ Python, Enumerations and "Good Enough"
    To provide feedback on this essay, use the `issue tracker`_ or the
    DISQUS comments below.
 
+   Last updated: |today| (`Change history`_) 
+
+
+.. _Change history: https://bitbucket.org/ncoghlan/misc/history-node/default/notes/python3/enum_creation.rst
 .. _issue tracker: https://bitbucket.org/ncoghlan/misc/issues?status=new&status=open
 
 :pep:`435` adds support for explicit enumerations in the Python standard
