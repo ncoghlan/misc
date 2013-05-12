@@ -13,8 +13,9 @@ awkward compromises in the definition syntax, most notably the fact that
 you have to choose between explicit identification of the enum values in
 the class based syntax and the repetition of the class name and the use of
 strings in the functional declaration API.
-`This article <http://www.acooke.org/cute/Pythonssad0.html>`_ provides a
-good overview of that perspective.
+`Andrew Cooke's review of the accepted PEP
+<http://www.acooke.org/cute/Pythonssad0.html>`__ provides a good overview of
+that criticism.
 
 
 Why standardise enums at all?
@@ -43,7 +44,7 @@ easier interpretation of otherwise generic values for free.
 In almost all of the cases where we're interested in this, however, the
 enumeration values are NOT arbitrary: instead, we're exposing values defined
 in POSIX or IETF standards or by the underlying operating system, or ones
-we're we're exposing some internal implementation detail of the interpreter
+where we're exposing some internal implementation detail of the interpreter
 in a more robust and implementation independent way.
 
 The other cases that we may update are ones that currently use ``range`` to
@@ -94,7 +95,7 @@ The addition of enumerations represents only the second use of a custom
 metaclass in the standard library (the first was Abstract Base Classes),
 and we think it's important that any deviations made from standard class
 behaviour are absolutely essential to the consistency of the runtime
-behaviour of enumerations (this includes items like having definition
+behaviour of enumerations (this includes items like having member definition
 order match iteration order, and being able to define integer-based
 enumerations that are transparently interoperable with the integers they
 replace).
@@ -119,7 +120,7 @@ One reason is because that's the way you create enumerations with custom
 behaviour: by defining methods in their class definition, just as you do
 for other classes. If references to missing names implicitly created a
 new enumeration member, then making a typo in a default value in a method
-definitions would behave very strangely.
+definition would behave very strangely.
 
 More importantly, we plan to `tighten up the formal specification
 <http://bugs.python.org/issue17960>`_ for
@@ -141,7 +142,8 @@ it *should* (at least, not as the standard incarnation of the syntax).
 The question of whether or not to allow aliasing by default was a close-run
 thing, eventually decided by Guido opting for easier support for POSIX and
 IETF standards (which often include aliases) over easier detection of typos
-when entering values directly. I don't believe this is a decision we have
+when entering values directly. Now that we're using a custom namespace
+while executing the class body, I don't believe this is a decision we have
 to make (we can have both), so it's something I `plan to revisit
 <http://bugs.python.org/issue17959>`_ after the initial PEP implementation
 is incorporated, but before Python 3.4 is released.
@@ -171,23 +173,31 @@ Personally, I expect to see variants that enable the following behaviours:
           green = ...
           blue = ...
 
+  A relatively straightforward variant of this would use the "= ..." notation
+  to mean "use the enum member's qualified name as its value".
+
 * Implicit enums that *don't* really support normal code execution in the
-  class body, and allow the above to be simplified further. It's a
-  further variation on the autonumbered example in the test suite: you should
+  class body, and allow the above to be simplified further. It's another
+  variant of the autonumbered example in the test suite: you should
   just need to modify ``__prepare__`` on the metaclass to return a namespace
-  that implements ``__missing__`` as returning :const:`Ellipsis`::
+  that implements ``__missing__`` as returning :const:`Ellipsis` (you could
+  also use a custom sentinel value, since users won't have to type it any
+  more)::
 
       class Color(ImplicitEnum):
           red
           green
           blue
 
+  As with the ``= ...`` version, it wouldn't be difficult to make this mean
+  using the qualified name of the member as its value.
+
 * Extensible enums, that don't enforce the "Enums with defined members are
   final" restriction, instead enforcing a restriction that subclasses that
   inherit members can't define additional methods that are not present in
   the parent class. One feature of ``flufl.enum`` that was lost in the
   journey to the standard library is the ability to inherit enum members
-  from a parent enum, as trade for the ability that standard enum members
+  from a parent enum, as trade for the feature that standard enum members
   are actually instances of the corresponding enum.
 
   This change makes it easy to add new behaviour to enums - you just define
@@ -200,9 +210,17 @@ Personally, I expect to see variants that enable the following behaviours:
 
   PEP 435 addressed this by adding the restriction that you simply can't
   extend an enumeration that already has defined members. I've `proposed
-  <http://bugs.python.org/issue17954>`_ that we provide a supported API
+  <http://bugs.python.org/issue17954>`__ that we provide a supported API
   for tweaking this restriction. That will allow some experimentation, and
   potentially changing the default rules in the future.
+
+To some degree, this "customise the metaclass if you want something
+different" *is* indeed a copout - we're providing a lowest-common-demoninator
+enum implementation, and leaving it to people to add their own syntactic
+sugar on top if they really want to. On the other hand, this is an
+approach we've been using successfully for a *long* time: providing a
+basic initial implementation, and then seeing how that initial approach
+is used in the real world before tweaking it in future versions.
 
 
 Improving the functional APIs
@@ -220,3 +238,12 @@ Thus, any improvements to these APIs will likely be based on addressing those
 broader design problems. It doesn't make sense to hold up standardisation of
 enumerations for the resolution of those much harder design problems though,
 particularly when the immediately available workarounds aren't *that* ugly.
+
+This is also the reason we're not going to provide an ``ImplicitEnum``
+implementation in the standard library at this time - it's not yet clear
+if that's the right answer to the problem.
+
+I do like the idea of using the members qualified names as their values for
+the enum functional API, though, so I've `filed an issue
+<http://bugs.python.org/issue17947>`__ suggesting we change to that after the
+core implementation of the PEP has been put in place.
