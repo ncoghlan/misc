@@ -178,11 +178,13 @@ Personally, I expect to see variants that enable the following behaviours:
 
 * Implicit enums that *don't* really support normal code execution in the
   class body, and allow the above to be simplified further. It's another
-  variant of the autonumbered example in the test suite: you should
-  just need to modify ``__prepare__`` on the metaclass to return a namespace
-  that implements ``__missing__`` as returning :const:`Ellipsis` (you could
-  also use a custom sentinel value, since users won't have to type it any
-  more) and overrides __getitem__ to treat repeating a name as an error::
+  variant of the autonumbered example in the test suite, but one that
+  diverges substantially from normal Python semantics: merely *mentioning*
+  a name will create a new reference to that name. While there are a number
+  of ways to get into trouble when doing this, the basic concept would be to
+  modify ``__prepare__`` on the metaclass to return a namespace that
+  implements ``__missing__`` as returning a custom sentinel value and
+  overrides __getitem__ to treat repeating a name as an error::
 
       class Color(ImplicitEnum):
           red
@@ -190,9 +192,10 @@ Personally, I expect to see variants that enable the following behaviours:
           blue
           green # This should trigger an exception
 
-  As with the ``= ...`` version, it would also be possible to make an
-  implicit enumeration that used the qualified name of each member as that
-  member's value.
+  When the metaclass is putting the class together, it then looks at all
+  the entries set to the sentinel value and then either numbers them in
+  order (if using integers as values) or else sets each of them to the
+  qualified name of the member (if using strings as values)
 
 * Extensible enums, that don't enforce the "Enums with defined members are
   final" restriction, instead enforcing a restriction that subclasses that
