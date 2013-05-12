@@ -182,15 +182,17 @@ Personally, I expect to see variants that enable the following behaviours:
   just need to modify ``__prepare__`` on the metaclass to return a namespace
   that implements ``__missing__`` as returning :const:`Ellipsis` (you could
   also use a custom sentinel value, since users won't have to type it any
-  more)::
+  more) and overrides __getitem__ to treat repeating a name as an error::
 
       class Color(ImplicitEnum):
           red
           green
           blue
+          green # This should trigger an exception
 
-  As with the ``= ...`` version, it wouldn't be difficult to make this mean
-  using the qualified name of the member as its value.
+  As with the ``= ...`` version, it would also be possible to make an
+  implicit enumeration that used the qualified name of each member as that
+  member's value.
 
 * Extensible enums, that don't enforce the "Enums with defined members are
   final" restriction, instead enforcing a restriction that subclasses that
