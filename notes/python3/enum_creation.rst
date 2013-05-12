@@ -197,35 +197,50 @@ Personally, I expect to see variants that enable the following behaviours:
   order (if using integers as values) or else sets each of them to the
   qualified name of the member (if using strings as values)
 
-* Extensible enums, that don't enforce the "Enums with defined members are
-  final" restriction, instead enforcing a restriction that subclasses that
-  inherit members can't define additional methods that are not present in
-  the parent class. One feature of ``flufl.enum`` that was lost in the
-  journey to the standard library is the ability to inherit enum members
-  from a parent enum, as trade for the feature that standard enum members
-  are actually instances of the corresponding enum.
+* Extensible enums, that make it easier to include elements of another
+  enum inside a larger one. One feature of ``flufl.enum`` that was lost in
+  the journey to the standard library is the ability to inherit enum members
+  from a parent enum, as a consequence of kaing it so that standard enum
+  members are actually instances of the corresponding enum.
 
   This change makes it easy to add new behaviour to enums - you just define
-  methods. However, the combination of inheriting members *and* adding
-  additional behaviour is incoherent - you can't do both and get a sensible
-  result, as you either don't actually inherit the members (as you want to
-  add additional behaviour, and thus wrap them in a different type) *or*
-  you use the inherited members, which then don't support the additional
-  added behaviours.
+  methods in the enum definition. However, the combination of inheriting
+  members *and* adding additional behaviour is incoherent - you can't do both
+  and get a sensible result, as you either don't actually inherit the members
+  (as you want to add additional behaviour, and thus wrap them in a different
+  type) *or* you use the inherited members, which then don't support the
+  additional added behaviours.
+
+  The other problem with enum extension-through-inheritance is that one of
+  the standard expectations of class inheritance is that the base class be
+  usable wherever an instance of the parent class is expected. However,
+  one of the assumptions of enumerations is that ``isinstance(x, MyEnum)``
+  implies ``x in MyEnum`` and vice-versa, and that's automatically violated
+  as soon as you add members in a subclass (the members of the subclass will
+  satisfy the first condition, but not the second).
 
   PEP 435 addressed this by adding the restriction that you simply can't
-  extend an enumeration that already has defined members. I've `proposed
-  <http://bugs.python.org/issue17954>`__ that we provide a supported API
-  for tweaking this restriction. That will allow some experimentation, and
-  potentially changing the default rules in the future.
+  subclasse an enumeration that already has defined members (this is a
+  similar restriction to the one that Java places on their enumerations).
+
+  I suspect that extensible enums are going to require a slightly different
+  abstraction, closer to the ``flufl.enum`` model, where the group members
+  are aggregated from multiple independent underlying enumerations. For
+  example, something like::
+
+    class MoreColors(AggregateEnum, extends=Color):
+        cyan = ...
+        magenta = ...
+
 
 To some degree, this "customise the metaclass if you want something
-different" *is* indeed a copout - we're providing a lowest-common-demoninator
-enum implementation, and leaving it to people to add their own syntactic
-sugar on top if they really want to. On the other hand, this is an
-approach we've been using successfully for a *long* time: providing a
-basic initial implementation, and then seeing how that initial approach
-is used in the real world before tweaking it in future versions.
+different" approach *is* indeed a copout - we're providing a
+lowest-common-demoninator enum implementation, and leaving it to people to
+add their own syntactic sugar on top if they really want to. On the other
+hand, this is an approach the Python core development team has been using
+successfully for a *long* time: providing a basic initial implementation,
+and then seeing how that initial approach is used in the real world before
+tweaking it in future versions.
 
 
 Improving the functional APIs
