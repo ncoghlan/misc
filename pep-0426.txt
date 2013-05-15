@@ -2,9 +2,9 @@ PEP: 426
 Title: Metadata for Python Software Packages 2.0
 Version: $Revision$
 Last-Modified: $Date$
-Author: Daniel Holth <dholth@gmail.com>,
-        Donald Stufft <donald@stufft.io>,
-        Nick Coghlan <ncoghlan@gmail.com>
+Author: Nick Coghlan <ncoghlan@gmail.com>,
+        Daniel Holth <dholth@gmail.com>,
+        Donald Stufft <donald@stufft.io>
 BDFL-Delegate: Nick Coghlan <ncoghlan@gmail.com>
 Discussions-To: Distutils SIG <distutils-sig@python.org>
 Status: Draft
@@ -40,6 +40,10 @@ identification scheme.
 
 .. note::
 
+   "I" in this doc refers to Nick Coghlan. Daniel and Donald either wrote or
+   contributed to earlier versions, and have been providing feedback as the
+   initial draft of the JSON-based rewrite has taken shape.
+
    Portions of this PEP are in the process of being broken out into a
    separate PEP (PEP 440). There will be some redundancy between the draft
    PEPs as I figure out the details of the split.
@@ -56,7 +60,8 @@ identification scheme.
    * a new PEP to define v2.0 of the sdist format
    * an updated wheel PEP (v1.1) to add pymeta.json
    * an updated installation database PEP both for pymeta.json and to add
-     a linking scheme to better support runtime selection of dependencies
+     a linking scheme to better support runtime selection of dependencies,
+     as well as recording which extras are currently available
    * a new static config PEP to simplify creation of wheels from sdists
    * a stdlib upgrade PEP, adding metadata v2.0 and wheel support.
    * PEP 439, covering a bootstrapping mechanism for ``pip``
@@ -74,6 +79,20 @@ identification scheme.
    "rationale" section at the end of the document, as it would otherwise be
    an irrelevant distraction for future readers.
 
+.. note::
+
+   Miscellaneous TODO items
+
+   * Switch all keys to valid identifiers (changing "-" to "_")
+   * Document character restrictions of distribution and extra names
+   * Reconsider top level "test-requires" and "test-may-require"
+   * Reconsider top level "docs-build-requires" and "docs-build-may-require"
+   * If the docs-build requirements are separated out as their own thing,
+     then build-extras can probably be killed off...
+   * Or else docs-build-requires could just go into dev-requires, along with
+     all the other develpoment related dependencies that aren't needed to
+     create a wheel from an sdist...
+   
 
 Definitions
 ===========
@@ -223,8 +242,8 @@ with fields as described in this PEP.
 
 There are three standard locations for these metadata files:
 
-* as a ``pymeta.json`` file included in the base directory of Python
-  source distribution archives
+* as a ``{distribution}-{version}.dist-info/pymeta.json`` file in an
+  ``sdist`` source distribution archive
 * as a ``{distribution}-{version}.dist-info/pymeta.json`` file in a ``wheel``
   binary distribution archive
 * as a ``{distribution}-{version}.dist-info/pymeta.json`` file in a local
@@ -232,7 +251,7 @@ There are three standard locations for these metadata files:
 
 .. note::
     
-   These locations are TBC, since the depend on the definition of sdist 2.0
+   These locations are TBC, since they depend on the definition of sdist 2.0
    and the revised installation database standard. There will also be a
    wheel 1.1 format update after this PEP is approved that mandates 2.0+
    metadata.
@@ -245,9 +264,9 @@ edited by hand.
 
 .. note::
     
-    It may be appropriate to add a "./setup.py meta" command to setuptools
-    to allow the metadata file to be generated without having to build an
-    sdist.
+    It may be appropriate to add a "./setup.py dist_info" command to
+    setuptools to allow just the sdist metadata files to be generated
+    without having to build the full sdist.
 
 For backwards compatibility with older installation tools, metadata 2.0
 files MAY be distributed alongside legacy metadata.
@@ -315,16 +334,6 @@ Example::
     "version": "1.0a2"
 
 
-Summary
--------
-
-A one-line summary of what the distribution does.
-
-Example::
-
-    "summary": "A module that is more fiendish than soft cushions."
-
-
 Additional descriptive metadata
 ===============================
 
@@ -357,10 +366,10 @@ Examples::
 Version URL
 -----------
 
-A string containing the URL from which this specific version of the
+A string containing the full URL from which this specific version of the
 distribution can be downloaded.  (This means that the URL can't be
-something like ".../ComfyChair-latest.tgz", but instead must be
-".../ComfyChair-0.45.tgz".)
+something like ``"https://github.com/pypa/pip/archive/master.zip"``, but
+instead must be ``"https://github.com/pypa/pip/archive/1.3.1.zip"``.)
 
 Some appropriate targets for a version URL are a source tarball, an sdist
 archive or a direct reference to a tag or specific commit in an online
@@ -368,7 +377,7 @@ version control system.
 
 Example::
     
-    "version-url": "https://comfychair.example.com/download/ComfyChair-0.45.tgz"
+    "version-url": "https://github.com/pypa/pip/archive/1.3.1.zip"
 
 .. note::
     
@@ -377,6 +386,40 @@ Example::
     this URL is meant to be a way to get the original source for development
     purposes.
 
+    For extra fun and games, it appears that unlike "svn+ssh://",
+    neither "git+ssh://" nor "hg+ssh://" natively support direct linking to a
+    particular tag (hg does support direct links to bookmarks through the URL
+    fragment, but that doesn't help for git and doesn't appear to be what I
+    want anyway).
+
+    However pip does have a `defined convention
+    <http://www.pip-installer.org/en/latest/logic.html#vcs-support>`__ for
+    this kind of link, which effectively splits a "URL" into "<repo>@<tag>".
+    Alternatively, since we're trying to move away from that kind of ad hoc
+    string parsing, we could use a hash map to cope with URL-hostile version
+    control systems::
+
+        {
+            "url": "git+https://github.com/pypa/pip.git",
+            "tag": "1.3.1"
+        }
+
+
+Summary
+-------
+
+A one-line summary of what the distribution does.
+
+Example::
+
+    "summary": "A module that is more fiendish than soft cushions."
+
+.. note::
+
+   This used to be mandatory, and it's still highly recommended, but really,
+   nothing should break even if it's missing.
+
+   
 
 Description
 -----------
@@ -411,6 +454,9 @@ as an input format for build tools.
    for the "big" metadata that we don't really want in the JSON summary. In
    that case, README (with an optional extension indicating the markup
    format) would become an official part of the metadata standard.
+
+   If the markup format stays embedded, it may still be beneficial to
+   support other markup formats beyond ReST (notably Markdown and Asciidoc).
 
 
 Keywords
@@ -507,21 +553,23 @@ These details are recorded as mappings with the following subfields:
 * ``email``: an email address (this may be a mailing list)
 * ``url``: a URL (such as a profile page on a source code hosting service)
 * ``type``: one of ``"author"``, ``"maintainer"``, ``"organisation"``
-  or ``"contributor"``
+  or ``"individual"``
 
-The name subfield is required, the other subfields are optional.
+The ``name`` subfield is required, the other subfields are optional.
 
 The different contact types are as follows:
     
 * ``author``: the original creator of a distribution
 * ``maintainer``: the current lead contributor for a distribution, when
   they are not the original creator
-* ``contributor``: any other individuals involved in the creation of the
+* ``individual``: any other individuals involved in the creation of the
   distribution
 * ``organisation``: indicates that these contact details are for an
   organisation (formal or informal) rather than for a specific individual
 
-If no specific contact type is stated, the default is ``contributor``.
+If no specific contact type is stated, the default is ``individual``. When
+applicable, build tools SHOULD simply omit the ``type`` subfield rather
+than setting it explicitly.
 
 .. note::
 
@@ -553,12 +601,12 @@ Example::
         "url": "https://bitbucket.org/pypa/"
       },
       {   
-        "name": "Larry",
+        "name": "Samantha C.",
         "type": "maintainer",
         "email": "dontblameme@example.org" 
       },
       {
-        "name": "Jane",
+        "name": "Charlotte C.",
         "type": "author",
         "email": "iambecomingasketchcomedian@example.com" 
       }
@@ -568,21 +616,22 @@ Example::
 Contributors
 ------------
 
-A list of contact entries for individual contributors. The subfields within
+A list of contact entries for other contributors. The subfields within
 the list elements are the same as those for the main contact field.
 
-Entries in this list SHOULD omit the "type" subfield and automated tools
-MAY ignore it even when it is present.
+The ``author`` and ``maintainer`` contact types SHOULD NOT be used with
+this field, as it is as unranked list of contributing individuals and
+organisations.
 
 Example::
 
     "contributors": [
-        {"name": "John C"},
-        {"name": "Erik I"},
-        {"name": "Terry G"},
-        {"name": "Mike P"},
-        {"name": "Graeme C"},
-        {"name": "Terry J"}
+        {"name": "John C."},
+        {"name": "Erik I."},
+        {"name": "Terry G."},
+        {"name": "Mike P."},
+        {"name": "Graeme C."},
+        {"name": "Terry J."}
     ]
 
 .. note::
@@ -600,7 +649,7 @@ Project URLs
 A mapping of arbitrary text labels to additional URLs relevant to the project.
 
 While projects are free to choose their own labels and specific URLs,
-it is a recommended convention that source control, issue tracker and
+it is RECOMMENDED that source control, issue tracker and
 documentation links be provided using the labels in the example below.
 
 Example::
@@ -610,6 +659,10 @@ Example::
         "Source": "https://bitbucket.org/pypa/distlib/src"
         "Tracker": "https://bitbucket.org/pypa/distlib/issues"
     }
+
+.. note::
+
+   Should we require that the labels be treated as case insensitive?
 
 
 Dependency metadata
@@ -672,9 +725,9 @@ Alternative dependency specification example::
 
 .. note::
 
-  I'm not convinced that supporting alternative dependencies is worth the
-  extra complexity. I couldn't think of a good example other than lxml vs
-  elementree vs the stdlib, and you can deal with that by ignoring
+  I'm far from convinced supporting alternative dependencies is worth the
+  extra complexity. I couldn't think of a plausible example other than lxml
+  vs elementree vs the stdlib, and you can deal with that by ignoring
   elementtree and using a conditional (or even unconditional) dependency
   on lxml. If people think it's worth the hassle, this is my preferred
   syntax for it (since it slots in nicely as either an uncondition or
@@ -1063,6 +1116,16 @@ development and deployment lifecycle for a distribution:
 * Running the distribution's test suite on a deployment system (hence the
   ``test`` runtime extra)
 
+Note that building documentation that is not shipped as part of binary
+archives is not considered part of the metabuild system, even though
+the relevant dependencies may be declared as part of the distribution
+metadata.
+
+.. note::
+
+   Previous paragraph assumes that building the docs is split out to a
+   separate top level docs-build-requires/docs-build-may-require pair.
+
 Each of these operations is declared as an "entry point", a reference
 to a Python callable, with the module name separated from the reference
 within the module by a colon (``:``).
@@ -1091,6 +1154,11 @@ The metabuild hooks are gathered together into a single top level
 
 Extras (optional dependencies)
 ==============================
+
+.. note::
+
+   This section is still somewhat out of date relative to the latest
+   metadata design above.
 
 Extras are additional dependencies that enable optional features
 of the distribution, generally corresponding to a ``try: import
