@@ -96,21 +96,6 @@ identification scheme.
    version is finalised, most of that content will be moved down to the
    "rationale" section at the end of the document, as it would otherwise be
    an irrelevant distraction for future readers.
-
-.. note::
-
-   Miscellaneous TODO items
-
-   * Reconsider top level "test_requires" and "test_may_require"
-   * Reconsider top level "docs_build_requires" and "docs_build_may_require"
-   * If the docs_build requirements are separated out as their own thing,
-     then build_extras can probably be killed off...
-   * Or else docs_build_requires could just go into dev_requires, along with
-     all the other develpoment related dependencies that aren't needed to
-     create a wheel from an sdist...
-   * The whole extras architecture still needs a bit of work. Is it just a
-     tool for optional dependencies? Or do we want to support fully optional
-     components (like C accelerator modules)?
    
 
 Definitions
@@ -224,11 +209,12 @@ following:
     view of complying with distro packaging policies: the information
     they need to comply with those policies isn't available from the
     upstream projects, and all current formats for publishing it are
-    distro specific. This means repackagers currently have to do a lot
-    of work manually in order to separate out these dependencies in a
-    way that complies with those policies.
+    distro specific. This means either upstreams have to maintain metadata
+    for multiple distributions (which rarely happens) or else repackagers
+    have to do a lot of work manually in order to separate out these
+    dependencies in a  way that complies with those policies.
     
-    One thing this PEP aims to be is define a metadata format that at least
+    One thing this PEP aims to do is define a metadata format that at least
     has the *potential* to provide the info repackagers need, thus allowing
     upstream Python projects and Linux distro repackagers to collaborate more
     effectively (and, ideally, make it possible to reliably automate
@@ -357,6 +343,10 @@ consider hyphens and underscores to be equivalent.
 When converting legacy metadata, all spaces MUST be converted to hyphens,
 while all other disallowed characters MUST be converted to underscores.
 
+Example::
+
+    "name": "ComfyChair"
+
 .. note::
 
     Debian doesn't actually permit underscores in names, but that seems
@@ -372,11 +362,6 @@ while all other disallowed characters MUST be converted to underscores.
     existing tooling really only works properly if you abide by the stated
     restrictions and changing it would require a *lot* of work for all
     the automated tools in the chain.
-
-
-Example::
-
-    "name": "ComfyChair"
 
 
 Version
@@ -442,7 +427,7 @@ Example::
     This was called "Download-URL" in previous versions of the metadata. It
     has been renamed, since there are plenty of other download locations and
     this URL is meant to be a way to get the original source for development
-    purposes.
+    purposes (or to generate an SRPM or other platform specific equivalent).
 
     For extra fun and games, it appears that unlike "svn+ssh://",
     neither "git+ssh://" nor "hg+ssh://" natively support direct linking to a
@@ -454,7 +439,7 @@ Example::
     <http://www.pip-installer.org/en/latest/logic.html#vcs-support>`__ for
     this kind of link, which effectively splits a "URL" into "<repo>@<tag>".
 
-    Alternatively, we could use a hash map to handle URL-hostile version
+    Alternatively, we could use a dictionary to handle URL-hostile version
     control systems::
 
         {
@@ -462,9 +447,9 @@ Example::
             "tag": "1.3.1"
         }
 
-    Either the "<repo>@<tag>" notation or the nested hash map sounds
+    Either the "<repo>@<tag>" notation or the nested dictionary sounds
     reasonable to me, so I'm interested in arguments one way or the other
-    (in particular, if existing tools would need to convert the hash map
+    (in particular, if existing tools would need to convert the dictionary
     form to the "<repo>@<tag>" form anyway, we may as well use the more
     concise notation in the metadata standard).
 
@@ -539,7 +524,7 @@ as an input format for build tools.
    to publish both the abbreviated and the full metadata for each project
    in a convenient to consume form.
 
-   If the markup format stays embedded, it may still be beneficial to
+   If the description content stays embedded, it may still be beneficial to
    support other markup formats beyond ReST (notably Markdown, Asciidoc and
    raw HTML).
 
@@ -812,7 +797,11 @@ Alternative dependency specification example::
 
   Neither of the given examples is particularly compelling, since Pillow/PIL
   style forks aren't common, and the database driver use case would arguably
-  be better served by a "supported database driver" metadata extension.
+  be better served by an SQL-Alchemy defined "supported database driver"
+  metadata extension where a project depends on SQL Alchemy, and then
+  declares in the extension which database drivers are checked for
+  compatibility by the upstream project (similar to the advisory
+  ``supports-platform`` field in the main metadata).
 
   We're also getting better support for "virtual provides" in this version
   of the metadata standard, so this may end up being an installer and index
@@ -866,21 +855,21 @@ should be installed for the specified activities:
 * Deployment dependencies:
     
     * ``requires``
-    * ``may_require`` (checks runtime extras and environment markers)
-    * install the ``test`` extra to get the test dependencies
+    * ``may_require`` (checks extras and environment markers)
+    * request the ``test`` extra to get any additional dependencies needed
+      to run the ``test_installed_dist`` metabuild hook
 
 * Build dependencies:
     
     * ``build_requires``
-    * ``build_may_require`` (checks build extras and environment markers)
-    * request the ``docs`` extra to be able to build the documentation
+    * ``build_may_require`` (all extras, checks environment markers)
 
 * Development dependencies:
     
     * ``requires``
-    * ``may_require`` (all runtime extras, checks environment markers)
+    * ``may_require`` (all extras, checks environment markers)
     * ``build_requires``
-    * ``build_may_require`` (all build extras, checks environment markers)
+    * ``build_may_require`` (all extras, checks environment markers)
     * ``dev_requires``
 
 Installation tools SHOULD allow users to request at least the following
@@ -904,28 +893,31 @@ installation to proceed regardless.
 .. note::
     
     As an example of mapping this to Linux distro packages, assume an
-    example project with documentation but no optional features is split
-    into 3 RPMs in a SPEC file: example, example-devel and example-docs
+    example project without any optional features is split into 2 RPMs
+    in a SPEC file: example and example-devel
     
-    The requires and applicable may-require dependencies would be mapped
-    to the Requires dependencies for the "example" RPM (a mapping from
+    The ``requires`` and applicable ``may_require`` dependencies would be
+    mapped to the Requires dependencies for the "example" RPM (a mapping from
     environment markers to SPEC file conditions would also allow those to
     be handled correctly)
     
-    The build-requires and build-may-require dependencies would be mapped
-    to the BuildRequires dependencies for the "example" RPM *except* for
-    the "[docs]" build dependencies (i.e. any entries in build-may-require
-    where the feature subfield is set to "docs").
+    The ``build_requires`` and ``build_may_require`` dependencies would be
+    mapped to the BuildRequires dependencies for the "example" RPM.
     
-    The "[docs]" build dependencies would instead be mapped to the
-    BuildRequires for the "example-docs" RPM
-    
-    All defined dependencies relevant to Linux would become Requires
-    dependencies for the "example-devel" RPM.
+    All defined dependencies relevant to Linux, including those in
+    ``dev_requires``, would become Requires dependencies for the
+    "example-devel" RPM.
     
     If a project defines optional features that need additional
-    dependencies, those could be mapped to additional virtual RPMs with
-    no BuildRequires but appropriate Requires entries.
+    dependencies, those would be mapped to additional virtual RPMs with
+    appropriate BuildRequires and Requires entries based on the
+    details of the dependency specifications.
+
+    A documentation toolchain dependency like Sphinx would either go in
+    ``build_requires`` (for example, if man pages were included in the
+    built distribution) or in ``dev_requires`` (for example, if the
+    documentation is published solely through ReadTheDocs or the
+    project website).
 
 
 Requires
@@ -942,7 +934,7 @@ May require
 -----------
 
 A list of other distributions that may be needed when this distribution
-is deployed, based on the features requested and the target deployment
+is deployed, based on the extras requested and the target deployment
 environment.
 
 Any extras referenced from this field MUST be named in the `Extras`_ field.
@@ -974,7 +966,10 @@ dependencies in ``"may_require"``. See `Extras (optional dependencies)`_
 for details.
 
 The runtime extra ``"test"`` is implicitly defined for all distributions
-and MUST NOT be recorded explicitly in this field.
+and MUST NOT be recorded explicitly in this field. It is used to define the
+additional dependencies needed to run a distribution's
+``test_installed_dist`` metabuild hook that are not otherwise needed to use
+the distribution.
 
 Example::
     
@@ -1005,8 +1000,8 @@ features requested and the build environment.
 Note that while these are build dependencies for the distribution being
 built, the installation is a *deployment* scenario for the dependencies.
 
-Any extras referenced from this field MUST be named in the `Build extras`_
-field. The one exception is ``docs``, which is implicitly defined for all
+Any extras referenced from this field MUST be named in the `Extras`_
+field. The one exception is ``test``, which is implicitly defined for all
 distributions.
 
 Example::
@@ -1019,28 +1014,8 @@ Example::
           {
             "dependencies": ["cython"],
             "extra": "c-accelerators"
-          },
-          {
-            "dependencies": ["sphinx (>= 1.0)"],
-            "extra": "docs"
           }
         ]
-
-
-Build extras
-------------
-
-A list of optional build feature names that may be used in conditional
-dependencies in ``"build_may_require"``. See
-`Extras (optional dependencies)`_ for details.
-
-The build extra ``"docs"`` is implicitly defined for all distributions
-and MUST NOT be recorded explicitly in this field.
-
-Example::
-    
-    "build_extras": ["c-accelerators"]
-
 
 Dev requires
 ------------
@@ -1050,11 +1025,13 @@ distribution that aren't already covered by the deployment and build
 dependencies.
 
 This is generally limited to the distributions specifically needed to
-create a source archive.
+create a source archive, as well as those needed for other activities that
+aren't part of the distribution itself (such as generating documentation
+that is published online rather than shipped as part of the software).
 
 Example::
 
-    "dev_requires": ["hgtools"]
+    "dev_requires": ["hgtools", "sphinx (>= 1.0)"]
 
 .. note::
 
@@ -1064,8 +1041,9 @@ Example::
    likely to be environment specific runtime dependencies of the tool
    that supports creation of the source archive.
 
-   A separate implied ``"dev"`` build extra may be an adequate substitute
-   for this field.
+   Other platform specific dependencies seem more likely to be build or
+   runtime dependencies, all of which are also assumed to be needed on
+   development systems.
 
 
 Provides
@@ -1083,14 +1061,9 @@ For example, this may be used to indicate that multiple projects have
 been merged into and replaced by a single distribution or to indicate
 that this project is a substitute for another.
 
-For instance, distribute (a one time fork of setuptools) could include a
-``"provides": ["setuptools"]`` entry to prevent the conflicting package from
-being downloaded and installed when distribute is already
-installed.
-
-With distribute merged back into setuptools, the merged project is able to
-include a ``"provides": ["distribute"]`` entry to satisfy any projects that
-require the now obsolete distribution's name.
+For instance, with distribute merged back into setuptools, the merged
+project is able to include a ``"provides": ["distribute"]`` entry to
+satisfy any projects that require the now obsolete distribution's name.
 
 A distribution may also provide a "virtual" project name, which does
 not correspond to any separately distributed project:  such a name
@@ -1130,18 +1103,22 @@ in `Version specifiers`_.
 Possible uses for this field include handling project name changes and
 project mergers.
 
-Unlike ``provides``, there is no expectation that the replacement project
-will be a "drop-in" replacement for the obsolete project - at the very
-least, upgrading to the new distribution is likely to require changes
-to import statements.
+For instance, with distribute merging back into setuptools, a new version
+of distribute may be released that depends on the new version of setuptools,
+and also explicitly indicates that distribute itself is now obsolete.
+
+Note that without a corresponding ``provides``, there is no expectation
+that the replacement project will be a "drop-in" replacement for the
+obsolete project - at the very least, upgrading to the new distribution
+is likely to require changes to import statements.
 
 Examples::
 
     "name": "BadName",
     "obsoleted_by": "AcceptableName"
 
-    "name": "SeparateProject",
-    "obsoleted_by": "MergedProject (>=4.0.0)"
+    "name": "distribute",
+    "obsoleted_by": "setuptools (>= 0.7)"
 
 
 Supports Platforms
@@ -1155,7 +1132,7 @@ If this field is not given in the metadata, it is assumed that the
 distribution supports any platform supported by Python.
 
 Individual entries are environment markers, as described in
-`Conditional metadata (environment markers)`_.
+`Environment markers`_.
 
 Installation tools SHOULD report an error if supported platforms are
 specified by the distribution and the current platform fails to match
@@ -1205,16 +1182,6 @@ development and deployment lifecycle for a distribution:
 * Running the distribution's test suite on a deployment system (hence the
   ``test`` runtime extra)
 
-Note that building documentation that is not shipped as part of binary
-archives is not considered part of the metabuild system, even though
-the relevant dependencies may be declared as part of the distribution
-metadata.
-
-.. note::
-
-   Previous paragraph assumes that building the docs is split out to a
-   separate top level docs-build-requires/docs-build-may-require pair.
-
 Each of these operations is declared as an "entry point", a reference
 to a Python callable, with the module name separated from the reference
 within the module by a colon (``:``).
@@ -1238,7 +1205,7 @@ The metabuild hooks are gathered together into a single top level
   target deployment system (or after it has been upgraded)
 * ``preuninstall``: run before the distribution has been uninstalled from a
   deployment system (or before it is upgraded)
-* ``check_install``: check that a distribution is correctly installed
+* ``test_installed_dist``: test an installed distribution is working
 
 The expected signatures of these hooks are as follows::
 
@@ -1301,16 +1268,21 @@ The expected signatures of these hooks are as follows::
         that is about to be installed (indicating an upgrade or downgrade).
         """
 
-    def test_install(current_meta):
-        """Test whether or not the distribution is working correctly
+    def test_installed_dist(current_meta):
+        """Check an installed distribution is working correctly
 
         Note that this check should always be non-destructive as it may be
         invoked automatically by some tools.
 
         Requires that the distribution's test dependencies be installed.
 
-        Returns ``True`` if the testing passes, ``False`` otherwise.
+        Returns ``True`` if the check passes, ``False`` otherwise.
         """
+
+.. note::
+
+   It's not yet clear if/how the extras mechanism relates to the metabuild
+   system.
 
 
 Extras (optional dependencies)
@@ -1322,6 +1294,14 @@ Extras (optional dependencies)
    how to deal with things like optional C accelerators. Perhaps kill the
    "build extras" idea and require that such components be split out to a
    separate distribution to be considered truly optional?
+
+   The original motivation for including it was to allow upstream
+   distributions to bundle everything, while allowing downstream
+   repackagers to more easily split out the individual components. This
+   is easier to sell upstream if it's just a metadata change than if it
+   involves changing the way upstream does things (like introducing a
+   separate distribution)
+
 
 Extras are additional dependencies that enable optional features
 of the distribution, generally corresponding to a ``try: import
@@ -1337,6 +1317,7 @@ distribution names.
 Example of a distribution with optional dependencies::
     
     "name": "ComfyChair",
+    "extras": ["warmup", "c-accelerators"]
     "may_require": [
       {
         "dependencies": ["SoftCushions"],
