@@ -41,16 +41,33 @@ identification scheme.
 .. note::
 
    "I" in this doc refers to Nick Coghlan. Daniel and Donald either wrote or
-   contributed to earlier versions, and have been providing feedback as the
+   contributed to earlier versions, and have been providing feedback as this
    initial draft of the JSON-based rewrite has taken shape.
 
-   Portions of this PEP are in the process of being broken out into a
-   separate PEP (PEP 440). There will be some redundancy between the draft
-   PEPs as I figure out the details of the split.
-   
+   Metadata 2.0 represents a major upgrade to the Python packaging ecosystem,
+   and attempts to incorporate experience gained over the 15 years(!) since
+   distutils was first added to the standard library. Some of that is just
+   incorporating existing practices from setuptools/pip/etc, some of it is
+   copying from other distribution systems (like Linux distros or other
+   development language communities) and some of it is attempting to solve
+   problems which haven't yet been well solved by anyone (like supporting
+   clean conversion of Python source packages to distro policy compliant
+   source packages for at least Debian and Fedora, and perhaps other
+   platform specific distribution systems).
+
+   The current draft of the PEP very much represents a "wish list" for where
+   I would like us to go. My current expectation is that we will have to
+   either defer or reject entirely various aspects in order to get something
+   we can support in the existing tools in a reasonable amount of time. By
+   asking for the full set of features in this draft, I hope for the current
+   tool developers to shoot down the aspects which aren't practical in the
+   near term, while endorsing and supporting those aspects which can be
+   adopted relatively easily in the Python 3.4 time frame.
+
    The switch to JSON also opens up some possible opportunities for
-   consolidation of some fields. These are noted as open questions under
-   the affected field definitions.
+   consolidation of some fields, and raises a variety of options where I
+   haven't yet made up my mind on a suitable representation. These are
+   noted as open questions under the affected field definitions.
    
    There will eventually be a suite of PEPs covering various aspects of
    the metadata 2.0 format and related systems:
@@ -62,12 +79,13 @@ identification scheme.
    * an updated installation database PEP both for pymeta.json and to add
      a linking scheme to better support runtime selection of dependencies,
      as well as recording which extras are currently available
-   * a new static config PEP to simplify creation of wheels from sdists
-   * a stdlib upgrade PEP, adding metadata v2.0 and wheel support.
+   * a new static config PEP to standardise metadata generation and
+     creation of sdists
    * PEP 439, covering a bootstrapping mechanism for ``pip``
-   
+   * a distutils upgrade PEP, adding metadata v2.0 and wheel support.
+
    It's going to take a while to work through all of these and make them
-   a reality. The upside relative to our last attempt at this is we're
+   a reality. The main change from our last attempt at this is that we're
    trying to design the different pieces so we can implement them
    independently of each other, without requiring users to switch to
    a whole new tool chain (although they may have to upgrade their existing
@@ -83,15 +101,16 @@ identification scheme.
 
    Miscellaneous TODO items
 
-   * Switch all keys to valid identifiers (changing "-" to "_")
-   * Document character restrictions of distribution and extra names
-   * Reconsider top level "test-requires" and "test-may-require"
-   * Reconsider top level "docs-build-requires" and "docs-build-may-require"
-   * If the docs-build requirements are separated out as their own thing,
-     then build-extras can probably be killed off...
-   * Or else docs-build-requires could just go into dev-requires, along with
+   * Reconsider top level "test_requires" and "test_may_require"
+   * Reconsider top level "docs_build_requires" and "docs_build_may_require"
+   * If the docs_build requirements are separated out as their own thing,
+     then build_extras can probably be killed off...
+   * Or else docs_build_requires could just go into dev_requires, along with
      all the other develpoment related dependencies that aren't needed to
      create a wheel from an sdist...
+   * The whole extras architecture still needs a bit of work. Is it just a
+     tool for optional dependencies? Or do we want to support fully optional
+     components (like C accelerator modules)?
    
 
 Definitions
@@ -157,11 +176,13 @@ PEP is based on the following activities:
      As a generated file, the full distribution metadata often won't be
      available in a raw source checkout or tarball. In such cases, the
      relevant distribution metadata is generally obtained from another
-     location, such as the last published release
+     location, such as the last published release, or by generating it
+     based on a command given in a standard input file
  
 * Build: the build step is the process of turning a source archive into a
   binary archive. Dependencies must be available in order to build and
-  create a binary archive of the distribution (including its documentation).
+  create a binary archive of the distribution (including any documentation
+  that is installed on target systems).
 
 * Deployment: the deployment phase consists of two subphases:
     
@@ -200,16 +221,16 @@ following:
     happen to get an upstream Python package into a Linux distribution, and
     is why the current crop of automatic Python metadata -> Linux distro
     metadata converters have some serious issues, at least from the point of
-    view of complying with distro packaging policies): the information
+    view of complying with distro packaging policies: the information
     they need to comply with those policies isn't available from the
     upstream projects, and all current formats for publishing it are
     distro specific. This means repackagers currently have to do a lot
     of work manually in order to separate out these dependencies in a
     way that complies with those policies.
     
-    The least we can do is define a metadata format that at least has the
-    *potential* to provide the info repackagers need, thus allowing
-    upstream Python projects and Linux repackagers to collaborate more
+    One thing this PEP aims to be is define a metadata format that at least
+    has the *potential* to provide the info repackagers need, thus allowing
+    upstream Python projects and Linux distro repackagers to collaborate more
     effectively (and, ideally, make it possible to reliably automate
     the process of converting upstream Python distributions into policy
     compliant distro packages).
@@ -223,10 +244,12 @@ Metadata format
 
 The format defined in this PEP is an in-memory representation of Python
 distribution metadata as a string-keyed dictionary. Permitted values for
-individual entries are strings, lists of strings, and additional
+individual entries are strings, lists of strings, booleans and additional
 nested string-keyed dictionaries.
 
-Dictionary keys in distribution metadata MUST be lowercase strings.
+Except where otherwise noted, dictionary keys in distribution metadata MUST
+be valid Python identifiers in order to support attribute based metadata
+access APIs.
 
 The individual field descriptions show examples of the key name and value
 as they would be serialised as part of a JSON mapping.
@@ -251,10 +274,10 @@ There are three standard locations for these metadata files:
 
 .. note::
     
-   These locations are TBC, since they depend on the definition of sdist 2.0
-   and the revised installation database standard. There will also be a
-   wheel 1.1 format update after this PEP is approved that mandates 2.0+
-   metadata.
+   These locations are to be confirmed, since they depend on the definition
+   of sdist 2.0 and the revised installation database standard. There will
+   also be a wheel 1.1 format update after this PEP is approved that
+   mandates 2.0+ metadata.
 
 Other tools involved in Python distribution may also use this format.
 
@@ -266,7 +289,7 @@ edited by hand.
     
     It may be appropriate to add a "./setup.py dist_info" command to
     setuptools to allow just the sdist metadata files to be generated
-    without having to build the full sdist.
+    without having to build the full sdist archive.
 
 For backwards compatibility with older installation tools, metadata 2.0
 files MAY be distributed alongside legacy metadata.
@@ -296,9 +319,9 @@ Metadata version
 
 Version of the file format; ``"2.0"`` is the only legal value.
 
-Automated tools consuming metadata SHOULD warn if ``metadata-version`` is
+Automated tools consuming metadata SHOULD warn if ``metadata_version`` is
 greater than the highest version they support, and MUST fail if
-``metadata-version`` has a greater major version than the highest
+``metadata_version`` has a greater major version than the highest
 version they support (as described in PEP 440, the major version is the
 value before the first dot).
 
@@ -308,13 +331,48 @@ all of the needed fields.
 
 Example::
 
-    "metadata-version": "2.0"
+    "metadata_version": "2.0"
 
 
 Name
 ----
 
 The name of the distribution.
+
+As distribution names form the basis for URLs, filenames, command line
+parameters and interoperability with other packaging systems, the permitted
+characters are constrained to:
+
+* ASCII letters (``[a-zA-Z]``)
+* ASCII digits (``[0-9]``)
+* underscores (``_``)
+* hyphens (``-``)
+* periods (``.``)
+
+Name MUST start with an ASCII letter or digit.
+
+All comparisons of distribution names MUST be case insensitive, and MUST
+consider hyphens and underscores to be equivalent.
+
+When converting legacy metadata, all spaces MUST be converted to hyphens,
+while all other disallowed characters MUST be converted to underscores.
+
+.. note::
+
+    Debian doesn't actually permit underscores in names, but that seems
+    unduly restrictive to me given the common practice of using
+    valid Python identifiers as Python distribution names. A Debian side
+    policy of converting underscores to hyphens seems easy enough to
+    implement.
+
+    We're deliberately *not* following Python 3 down the path of arbitrary
+    unicode identifiers at this time. The security implications of doing so
+    are substantially worse in the software distribution use case (it opens
+    up far more interesting attack vectors than mere code obfuscation), the
+    existing tooling really only works properly if you abide by the stated
+    restrictions and changing it would require a *lot* of work for all
+    the automated tools in the chain.
+
 
 Example::
 
@@ -334,14 +392,15 @@ Example::
     "version": "1.0a2"
 
 
-Additional descriptive metadata
+Additional identifying metadata
 ===============================
 
-This section specifies fields that provide additional details regarding the
+This section specifies fields that provide identifying details regarding the
 distribution.
 
-All of these fields are optional, automated tools MUST operate correctly if
-a distribution does not provide them.
+All of these fields are optional. Automated tools MUST operate correctly if
+a distribution does not provide them, except for those operations which
+specifically require this fields.
 
 
 Build label
@@ -353,14 +412,13 @@ an exact version (see PEP 440 for details).
 
 Examples::
 
-    "build-label": "1.0.0-alpha.1"
+    "build_label": "1.0.0-alpha.1"
 
-    "build-label": "1.3.7+build.11.e0f985a"
+    "build_label": "1.3.7+build.11.e0f985a"
 
-    "build-label": "v1.8.1.301.ga0df26f"
+    "build_label": "v1.8.1.301.ga0df26f"
 
-    "build-label": "2013.02.17.dev123"
-
+    "build_label": "2013.02.17.dev123"
 
 
 Version URL
@@ -377,7 +435,7 @@ version control system.
 
 Example::
     
-    "version-url": "https://github.com/pypa/pip/archive/1.3.1.zip"
+    "version_url": "https://github.com/pypa/pip/archive/1.3.1.zip"
 
 .. note::
     
@@ -395,20 +453,39 @@ Example::
     However pip does have a `defined convention
     <http://www.pip-installer.org/en/latest/logic.html#vcs-support>`__ for
     this kind of link, which effectively splits a "URL" into "<repo>@<tag>".
-    Alternatively, since we're trying to move away from that kind of ad hoc
-    string parsing, we could use a hash map to cope with URL-hostile version
+
+    Alternatively, we could use a hash map to handle URL-hostile version
     control systems::
 
         {
-            "url": "git+https://github.com/pypa/pip.git",
+            "repo_url": "git+https://github.com/pypa/pip.git",
             "tag": "1.3.1"
         }
 
+    Either the "<repo>@<tag>" notation or the nested hash map sounds
+    reasonable to me, so I'm interested in arguments one way or the other
+    (in particular, if existing tools would need to convert the hash map
+    form to the "<repo>@<tag>" form anyway, we may as well use the more
+    concise notation in the metadata standard).
+
+
+Additional descriptive metadata
+===============================
+
+This section specifies fields that provide additional information regarding
+the distribution and its contents.
+
+All of these fields are optional. Automated tools MUST operate correctly if
+a distribution does not provide them.
 
 Summary
 -------
 
 A one-line summary of what the distribution does.
+
+Publication tools SHOULD emit a warning if this field is not provided. Index
+servers MAY require that this field be present before allowing a
+distribution to be uploaded.
 
 Example::
 
@@ -417,7 +494,7 @@ Example::
 .. note::
 
    This used to be mandatory, and it's still highly recommended, but really,
-   nothing should break even if it's missing.
+   nothing should break even when it's missing.
 
    
 
@@ -455,8 +532,16 @@ as an input format for build tools.
    that case, README (with an optional extension indicating the markup
    format) would become an official part of the metadata standard.
 
+   A third alternative would be to explicitly define an abbreviated subset
+   of the metadata which *just* contained the fields potentially needed for
+   dependency resolution, and left out *all* of the metadata not
+   specifically related to that task. Index servers would then be expected
+   to publish both the abbreviated and the full metadata for each project
+   in a convenient to consume form.
+
    If the markup format stays embedded, it may still be beneficial to
-   support other markup formats beyond ReST (notably Markdown and Asciidoc).
+   support other markup formats beyond ReST (notably Markdown, Asciidoc and
+   raw HTML).
 
 
 Keywords
@@ -480,8 +565,6 @@ particular version of a license which is named via the ``Classifier``
 field, or to indicate a variation or exception to such a license.
 
 Examples::
-
-    "license": "This software may only be obtained by sending the author a postcard, and then the user promises not to redistribute it."
 
     "license": "GPL version 3, excluding DRM provisions"
 
@@ -518,7 +601,7 @@ package or module provided by the distribution.
 
 A flat list is used in order to correctly accommodate namespace packages
 (where a distribution may provide subpackages or submodules without
-explicitly providing the parent namespace package)
+explicitly providing the parent namespace package).
 
 Example::
 
@@ -552,7 +635,7 @@ These details are recorded as mappings with the following subfields:
 * ``name``: the name of an individual or group
 * ``email``: an email address (this may be a mailing list)
 * ``url``: a URL (such as a profile page on a source code hosting service)
-* ``type``: one of ``"author"``, ``"maintainer"``, ``"organisation"``
+* ``type``: one of ``"author"``, ``"maintainer"``, ``"organization"``
   or ``"individual"``
 
 The ``name`` subfield is required, the other subfields are optional.
@@ -564,21 +647,19 @@ The different contact types are as follows:
   they are not the original creator
 * ``individual``: any other individuals involved in the creation of the
   distribution
-* ``organisation``: indicates that these contact details are for an
-  organisation (formal or informal) rather than for a specific individual
+* ``organization``: indicates that these contact details are for an
+  organization (formal or informal) rather than for a specific individual
 
-If no specific contact type is stated, the default is ``individual``. When
-applicable, build tools SHOULD simply omit the ``type`` subfield rather
-than setting it explicitly.
+If no specific contact type is stated, the default is ``individual``.
 
 .. note::
 
-   This may seem complicated, but it's designed to replace the Author,
-   Author-Email, Maintainer, Maintainer-Email and Home-page fields from
-   metadata 1.2 in a way that allows those distinctions to be fully
-   represented for lossless translation, while allowing future
-   distributions to pretty much ignore everything other than the
-   contact/contributor distinction.
+   This is admittedly a little complicated, but it's designed to replace the
+   Author, Author-Email, Maintainer, Maintainer-Email fields from metadata
+   1.2 in a way that allows those distinctions to be fully represented for
+   lossless translation, while allowing future distributions to pretty
+   much ignore everything other than the contact/contributor distinction
+   if they so choose.
     
 
 Contacts
@@ -596,7 +677,7 @@ Example::
     "contacts": [
       {
         "name": "Python Packaging Authority/Distutils-SIG",
-        "type": "organisation",
+        "type": "organization",
         "email": "distutils-sig@python.org",
         "url": "https://bitbucket.org/pypa/"
       },
@@ -616,12 +697,9 @@ Example::
 Contributors
 ------------
 
-A list of contact entries for other contributors. The subfields within
-the list elements are the same as those for the main contact field.
-
-The ``author`` and ``maintainer`` contact types SHOULD NOT be used with
-this field, as it is as unranked list of contributing individuals and
-organisations.
+A list of contact entries for other contributors not already listed as
+current project points of contact. The subfields within the list elements
+are the same as those for the main contact field.
 
 Example::
 
@@ -637,7 +715,7 @@ Example::
 .. note::
     
    Similar to the long description, we may not want to encourage including
-   the contributor list in the main metadata, since it's rarely going to be
+   the full contributor list in the main metadata, since it's rarely going to be
    of programmatic interest. A standard file name with a suitably defined
    format (such as ``AUTHORS`` with "name <email> (url)" entries) may be a
    better idea here as well.
@@ -649,20 +727,21 @@ Project URLs
 A mapping of arbitrary text labels to additional URLs relevant to the project.
 
 While projects are free to choose their own labels and specific URLs,
-it is RECOMMENDED that source control, issue tracker and
+it is RECOMMENDED that home page, source control, issue tracker and
 documentation links be provided using the labels in the example below.
+
+URL labels MUST be treated as case insensitive by automated tools, but they
+are not required to be valid Python identifiers. Any legal JSON string is
+permitted as a URL label.
 
 Example::
     
-    "project-urls": {
+    "project_urls": {
         "Documentation": "https://distlib.readthedocs.org"
+        "Home": "https://bitbucket.org/pypa/distlib"
         "Source": "https://bitbucket.org/pypa/distlib/src"
         "Tracker": "https://bitbucket.org/pypa/distlib/issues"
     }
-
-.. note::
-
-   Should we require that the labels be treated as case insensitive?
 
 
 Dependency metadata
@@ -678,10 +757,11 @@ and specification scheme defined in PEP 440.
 .. note::
     
     This substantially changes the old two-phase setup vs runtime dependency
-    model in metadata 1.2. The translation is that ``dev-requires`` and
-    ``build-requires`` both map to ``Setup-Requires-Dist``
+    model in metadata 1.2 (which was in turn derived from the setuptools
+    dependency parameters). The translation is that ``dev_requires`` and
+    ``build_requires`` both map to ``Setup-Requires-Dist``
     in 1.2, while ``requires`` maps to ``Requires-Dist``. To go the other
-    way, ``Setup-Requires-Dist`` maps to ``build-requires`` and
+    way, ``Setup-Requires-Dist`` maps to ``build_requires`` and
     ``Requires-Dist`` maps to ``requires``.
     
 
@@ -720,19 +800,23 @@ dependency set.
 
 Alternative dependency specification example::
 
-   ["lxml", "elementree"]
-
+   ["Pillow", "PIL"]
+   ["mysql", "psycopg2 (>= 4)", "sqlite3"]
 
 .. note::
 
   I'm far from convinced supporting alternative dependencies is worth the
-  extra complexity. I couldn't think of a plausible example other than lxml
-  vs elementree vs the stdlib, and you can deal with that by ignoring
-  elementtree and using a conditional (or even unconditional) dependency
-  on lxml. If people think it's worth the hassle, this is my preferred
-  syntax for it (since it slots in nicely as either an uncondition or
-  conditional dependency), but I'm quite prepared to drop the idea
-  entirely.
+  extra complexity. If others think it's worth the hassle, this is my
+  preferred syntax for it (since it slots in nicely as either a normal or
+  conditional dependency), but I'm quite prepared to drop the idea entirely.
+
+  Neither of the given examples is particularly compelling, since Pillow/PIL
+  style forks aren't common, and the database driver use case would arguably
+  be better served by a "supported database driver" metadata extension.
+
+  We're also getting better support for "virtual provides" in this version
+  of the metadata standard, so this may end up being an installer and index
+  server problem to better track and publish those.
 
 
 Conditional dependencies
@@ -742,13 +826,12 @@ While many dependencies will be needed to use a distribution at all, others
 are needed only on particular platforms or only when particular optional
 features of the distribution are needed. To enable this, dependency fields
 are marked as either unconditional (indicated by ``requires`` in the field
-name) or conditional (indicated by ``may-require``) in the field name.
+name) or conditional (indicated by ``may_require``) in the field name.
 
-Unconditional dependency fields are lists of simple strings, with each entry
-indicated a required dependency.
+Unconditional dependency fields are lists of dependency specifications, with
+each entry indicated a required dependency.
 
-Conditional dependencies are lists of mappings with the following fields
-(all three fields contain a string value):
+Conditional dependencies are lists of mappings with the following fields:
 
 * ``dependencies``: a list of relevant dependency specifications
 * ``extra``: the name of the optional feature that needs these dependencies.
@@ -783,22 +866,22 @@ should be installed for the specified activities:
 * Deployment dependencies:
     
     * ``requires``
-    * ``may-require`` (checks runtime extras and environment markers)
+    * ``may_require`` (checks runtime extras and environment markers)
     * install the ``test`` extra to get the test dependencies
 
 * Build dependencies:
     
-    * ``build-requires``
-    * ``build-may-require`` (checks build extras and environment markers)
-    * install the ``docs`` extra to be able to build the documentation
+    * ``build_requires``
+    * ``build_may_require`` (checks build extras and environment markers)
+    * request the ``docs`` extra to be able to build the documentation
 
 * Development dependencies:
     
     * ``requires``
-    * ``may-require`` (all runtime extras, checks environment markers)
-    * ``build-requires``
-    * ``build-may-require`` (all build extras, checks environment markers)
-    * ``dev-requires``
+    * ``may_require`` (all runtime extras, checks environment markers)
+    * ``build_requires``
+    * ``build_may_require`` (all build extras, checks environment markers)
+    * ``dev_requires``
 
 Installation tools SHOULD allow users to request at least the following
 operations for a named distribution:
@@ -868,7 +951,7 @@ distributions.
 
 Example::
 
-        "may-require": [
+        "may_require": [
           {
             "dependencies": ["pywin32 (>1.0)"],
             "environment": "sys.platform == 'win32'"
@@ -887,7 +970,7 @@ Extras
 ------
 
 A list of optional runtime feature names that may be used in conditional
-dependencies in ``"may-require"``. See `Extras (optional dependencies)`_
+dependencies in ``"may_require"``. See `Extras (optional dependencies)`_
 for details.
 
 The runtime extra ``"test"`` is implicitly defined for all distributions
@@ -909,7 +992,7 @@ built, the installation is a *deployment* scenario for the dependencies.
 
 Example::
 
-    "build-requires": ["setuptools (>= 0.7)"]
+    "build_requires": ["setuptools (>= 0.7)"]
 
 
 Build may require
@@ -928,7 +1011,7 @@ distributions.
 
 Example::
 
-        "build-may-require": [
+        "build_may_require": [
           {
             "dependencies": ["pywin32 (>1.0)"],
             "environment": "sys.platform == 'win32'"
@@ -948,7 +1031,7 @@ Build extras
 ------------
 
 A list of optional build feature names that may be used in conditional
-dependencies in ``"build-may-require"``. See
+dependencies in ``"build_may_require"``. See
 `Extras (optional dependencies)`_ for details.
 
 The build extra ``"docs"`` is implicitly defined for all distributions
@@ -956,7 +1039,7 @@ and MUST NOT be recorded explicitly in this field.
 
 Example::
     
-    "build-extras": ["c-accelerators"]
+    "build_extras": ["c-accelerators"]
 
 
 Dev requires
@@ -971,7 +1054,7 @@ create a source archive.
 
 Example::
 
-    "dev-requires": ["hgtools"]
+    "dev_requires": ["hgtools"]
 
 .. note::
 
@@ -1010,15 +1093,15 @@ include a ``"provides": ["distribute"]`` entry to satisfy any projects that
 require the now obsolete distribution's name.
 
 A distribution may also provide a "virtual" project name, which does
-not correspond to any separately-distributed project:  such a name
+not correspond to any separately distributed project:  such a name
 might be used to indicate an abstract capability which could be supplied
 by one of multiple projects.  For example, multiple projects might supply
-RDBMS bindings for use by a given ORM:  each project might declare
-that it provides ``ExampleORM-somedb-bindings``, allowing other
+PostgreSQL bindings for use with SQL Alchemy: each project might declare
+that it provides ``sqlalchemy-postgresql-bindings``, allowing other
 projects to depend only on having at least one of them installed.
 
 A version declaration may be supplied and must follow the rules described
-in `Version scheme`_. The distribution's version identifier will be implied
+in PEP 440. The distribution's version identifier will be implied
 if none is specified.
 
 Example::
@@ -1028,7 +1111,7 @@ Example::
 .. note::
     
    Under the revised metadata design, conditional "provides" based on
-   runtime features or the environment would go in a separate "may-provide"
+   runtime features or the environment would go in a separate "may_provide"
    field. However, I'm not convinced there's a great use case for that,
    so I'm inclined to leave the addition of such a field to v2.1 of the
    metadata spec (at the earliest, and only if someone comes up with a
@@ -1055,20 +1138,21 @@ to import statements.
 Examples::
 
     "name": "BadName",
-    "obsoleted-by": "AcceptableName"
+    "obsoleted_by": "AcceptableName"
 
     "name": "SeparateProject",
-    "obsoleted-by": "MergedProject (>=4.0.0)"
+    "obsoleted_by": "MergedProject (>=4.0.0)"
 
 
-Supports Platform
------------------
+Supports Platforms
+------------------
 
 A list of strings specifying the platforms that the distribution
 explicitly supports. A platform is considered supported if it
-matches at least one of the environment markers given. If this field is
-not used in the metadata, it is assumed that the distribution supports any
-platform supported by Python.
+matches at least one of the environment markers given.
+
+If this field is not given in the metadata, it is assumed that the
+distribution supports any platform supported by Python.
 
 Individual entries are environment markers, as described in
 `Conditional metadata (environment markers)`_.
@@ -1080,9 +1164,9 @@ force the installation to proceed regardless.
 
 Examples::
 
-   "supports-platform": ["sys.platform == 'win32'"]
-   "supports-platform": ["sys.platform != 'win32'"]
-   "supports-platform": ["'linux' in sys.platform", "'bsd' in sys.platform"]
+   "supports_platforms": ["sys_platform == 'win32'"]
+   "supports_platforms": ["sys_platform != 'win32'"]
+   "supports_platforms": ["'linux' in sys_platform", "'bsd' in sys_platform"]
 
 
 .. note:: 
@@ -1104,6 +1188,11 @@ Metabuild system
    this doc is about "Where do we want to get to?", before harsh reality
    sets in and we have to decide "OK, that's nice and all, but what do we do
    *first*?"
+
+   preinstall/postuninstall seem to be the bare minimum, since we want
+   something that will work for Twisted, and those two hooks can't be
+   delayed until 2.1 (as 2.0 only tools wouldn't run them even for projects
+   that really needed them)
 
 The metabuild system defines several distinct operations as part of the
 development and deployment lifecycle for a distribution:
@@ -1139,17 +1228,89 @@ core metabuild operations. These operations SHOULD be composed from the
 defined metabuild operations where appropriate.
 
 The metabuild hooks are gathered together into a single top level
-``metabuild-hooks`` field. The individual hooks are:
+``metabuild_hooks`` field. The individual hooks are:
 
-* ``generate-meta``: generate the ``pymeta.json`` file
-* ``make-sdist``: construct a source archive
-* ``build-wheel``: construct a binary wheel archive from an sdist source
+* ``make_dist_info``: generate the source archive's dist_info directory
+* ``make_sdist``: construct a source archive
+* ``build_wheel``: construct a binary wheel archive from an sdist source
   archive
 * ``postinstall``: run after the distribution has been installed to a
   target deployment system (or after it has been upgraded)
 * ``preuninstall``: run before the distribution has been uninstalled from a
-  deployment system (or after it has been upgraded)
+  deployment system (or before it is upgraded)
+* ``check_install``: check that a distribution is correctly installed
 
+The expected signatures of these hooks are as follows::
+
+    def make_dist_info(source_dir, info_dir):
+        """Generate the contents of dist_info for an sdist archive
+
+        *source_dir* points to a source checkout or unpacked tarball
+        *info_dir* is the destination where the sdist metadata files should
+        be written
+
+        Returns the distribution metadata as a dictionary.
+        """
+
+    def make_sdist(source_dir, contents_dir, info_dir):
+        """Generate the contents of an sdist archive
+
+        *source_dir* points to a source checkout or unpacked tarball
+        *contents_dir* is the destination where the sdist contents should be
+        written (note that archiving the contents is the responsibility of
+        the metabuild tool rather than the hook function)
+        *info_dir* is the destination where the sdist metadata files should
+        be written
+
+        Returns the distribution metadata as a dictionary.
+        """
+
+    def build_wheel(sdist_dir, contents_dir, info_dir, compatibility=None):
+        """Generate the contents of a wheel archive
+
+        *source_dir* points to an unpacked source archive
+        *contents_dir* is the destination where the wheel contents should be
+        written (note that archiving the contents is the responsibility of
+        the metabuild tool rather than the hook function)
+        *info_dir* is the destination where the wheel metadata files should
+        be written
+        *compatibility* is an optional PEP 425 compatibility tag indicating
+        the desired target compatibility for the build. If the tag cannot
+        be satisfied, the hook should throw ``ValueError``.
+
+        Returns the actual compatibility tag for the build
+        """
+
+    def postinstall(current_meta, previous_meta=None):
+        """Run following installation or upgrade of the distribution
+
+        *current_meta* is the distribution metadata for the version now
+        installed on the current system
+        *previous_meta* is either missing or ``None`` (indicating a fresh
+        install) or else the distribution metadata for the version that
+        was previously installed (indicating an upgrade or downgrade).
+        """
+
+    def preuninstall(current_meta, next_meta=None):
+        """Run prior to uninstallation or upgrade of the distribution
+
+        *current_meta* is the distribution metadata for the version now
+        installed on the current system
+        *next_meta* is either missing or ``None`` (indicating complete
+        uninstallation) or else the distribution metadata for the version
+        that is about to be installed (indicating an upgrade or downgrade).
+        """
+
+    def test_install(current_meta):
+        """Test whether or not the distribution is working correctly
+
+        Note that this check should always be non-destructive as it may be
+        invoked automatically by some tools.
+
+        Requires that the distribution's test dependencies be installed.
+
+        Returns ``True`` if the testing passes, ``False`` otherwise.
+        """
 
 
 Extras (optional dependencies)
@@ -1157,8 +1318,10 @@ Extras (optional dependencies)
 
 .. note::
 
-   This section is still somewhat out of date relative to the latest
-   metadata design above.
+   As noted at the top of the current draft, there's an open question of
+   how to deal with things like optional C accelerators. Perhaps kill the
+   "build extras" idea and require that such components be split out to a
+   separate distribution to be considered truly optional?
 
 Extras are additional dependencies that enable optional features
 of the distribution, generally corresponding to a ``try: import
@@ -1168,24 +1331,13 @@ separately from the distribution's core dependencies and must be requested
 explicitly, either in the dependency specifications of another distribution,
 or else when issuing a command to an installation tool.
 
-The names of extras MUST be printable ASCII, not containing whitespace,
-any commas (``,``), square brackets (``[]``), parentheses (``()``)
-or asterisks (``*``).
-
-.. note::
-
-   Would it be easier to simply require that "extras" names be valid
-   Python identifiers rather than selectively excluding the special
-   characters that may appear elsewhere in dependency specifications?
+The names of extras MUST abide by the same restrictions as those for
+distribution names.
 
 Example of a distribution with optional dependencies::
     
     "name": "ComfyChair",
-    "may-require": [
-      {
-        "dependencies": ["pywin32 (>1.0)"],
-        "environment": "sys.platform == 'win32'"
-      },
+    "may_require": [
       {
         "dependencies": ["SoftCushions"],
         "extra": "warmup"
@@ -1195,7 +1347,7 @@ Example of a distribution with optional dependencies::
         "extra": "test"
       }
     ]
-    "build-may-require": [
+    "build_may_require": [
       {
         "dependencies": ["cython"],
         "extra": "c-accelerators"
@@ -1206,17 +1358,15 @@ Example of a distribution with optional dependencies::
       }
     ]
 
-.. note::
-    
-   The rest of this section still needs further revision based on the updated
-   dependency metadata design.
-
 Other distributions require the additional dependencies by placing the
-relevant extra nams inside square brackets after the distribution name when
-specifying the dependency. Multiple features can be requested by separating them with
-a comma within the brackets, and all optional . Command line based installation tools SHOULD
-support this same syntax to allow optional features to be requested
-explicitly.
+relevant extra names inside square brackets after the distribution name when
+specifying the dependency. Multiple features can be requested by separating
+them with a comma within the brackets, and all defined optional features may
+be requested with the ``*`` wildcard character. Optional features may be
+excluded by prefixing their name with a hyphen.
+
+Command line based installation tools SHOULD support this same syntax to
+allow optional features to be requested explicitly.
 
 The full set of dependency requirements is then based on the top level
 dependencies, along with those of any requested optional features.
@@ -1224,107 +1374,45 @@ dependencies, along with those of any requested optional features.
 Example::
 
     "requires": ["ComfyChair[warmup]"]
-        -> requires ComfyChair and SoftCushions at run time
+        -> requires ``ComfyChair`` and ``SoftCushions`` at run time
 
-    "setup-requires": ["ComfyChair[test, doc]"]
-        -> requires ComfyChair, sphinx and nose at setup time
-
-The following feature names are implicitly defined for all distributions:
-
-- `test`: dependencies that are needed in order to run automated tests
-- `doc`: dependencies that are needed in order to generate documentation
-
-Aside from ``test`` and ``doc``, it is an error to request a feature name
-that has not been declared with ``extras``.  Installation tools SHOULD report
-an error in that case, MUST at least emit a warning, and MAY allow the user
-to force the installation to proceed regardless.
-
-Due to this consistency check, even if ``ComfyChair`` grew the ability to
-handle the warmup preliminaries without extra dependencies, it should
-continue to define the ``warmup`` extra in the metadata as ``"warmup: {}"``
-for the benefit of dependent distributions.
+    "requires": ["ComfyChair[*,-test]"]
+        -> requires ``ComfyChair`` and ``SoftCushions`` at run time, but
+           will also pick up any new optional dependencies other than those
+           needed solely to run the tests
 
 
-Conditional metadata (environment markers)
-==========================================
-
-.. note::
-    
-   This needs to be retitled and heavily revised based on the updated
-   dependency metadata design. It's really just about describing the
-   environment markers now.
-
-Conditional metadata is provided under a top level ``conditional`` field
-that references a mapping of field names to conditional entries in those
-fields.
-
-Fields which support conditional entries are:
-
-* ``may-require``
-* ``build-may-require``
-* ``supports-platform``
-
-Within the ``conditional`` field, each of these may be used as a subfield
-name to reference a list of conditional entries. A conditional entry is a
-mapping of the form::
-    
-    {
-        "condition": <environment marker>,
-        "entry": ["values", "to", "append"]
-    }
+Environment markers
+===================
 
 An **environment marker** describes a condition about the current execution
-environment.
+environment. They are used to indicate when certain dependencies are only
+required in particular environments, and to indicate supported platforms
+for distributions with additional constraints beyond the availability of a
+Python runtime.
 
 Here are some examples of such markers::
 
-   "sys.platform == 'win32'"
-   "platform.machine == 'i386'"
+   "sys_platform == 'win32'"
+   "platform_machine == 'i386'"
    "python_version == '2.4' or python_version == '2.5'"
-   "'linux' in sys.platform"
+   "'linux' in sys_platform"
 
 And here's an example of some conditional metadata for a distribution that
 requires PyWin32 both at runtime and buildtime when using Windows::
     
-    "conditional": {
-        "requires": [
-            {"condition":
-                "sys.platform == 'win32'",
-                "entry": ["pywin32 (>1.0)"]
-            }
-        ],
-        "setup-requires": [
-            {"condition":
-                "sys.platform == 'win32'",
-                "entry": ["pywin32 (>1.0)"]
-            }
-        ]
-    }
-
-And here's an example of some conditional metadata using a different scheme::
-
-    "conditional" : [
-        "requires" : [
-            { "extra" : "cheese", 
-              "condition" : "sys.platform == 'win32'",
-              "values" : [ "Beagle", "Bagel" ] },
-            { "extra" : "cheese", 
-              "condition" : "sys.platform == 'linux'",
-              "values" : [ "Rennet", "Milk" ] },
-        ]
+    "name": "ComfyChair",
+    "may_require": [
+      {
+        "dependencies": ["pywin32 (>1.0)"],
+        "environment": "sys.platform == 'win32'"
+      }
     ]
-
-And here's an example of doing it without a separate "conditional" field,
-and without a top-level extras field.  List-valued fields support this
-object type. They append "values" to their unconditionally defined list (or
-the empty list, if they do not appear in the main part of the metadata). Only
-"requires" supports the "extra" field::
-
-    "requires" : [
-        { "values" : [ 'foopackage', 'barpackage' ] },
-        { "extra" : "warmup", "values" :  [ 'quuxpackage' ] },
-        { "extra" : "warmup", "condition" : "sys.platform == 'win32'",
-            "values" : [] }
+    "build_may_require": [
+      {
+        "dependencies": ["pywin32 (>1.0)"],
+        "environment": "sys.platform == 'win32'"
+      }
     ]
 
 The micro-language behind this is a simple subset of Python: it compares
@@ -1342,7 +1430,9 @@ for grouping.
     little strange.
     
     Open question: should PEP 440 style comparisons be made available for at
-    least ``python_version`` and ``python_full_version``?
+    least ``python_version`` and ``python_full_version``? The downside of
+    doing so is that it would mean environment markers are no longer a
+    Python subset.
 
 The pseudo-grammar is ::
 
@@ -1352,18 +1442,22 @@ The pseudo-grammar is ::
 where ``SUBEXPR`` belongs to any of the following (the details after the
 colon in each entry define the value represented by that subexpression):
 
-* ``python_version``: '%s.%s' % (sys.version_info[0], sys.version_info[1])
-* ``python_full_version``: sys.version.split()[0]
-* ``os.name````: os.name
-* ``sys.platform````: sys.platform
-* ``platform.version``: platform.version()
-* ``platform.machine``: platform.machine()
-* ``platform.python_implementation``: = platform.python_implementation()
+* ``python_version``: ``'%s.%s' % (sys.version_info[0], sys.version_info[1])``
+* ``python_full_version``: ``sys.version.split()[0]``
+* ``os_name````: ``os.name``
+* ``sys_platform````: ``sys.platform``
+* ``platform_version``: ``platform.version()``
+* ``platform_machine``: ``platform.machine()``
+* ``platform_python_implementation``: ``platform.python_implementation()``
 * ``'text'``: a free string, like ``'2.4'``, or ``'win32'``
 
-Note that ``in`` and ``not in`` are restricted to strings, meaning that it
-is not possible to use other sequences like tuples or lists on the right
-side.
+Note that all subexpressions are restricted to strings or one of the
+predefined variable names, meaning that it is not possible to use
+other sequences like tuples or lists on the right side of the ``in`` and
+``not in`` operators.
+
+Unlike Python, chaining of comparison operations is NOT permitted in
+environment markers.
 
 
 Metadata Extensions
@@ -1373,8 +1467,9 @@ Extensions
 ----------
 
 Extensions to the metadata may be present in a mapping under the
-'extensions' key.  The keys must be ASCII strings not containing
-whitespace.  The values may be any type::
+'extensions' key.  The keys must meet the same restrictions as
+distribution names, while the values may be any type natively supported
+in JSON::
 
     "extensions" : { 
         "chili" : { "type" : "Poblano", "heat" : "Mild" },
@@ -1400,17 +1495,6 @@ system that the distribution is to be used.  This field is intended to
 serve as a hint to downstream project maintainers, and has no
 semantics which are meaningful to the ``distutils`` distribution.
 
-The format of a requirement string is a name of an external
-dependency, optionally followed by a version declaration within
-parentheses.
-
-`Environment markers`_ may be used with this field.
-
-Because they refer to non-Python software releases, version identifiers
-for this field are **not** required to conform to the format
-described in `Version scheme`_:  they should correspond to the
-version scheme used by the external dependency.
-
 Notice that there is no particular rule on the strings to be used.
 
 Examples::
@@ -1418,13 +1502,15 @@ Examples::
     Requires-External: C
     Requires-External: libpng (>=1.5)
     
-    
 .. note::
     
    External dependencies are such a complex beast, I'm inclined to kill
    this field completely, and instead recommend that external dependencies
    (and ensuring their presence) be handled in the post-install hook. It's
    just too platform dependent for us to handle in a generic way.
+
+   Particular projects and build systems may then define metadata extensions
+   to transport their own flavour of external dependency definitions.
 
 
 Updating the metadata specification
@@ -1440,6 +1526,12 @@ defined in a new PEP.
 
 Summary of differences from \PEP 345
 ====================================
+
+.. note::
+
+   The summary of differences and the rational section will be updated
+   once the new format stabilises further.
+
 
 * Metadata-Version is now 2.0, with semantics specified for handling
   version changes
