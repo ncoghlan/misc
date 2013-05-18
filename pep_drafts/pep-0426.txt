@@ -230,7 +230,7 @@ Metadata format
 
 The format defined in this PEP is an in-memory representation of Python
 distribution metadata as a string-keyed dictionary. Permitted values for
-individual entries are strings, lists of strings, booleans and additional
+individual entries are strings, lists of strings, and additional
 nested string-keyed dictionaries.
 
 Except where otherwise noted, dictionary keys in distribution metadata MUST
@@ -1121,11 +1121,11 @@ Examples::
     "obsoleted_by": "setuptools (>= 0.7)"
 
 
-Supports Platforms
-------------------
+Supports Environments
+---------------------
 
-A list of strings specifying the platforms that the distribution
-explicitly supports. A platform is considered supported if it
+A list of strings specifying the environments that the distribution
+explicitly supports. An environment is considered supported if it
 matches at least one of the environment markers given.
 
 If this field is not given in the metadata, it is assumed that the
@@ -1141,9 +1141,10 @@ force the installation to proceed regardless.
 
 Examples::
 
-   "supports_platforms": ["sys_platform == 'win32'"]
-   "supports_platforms": ["sys_platform != 'win32'"]
-   "supports_platforms": ["'linux' in sys_platform", "'bsd' in sys_platform"]
+   "supports_environments": ["sys_platform == 'win32'"]
+   "supports_environments": ["sys_platform != 'win32'"]
+   "supports_environments": ["'linux' in sys_platform",
+                             "'bsd' in sys_platform"]
 
 
 .. note:: 
@@ -1151,8 +1152,8 @@ Examples::
    This field replaces the old Platform, Requires-Platform and
    Requires-Python fields and has been redesigned with environment
    marker based semantics that should make it possible to reliably flag,
-   for example, Unix specific or Windows specific modules, as well
-   as Python 2 only and Python 3 only modules.
+   for example, Unix specific or Windows specific distributions, as well
+   as Python 2 only and Python 3 only distributions.
 
 
 Metabuild system
@@ -1461,38 +1462,6 @@ To avoid name conflicts, it is recommended that distribution names be used
 to identify metadata extensions. This practice will also make it easier to
 find authoritative documentation for metadata extensions.
 
-Legacy metadata
-===============
-
-A temporary home for fields that are poorly defined, of dubious utility,
-and may be dropped or replaced entirely, but aren't quite dead yet...
-
-
-Requires-External (multiple use)
---------------------------------
-
-Each entry contains a string describing some dependency in the
-system that the distribution is to be used.  This field is intended to
-serve as a hint to downstream project maintainers, and has no
-semantics which are meaningful to the ``distutils`` distribution.
-
-Notice that there is no particular rule on the strings to be used.
-
-Examples::
-
-    Requires-External: C
-    Requires-External: libpng (>=1.5)
-    
-.. note::
-    
-   External dependencies are such a complex beast, I'm inclined to kill
-   this field completely, and instead recommend that external dependencies
-   (and ensuring their presence) be handled in the post-install hook. It's
-   just too platform dependent for us to handle in a generic way.
-
-   Particular projects and build systems may then define metadata extensions
-   to transport their own flavour of external dependency definitions.
-
 
 Updating the metadata specification
 ===================================
@@ -1508,76 +1477,48 @@ defined in a new PEP.
 Summary of differences from \PEP 345
 ====================================
 
-.. note::
-
-   The summary of differences and the rational section will be updated
-   once the new format stabilises further.
-
-
 * Metadata-Version is now 2.0, with semantics specified for handling
   version changes
+
+* The increasingly complex ad hoc "Key: Value" format has been replaced by
+  a more structured JSON compatible format that is easily represented as
+  Python dictionaries, strings, lists.
 
 * Most fields are now optional
 
 * Explicit permission for in-place clarifications without releasing a new
   version of the specification
 
-* General reformatting of the PEP to make it easier to read
+* The PEP now attempts to provide more of an explanation of *why* the fields
+  exist and how they are intended to be used, rather than being a simple
+  description of the permitted contents
 
-* Values are now expected to be UTF-8
+* Changed the version scheme to be based on PEP 440 rather than PEP 386
 
-* Changed the version scheme
+* Support for different development, build and deployment dependencies
 
-  * added the new ``Private-Version`` field
-  * changed the top level sort position of the ``.devN`` suffix
-  * allowed single value version numbers
-  * explicit exclusion of leading or trailing whitespace
-  * explicit criterion for the exclusion of date based versions
-  * incorporated the version scheme directly into the PEP
+* The "Extras" optional feature and dependency mechanism
 
-* Changed interpretation of version specifiers
+* A well-defined metadata extension mechanism
 
-  * implicitly exclude pre-releases unless explicitly requested
-  * treat post releases the same way as unqualified releases
+* Metabuild hook system
 
-* Discuss ordering and dependencies across metadata versions
+* Clarify and simplify various aspects of environment markers:
 
-* Clarify use of parentheses for grouping in environment marker
-  pseudo-grammar
+  * allow use of parentheses for grouping in the pseudo-grammar
+  * consistently use underscores instead of periods in the variable names
+  * clarify that chained comparisons are not permitted
 
-* Support for packaging, build and installation dependencies
+* More flexible system for defining contact points and contributors
 
-   * the new ``Setup-Requires-Dist`` field
+* Defined a recommended set of project URLs
 
-* Optional feature mechanism
-
-   * the new ``Provides-Extra`` field
-   * ``extra`` expression defined for environment markers
-   * optional feature support in ``Requires-Dist``
-
-* Metadata extension mechanism
-
-   * the new ``Extension`` field and extension specific fields
+* New system for defining supported environments
 
 * Updated obsolescence mechanism
 
-   * the new ``Obsoleted-By`` field
-   * the ``Obsoletes-Dist`` field has been removed
-
-* Simpler description format
-
-   * the ``Description`` field is now deprecated
-   * A payload (containing the description) may appear after the headers.
-
-* Other changed fields:
-
-  - ``Requires-Python`` (explicitly flagged as multiple use)
-  - ``Project-URL`` (commas permitted in labels)
-
-* Clarified fields:
-
-  - ``Provides-Dist``
-  - ``Keywords``
+* With all due respect to Charles Schulz and Peanuts, many of the examples
+  have been updated to be more `thematically appropriate`_ for Python ;)
 
 The rationale for major changes is given in the following sections.
 
@@ -1593,8 +1534,8 @@ versions with the same major version, while major version increments
 may include changes that are not compatible with existing tools.
 
 The major version number of the specification has been incremented
-accordingly, as interpreting PEP 426 metadata in accordance with earlier
-metadata specifications is unlikely to give the expected behaviour.
+accordingly, as interpreting PEP 426 metadata obviously cannot be
+interpreted in accordance with earlier metadata specifications.
 
 Whenever the major version number of the specification is incremented, it
 is expected that deployment will take some time, as either metadata
@@ -1606,204 +1547,71 @@ provision of multiple versions of the metadata in parallel.
 Existing tools won't abide by this guideline until they're updated to
 support the new metadata standard, so the new semantics will first take
 effect for a hypothetical 2.x -> 3.0 transition. For the 1.x -> 2.0
-transition, it is recommended that tools continue to produce the
+transition, we will use the approach where tools continue to produce the
 existing supplementary files (such as ``entry_points.txt``) in addition
 to any equivalents specified using the new features of the standard
 metadata format (including the formal extension mechanism).
 
 
-Standard encoding and other format clarifications
--------------------------------------------------
+Switching to a JSON compatible format
+-------------------------------------
 
-Several aspects of the file format, including the expected file encoding,
-were underspecified in previous versions of the metadata standard. To
-make it easier to develop interoperable tools, these details are now
-explicitly specified.
+The old "Key:Value" format was becoming increasingly limiting, with various
+complexities like parsers needing to know which fields were permitted to
+occur more than once, which fields supported the environment marker
+syntax (with an optional ``";"`` to separate the value from the marker) and
+eventually even the option to embed arbitrary JSON inside particular
+subfields.
+
+The old serialisation format also wasn't amenable to easy conversion to
+standard Python data structures for use in the new metabuild hook APIs, or
+in future extensions to the importer APIs to allow them to provide
+information for inclusion in the installation database.
+
+Accordingly, we've taken the step of switching to a JSON-compatible metadata
+format. This works better for APIs and is much easier for tools to parse and
+generate correctly. Changing the name of the metadata file also makes it
+easy to distribute 1.x and 2.x metadata in parallel, greatly simplifying
+several aspects of the migration to the new metadata format.
 
 
 Changing the version scheme
 ---------------------------
 
-The new ``Private-Version`` field is intended to make it clearer that the
-constraints on public version identifiers are there primarily to aid in
-the creation of reliable automated dependency analysis tools. Projects
-are free to use whatever versioning scheme they like internally, so long
-as they are able to translate it to something the dependency analysis tools
-will understand.
-
-The key change in the version scheme in this PEP relative to that in
-PEP 386 is to sort top level developmental releases like ``X.Y.devN`` ahead
-of alpha releases like ``X.Ya1``. This is a far more logical sort order, as
-projects already using both development releases and alphas/betas/release
-candidates do not want their developmental releases sorted in
-between their release candidates and their full releases. There is no
-rationale for using ``dev`` releases in that position rather than
-merely creating additional release candidates.
-
-The updated sort order also means the sorting of ``dev`` versions is now
-consistent between the metadata standard and the pre-existing behaviour
-of ``pkg_resources`` (and hence the behaviour of current installation
-tools).
-
-Making this change should make it easier for affected existing projects to
-migrate to the latest version of the metadata standard.
-
-Another change to the version scheme is to allow single number
-versions, similar to those used by non-Python projects like Mozilla
-Firefox, Google Chrome and the Fedora Linux distribution. This is actually
-expected to be more useful for version specifiers (allowing things like
-the simple ``Requires-Python: 3`` rather than the more convoluted
-``Requires-Python: >= 3.0, < 4``), but it is easier to allow it for both
-version specifiers and release numbers, rather than splitting the
-two definitions.
-
-The exclusion of leading and trailing whitespace was made explicit after
-a couple of projects with version identifiers differing only in a
-trailing ``\n`` character were found on PyPI.
-
-The exclusion of major release numbers that looks like dates was implied
-by the overall text of PEP 386, but not clear in the definition of the
-version scheme. This exclusion has been made clear in the definition of
-the release component.
-
-Finally, as the version scheme in use is dependent on the metadata
-version, it was deemed simpler to merge the scheme definition directly into
-this PEP rather than continuing to maintain it as a separate PEP.
-
-`Appendix B` shows detailed results of an analysis of PyPI distribution
-version information, as collected on 19th February, 2013. This analysis
-compares the behaviour of the explicitly ordered version schemes defined in
-this PEP and PEP 386 with the de facto standard defined by the behaviour
-of setuptools. These metrics are useful, as the intent of both PEPs is to
-follow existing setuptools behaviour as closely as is feasible, while
-still throwing exceptions for unorderable versions (rather than trying
-to guess an appropriate order as setuptools does).
-
-Overall, the percentage of compatible distributions improves from 97.7%
-with PEP 386 to 98.7% with this PEP. While the number of projects affected
-in practice was small, some of the affected projects are in widespread use
-(such as Pinax and selenium). The surprising ordering discrepancy also
-concerned developers and acted as an unnecessary barrier to adoption of
-the new metadata standard.
-
-The data also shows that the pre-release sorting discrepancies are seen
-only when analysing *all* versions from PyPI, rather than when analysing
-public versions. This is largely due to the fact that PyPI normally reports
-only the most recent version for each project (unless maintainers
-explicitly configure their project to display additional versions). However,
-installers that need to satisfy detailed version constraints often need
-to look at all available versions, as they may need to retrieve an older
-release.
-
-Even this PEP doesn't completely eliminate the sorting differences relative
-to setuptools:
-
-* Sorts differently (after translations): 38 / 28194 (0.13 %)
-* Sorts differently (no translations): 2 / 28194 (0.01 %)
-
-The two remaining sort order discrepancies picked up by the analysis are due
-to a pair of projects which have PyPI releases ending with a carriage
-return, alongside releases with the same version number, only *without* the
-trailing carriage return.
-
-The sorting discrepancies after translation relate mainly to differences
-in the handling of pre-releases where the standard mechanism is considered
-to be an improvement. For example, the existing pkg_resources scheme will
-sort "1.1beta1" *after* "1.1b2", whereas the suggested standard translation
-for "1.1beta1" is "1.1b1", which sorts *before* "1.1b2". Similarly, the
-pkg_resources scheme will sort "-dev-N" pre-releases differently from
-"devN" pre-releases when they occur within the same release, while the
-standard scheme will normalize both representations to ".devN" and sort
-them by the numeric component.
+See PEP 440 for a detailed rationale for the various changes made to the
+versioning scheme.
 
 
-A more opinionated description of the versioning scheme
--------------------------------------------------------
-
-As in PEP 386, the primary focus is on codifying existing practices to make
-them more amenable to automation, rather than demanding that existing
-projects make non-trivial changes to their workflow. However, the
-standard scheme allows significantly more flexibility than is needed
-for the vast majority of simple Python packages (which often don't even
-need maintenance releases - many users are happy with needing to upgrade to a
-new feature release to get bug fixes).
-
-For the benefit of novice developers, and for experienced developers
-wishing to better understand the various use cases, the specification
-now goes into much greater detail on the components of the defined
-version scheme, including examples of how each component may be used
-in practice.
-
-The PEP also explicitly guides developers in the direction of
-semantic versioning (without requiring it), and discourages the use of
-several aspects of the full versioning scheme that have largely been
-included in order to cover esoteric corner cases in the practices of
-existing projects and in repackaging software for Linux distributions.
-
-
-Changing the interpretation of version specifiers
--------------------------------------------------
-
-The previous interpretation of version specifiers made it very easy to
-accidentally download a pre-release version of a dependency. This in
-turn made it difficult for developers to publish pre-release versions
-of software to the Python Package Index, as even marking the package as
-hidden wasn't enough to keep automated tools from downloading it, and also
-made it harder for users to obtain the test release manually through the
-main PyPI web interface.
-
-The previous interpretation also excluded post-releases from some version
-specifiers for no adequately justified reason.
-
-The updated interpretation is intended to make it difficult to accidentally
-accept a pre-release version as satisfying a dependency, while allowing
-pre-release versions to be explicitly requested when needed.
-
-The "some forward compatibility assumed" default version constraint is
-taken directly from the Ruby community's "pessimistic version constraint"
-operator [4]_ to allow projects to take a cautious approach to forward
-compatibility promises, while still easily setting a minimum required
-version for their dependencies. It is made the default behaviour rather
-than needing a separate operator in order to explicitly discourage
-overspecification of dependencies by library developers. The explicit
-comparison operators remain available to cope with dependencies with
-unreliable or non-existent backwards compatibility policies.
-
-
-Packaging, build and installation dependencies
+Development, build and deployment dependencies
 ----------------------------------------------
 
-The new ``Setup-Requires-Dist`` field allows a distribution to indicate when
-a dependency is needed to package, build or install the distribution, rather
-than being needed to run the software after installation.
+The separation of the ``requires``, ``build_requires`` and ``dev_requires``
+fields allow a distribution to indicate whether a dependency is needed
+specifically to develop, build or deploy the distribution.
 
-This should allow distribution tools to effectively support a wider range of
-distribution requirements.
+As distribution metadata improves, this should allow much greater control
+over where particular dependencies end up being installed .
 
 
 Support for optional features of distributions
 ----------------------------------------------
 
-The new ``Provides-Extra`` field allows distributions to declare optional
-features, and to use environment markers to reduce their dependencies
-when those features are not requested. Environment markers may also be
-used to require a later version of Python when particular features are
-requested.
+The new extras system allows distributions to declare optional
+features, and to use the ``may_require`` and ``build_may_require`` fields
+to indicate when particular dependencies are needed only to support those
+features.
 
-The ``Requires-Dist`` and ``Setup-Requires-Dist`` fields then allow
-distributions to require optional features of other distributions.
-
-The ``test`` and ``doc`` features are implicitly defined for all
-distributions, as one key motivation for this feature is to encourage
-distributions to explicitly declare the dependencies needed to run
-their automatic tests, or build their documentation, without demanding those
-dependencies be present in order to merely install or use the software.
+The ``test`` features is implicitly defined for all distributions, as
+one key motivation for this feature is to encourage distributions to
+explicitly declare the dependencies needed to run their automatic tests,
+without demanding those dependencies be present in order to merely
+install or use the software.
 
 
 Support for metadata extensions
 -------------------------------
 
-The new ``Extension`` field effectively allows sections of the metadata
+The new extension effectively allows sections of the metadata
 namespace to be delegated to other distributions, while preserving a
 standard overal format metadata format for easy of processing by
 distribution tools that do not support a particular extension.
@@ -1814,11 +1622,66 @@ the chosen extension, and the new optional features mechanism, allowing
 support for particular extensions to be provided as optional features.
 
 
+Support for metabuild hooks
+---------------------------
+
+The new metabuild system is designed to eliminate the Python packaging
+ecosystem's current reliance on the fragile and implementation
+dependent ``setup.py`` command system.
+
+Falling back to invoking ``setup.py`` directly rather than using a
+metabuild hook will remain an option when relying on version 1.x metadata.
+
+
+Changes to environment markers
+------------------------------
+
+The changes to environment markers were just clarifications and
+simplifications to make them easier to use.
+
+The arbitrariness of the choice of ``.`` and ``_`` in the different
+variables was addressed by standardising on ``_`` (as these are predefined
+variables rather than live references into the Python module namespace)
+
+The use of parentheses for grouping and the disallowance of chained
+comparisons were added to address some underspecified behaviour in the
+previous version of the specification.
+
+
+Updated contact information
+---------------------------
+
+The switch to JSON made it possible to provide a more flexible
+system for defining multiple contact points for a project, as well as
+listing other contributors.
+
+The ``type`` concept allows for preservation of the distinction between
+the original author of a project, and a lead maintainer that takes over
+at a later date.
+
+Changes to project URLs
+-----------------------
+
+In addition to allow arbitrary strings as project URL labels, the new
+metadata standard also defines a recommend set of four URL labels for
+a distribution's home page, documentation, source control and issue tracker.
+
+Changes to platform support
+---------------------------
+
+The new environment marker system makes it possible to define supported
+platforms in a way that is actually amenable to automated processing. This
+has been used to replace several older fields with poorly defined semantics.
+
+For the moment, the old ``Requires-External`` field has been removed
+entirely. Possible replacements may be explored through the metadata
+extension mechanism
+
 Updated obsolescence mechanism
 ------------------------------
 
 The marker to indicate when a project is obsolete and should be replaced
-has been moved to the obsolete project (the new ``Obsoleted-By`` field),
+has been moved to the obsolete project (the new ``obsoleted_by`` field),
 replacing the previous marker on the replacement project (the removed
 ``Obsoletes-Dist`` field).
 
@@ -1829,19 +1692,6 @@ The ``Obsoletes-Dist`` header is removed rather than deprecated as it
 is not widely supported, and so removing it does not present any significant
 barrier to tools and projects adopting the new metadata format.
 
-
-Simpler description format
---------------------------
-
-Distribution descriptions are often quite long, sometimes including a
-short guide to using the module. Moving them into the file payload allows
-them to be formatted neatly as reStructuredText without needing to
-carefully avoid the introduction of a blank line that would terminate
-the header section.
-
-The ``Description`` header is deprecated rather than removed to support
-easier conversion of existing tools and projects to the new metadata
-format.
 
 
 References
@@ -1863,140 +1713,7 @@ justifications for needing such a standard can be found in PEP 386.
 .. [2] PEP 301:
    http://www.python.org/dev/peps/pep-0301/
 
-.. [3] Version compatibility analysis script:
-   http://hg.python.org/peps/file/default/pep-0426/pepsort.py
-
-.. [4] Pessimistic version constraint
-   http://docs.rubygems.org/read/chapter/16
-
-Appendix A
-==========
-
-The script used for this analysis is available at [3]_.
-
-Parsing and generating the Metadata 2.0 serialization format using
-Python 3.3::
-
-    # Metadata 2.0 demo
-    from email.generator import Generator
-    from email import header
-    from email.parser import Parser
-    from email.policy import Compat32
-    from email.utils import _has_surrogates
-
-    class MetadataPolicy(Compat32):
-        max_line_length = 0
-        continuation_whitespace = '\t'
-
-        def _sanitize_header(self, name, value):
-            if not isinstance(value, str):
-                return value
-            if _has_surrogates(value):
-                raise NotImplementedError()
-            else:
-                return value
-
-        def _fold(self, name, value, sanitize):
-            body = ((self.linesep+self.continuation_whitespace)
-                    .join(value.splitlines()))
-            return ''.join((name, ': ', body, self.linesep))
-
-    if __name__ == "__main__":
-        import sys
-        import textwrap
-
-        pkg_info = """\
-    Metadata-Version: 2.0
-    Name: package
-    Version: 0.1.0
-    Summary: A package.
-    Description: Description
-        ===========
-
-        A description of the package.
-
-    """
-
-        m = Parser(policy=MetadataPolicy()).parsestr(pkg_info)
-
-        m['License'] = 'GPL'
-        description = m['Description']
-        description_lines = description.splitlines()
-        m.set_payload(description_lines[0]
-                + '\n'
-                + textwrap.dedent('\n'.join(description_lines[1:]))
-                + '\n')
-        del m['Description']
-
-        # Correct if sys.stdout.encoding == 'UTF-8':
-        Generator(sys.stdout, maxheaderlen=0).flatten(m)
-
-Appendix B
-==========
-
-Metadata v2.0 guidelines versus setuptools::
-
-    $ ./pepsort.py
-    Comparing PEP 426 version sort to setuptools.
-
-    Analysing release versions
-      Compatible: 24477 / 28194 (86.82 %)
-      Compatible with translation: 247 / 28194 (0.88 %)
-      Compatible with filtering: 84 / 28194 (0.30 %)
-      No compatible versions: 420 / 28194 (1.49 %)
-      Sorts differently (after translations): 0 / 28194 (0.00 %)
-      Sorts differently (no translations): 0 / 28194 (0.00 %)
-      No applicable versions: 2966 / 28194 (10.52 %)
-
-    Analysing public versions
-      Compatible: 25600 / 28194 (90.80 %)
-      Compatible with translation: 1505 / 28194 (5.34 %)
-      Compatible with filtering: 13 / 28194 (0.05 %)
-      No compatible versions: 420 / 28194 (1.49 %)
-      Sorts differently (after translations): 0 / 28194 (0.00 %)
-      Sorts differently (no translations): 0 / 28194 (0.00 %)
-      No applicable versions: 656 / 28194 (2.33 %)
-
-    Analysing all versions
-      Compatible: 24239 / 28194 (85.97 %)
-      Compatible with translation: 2833 / 28194 (10.05 %)
-      Compatible with filtering: 513 / 28194 (1.82 %)
-      No compatible versions: 320 / 28194 (1.13 %)
-      Sorts differently (after translations): 38 / 28194 (0.13 %)
-      Sorts differently (no translations): 2 / 28194 (0.01 %)
-      No applicable versions: 249 / 28194 (0.88 %)
-
-Metadata v1.2 guidelines versus setuptools::
-
-    $ ./pepsort.py 386
-    Comparing PEP 386 version sort to setuptools.
-
-    Analysing release versions
-      Compatible: 24244 / 28194 (85.99 %)
-      Compatible with translation: 247 / 28194 (0.88 %)
-      Compatible with filtering: 84 / 28194 (0.30 %)
-      No compatible versions: 648 / 28194 (2.30 %)
-      Sorts differently (after translations): 0 / 28194 (0.00 %)
-      Sorts differently (no translations): 0 / 28194 (0.00 %)
-      No applicable versions: 2971 / 28194 (10.54 %)
-
-    Analysing public versions
-      Compatible: 25371 / 28194 (89.99 %)
-      Compatible with translation: 1507 / 28194 (5.35 %)
-      Compatible with filtering: 12 / 28194 (0.04 %)
-      No compatible versions: 648 / 28194 (2.30 %)
-      Sorts differently (after translations): 0 / 28194 (0.00 %)
-      Sorts differently (no translations): 0 / 28194 (0.00 %)
-      No applicable versions: 656 / 28194 (2.33 %)
-
-    Analysing all versions
-      Compatible: 23969 / 28194 (85.01 %)
-      Compatible with translation: 2789 / 28194 (9.89 %)
-      Compatible with filtering: 530 / 28194 (1.88 %)
-      No compatible versions: 547 / 28194 (1.94 %)
-      Sorts differently (after translations): 96 / 28194 (0.34 %)
-      Sorts differently (no translations): 14 / 28194 (0.05 %)
-      No applicable versions: 249 / 28194 (0.88 %)
+.. _`thematically appropriate`: https://www.youtube.com/watch?v=CSe38dzJYkY
 
 
 Copyright
