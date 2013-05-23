@@ -5,7 +5,7 @@ Python, Enumerations and "Good Enough"
    To provide feedback on this essay, use the `issue tracker`_ or the
    DISQUS comments below.
 
-   Last updated: |today| (`Change history`_) 
+   Site last built: |today| (`Change history`_)
 
 
 .. _Change history: https://bitbucket.org/ncoghlan/misc/history-node/default/notes/python3/enum_creation.rst
@@ -146,11 +146,15 @@ it *should* (at least, not as the standard incarnation of the syntax).
 The question of whether or not to allow aliasing by default was a close-run
 thing, eventually decided by Guido opting for easier support for POSIX and
 IETF standards (which often include aliases) over easier detection of typos
-when entering values directly. Now that we're using a custom namespace
-while executing the class body, I don't believe this is a decision we have
-to make (we can have both), so it's something I `plan to revisit
-<http://bugs.python.org/issue17959>`_ after the initial PEP implementation
-is incorporated, but before Python 3.4 is released.
+when entering values directly. While I briefly thought we could use a
+little more magic to support aliasing without supporting independently
+binding two different names to the same value, that turned out to be
+`more problematic than I expected <http://bugs.python.org/issue17959>`_  so
+we're sticking with Guido's original decision.
+
+However, it may still be possible `add a simple class decorator
+<http://bugs.python.org/issue18042>` that makes it
+easy to ensure there a no accidental aliases when they are not desired.
 
 
 Support for alternate declaration syntaxes
@@ -204,7 +208,7 @@ Personally, I expect to see variants that enable the following behaviours:
 * Extensible enums, that make it easier to include elements of another
   enum inside a larger one. One feature of ``flufl.enum`` that was lost in
   the journey to the standard library is the ability to inherit enum members
-  from a parent enum, as a consequence of kaing it so that standard enum
+  from a parent enum, as a consequence of making it so that standard enum
   members are actually instances of the corresponding enum.
 
   This change makes it easy to add new behaviour to enums - you just define
