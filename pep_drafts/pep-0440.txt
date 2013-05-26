@@ -24,9 +24,10 @@ standardised approach to versioning, as described in PEP 345 and PEP 386.
 
 .. note::
 
-   This PEP has been broken out of the metadata 2.0 specification in PEP 426.
-   There will be some redundancy between the draft PEPs as I figure out the
-   details of the split..
+   This PEP was broken out of the metadata 2.0 specification in PEP 426.
+
+   Unlike PEP 426, the notes that remain in this document are intended as
+   part of the final specification.
 
 
 Definitions
@@ -36,39 +37,16 @@ The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT",
 "SHOULD", "SHOULD NOT", "RECOMMENDED",  "MAY", and "OPTIONAL" in this
 document are to be interpreted as described in RFC 2119.
 
-"Distributions" are deployable software components published through an index
-server or otherwise made available for installation.
+The following terms are to be interpreted as described in PEP 426:
 
-"Versions" are uniquely identified snapshots of a distribution.
-
-"Distribution archives" are the packaged files which are used to publish
-and distribute the software. "Source archives" require a build system to
-be available on the target system, while "binary archives" only require that
-prebuilt files be moved to the correct location on the target system. As
-Python is a dynamically bound cross-platform language, many "binary"
-archives will contain only pure Python source code.
-
-"Build tools" are automated tools intended to run on development systems,
-producing source and binary distribution archives. Build tools may also be
-invoked by installation tools in order to install software distributed as
-source archives rather than prebuilt binary archives.
-
-"Index servers" are active distribution registries which publish version and
-dependency metadata and place constraints on the permitted metadata.
-
-"Publication tools" are automated tools intended to run on development
-systems and upload source and binary distribution archives to index servers.
-
-"Installation tools" are automated tools intended to run on production
-systems, consuming source and binary distribution archives from an index
-server or other designated location and deploying them to the target system.
-
-"Automated tools" is a collective term covering build tools, index servers,
-publication tools, installation tools and any other software that produces
-or consumes distribution version and dependency metadata.
-
-"Projects" refers to the developers that manage the creation of a particular
-distribution.
+* "Distributions"
+* "Versions"
+* "Build tools"
+* "Index servers"
+* "Publication tools"
+* "Installation tools"
+* "Automated tools"
+* "Projects"
 
 
 Version scheme
@@ -113,9 +91,7 @@ Any given version will be a "release", "pre-release", "post-release" or
 
    Some hard to read version identifiers are permitted by this scheme in
    order to better accommodate the wide range of versioning practices
-   across existing public and private Python projects, given the
-   constraint that the package index is not yet sophisticated enough to
-   allow the introduction of a simpler, backwards-incompatible scheme.
+   across existing public and private Python projects.
 
    Accordingly, some of the versioning practices which are technically
    permitted by the PEP are strongly discouraged for new projects. Where
@@ -128,9 +104,9 @@ Build labels
 
 Build labels are text strings with minimal defined semantics.
 
-To ensure build labels can be readily incorporated in file names and URLs,
-they MUST be comprised of only ASCII alphanumerics, plus signs, periods
-and hyphens.
+To ensure build labels can be readily incorporated as part of file names
+and URLs, they MUST be comprised of only ASCII alphanumerics, plus signs,
+periods and hyphens.
 
 In addition, build labels MUST be unique within a given distribution.
 
@@ -201,7 +177,7 @@ indicated by including a pre-release segment in the version identifier::
 
     X.YaN  # Alpha release
     X.YbN  # Beta release
-    X.YcN  # Release candidate (alternative notation: X.YrcN)
+    X.YcN  # Candidate release (alternative notation: X.YrcN)
     X.Y    # Full release
 
 A version identifier that consists solely of a release segment and a
@@ -212,15 +188,16 @@ pre-release phase, along with a non-negative integer value. Pre-releases for
 a given release are ordered first by phase (alpha, beta, release candidate)
 and then by the numerical component within that phase.
 
-Build tools, publication tools and index servers SHOULD disallow the creation
-of both ``c`` and ``rc`` releases for a common release segment, but this
-may need to be tolerated in order to handle some existing legacy
-distributions.
+Installation tools MAY accept both ``c`` and ``rc`` releases for a common
+release segment in order to handle some existing legacy distributions.
 
 Installation tools SHOULD interpret all ``rc`` versions as coming after all
 ``c`` versions (that is, ``rc1`` indicates a later version than ``c2``).
 Installation tools MAY warn the user when such ambiguous versions are
 detected, or even reject them entirely.
+
+Build tools, publication tools and index servers SHOULD disallow the creation
+of both ``c`` and ``rc`` releases for a common release segment.
 
 
 Post-releases
@@ -339,7 +316,7 @@ Simple "major.minor.micro" versioning::
     1.2.0
     ...
 
-"major.minor" versioning with alpha, beta and release candidate
+"major.minor" versioning with alpha, beta and candidate
 pre-releases::
 
     0.9
@@ -561,8 +538,9 @@ described in `Handling of pre-releases`_.
 Compatible release
 ------------------
 
-A compatible release clause consists solely of a version identifier without
-any comparison operator. It matches any candidate version that is expected
+A compatible release clause consists of either a version identifier without
+any comparison operator or else the compatible release operator ``~=``
+and a version identifier. It matches any candidate version that is expected
 to be compatible with the specified version.
 
 The specified version identifier must be in the standard format described in
@@ -573,12 +551,14 @@ approximately equivalent to the pair of comparison clauses::
 
     >= V.N, == V.*
 
-For example, the following version clauses are equivalent::
+For example, the following groups of version clauses are equivalent::
 
     2.2
+    ~= 2.2
     >= 2.2, == 2.*
 
     1.4.5
+    ~= 1.4.5
     >= 1.4.5, == 1.4.*
 
 If a pre-release, post-release or developmental release is named in a
@@ -586,9 +566,11 @@ compatible release clause as ``V.N.suffix``, then the suffix is ignored
 when determining the required prefix match::
 
     2.2.post3
+    ~= 2.2.post3
     >= 2.2.post3, == 2.*
 
     1.4.5a4
+    ~= 1.4.5a4
     >= 1.4.5a4, == 1.4.*
 
 The padding rules for release segment comparisons means that the assumed
@@ -596,9 +578,11 @@ degree of forward compatibility in a compatible release clause can be
 controlled by appending additional zeroes to the version specifier::
 
     2.2.0
+    ~= 2.2.0
     >= 2.2.0, == 2.2.*
 
     1.4.5.0
+    ~= 1.4.5.0
     >= 1.4.5.0, == 1.4.5.*
 
 
@@ -625,25 +609,28 @@ version includes only a release segment, than trailing components in the
 release segment are also ignored.
 
 For example, given the version ``1.1.post1``, the following clauses would
-match or not as shown:
+match or not as shown::
     
     == 1.1        # Not equal, so 1.1.post1 does not match clause
     == 1.1.post1  # Equal, so 1.1.post1 matches clause
     == 1.1.*      # Same prefix, so 1.1.post1 matches clause
 
-.. note::
+The use of ``==`` (without at least the wildcard suffix) when defining
+dependencies for published distributions is strongly discouraged as it
+greatly complicates the deployment of security fixes. The strict version
+comparison operator is intended primarily for use when defining
+dependencies for repeatable *deployments of applications* while using
+a shared distribution index.
 
-   The use of ``==`` when defining dependencies for published
-   distributions is strongly discouraged as it greatly complicates the
-   deployment of security fixes. The strict version comparison operator
-   is intended primarily for use when defining dependencies for repeatable
-   *deployments of applications* while using a shared distribution index.
+Publication tools and index servers SHOULD at least emit a warning when
+dependencies are pinned in this fashion and MAY refuse to allow publication
+of such overly specific dependencies.
 
 
 Version exclusion
 -----------------
 
-A version exclusion clause includes the version matching operator ``!=``
+A version exclusion clause includes the version exclusion operator ``!=``
 and a version identifier.
 
 The allowed version identifiers and comparison semantics are the same as
@@ -651,7 +638,7 @@ those of the `Version matching`_ operator, except that the sense of any
 match is inverted.
 
 For example, given the version ``1.1.post1``, the following clauses would
-match or not as shown:
+match or not as shown::
     
     != 1.1        # Not equal, so 1.1.post1 matches clause
     != 1.1.post1  # Equal, so 1.1.post1 does not match clause
@@ -661,12 +648,8 @@ match or not as shown:
 Build reference
 ---------------
 
-A build reference includes the build label matching operator ``is`` and
-a build reference.
-
-A build reference is a direct URI reference supplied to satisfy a
-dependency. The exact kinds of URIs and targets supported will be determined
-by the specific installation tool used.
+A build reference includes the build reference operator ``is`` and
+a build label or a build URL.
 
 Publication tools and public index servers SHOULD NOT permit build
 references in dependency specifications.
@@ -674,13 +657,54 @@ references in dependency specifications.
 Installation tools SHOULD support the use of build references to identify
 dependencies.
 
-Automated tools MAY support the use of build labels in build reference
-clauses. They can be clearly distinguished from URI references without
-ambiguity, as ``:`` and ``/`` are not permitted in build labels.
-
 Build label matching works solely on strict equality comparisons: the
 candidate build label must be exactly the same as the build label in the
-version clause.
+version clause for the clause to match the candidate distribution.
+
+A build URL is distinguished from a build label by the presence of
+``:`` and ``/`` characters in the build reference. As these characters
+are not permitted in build labels, they indicate that the reference uses
+a build URL.
+
+Some appropriate targets for a build URL are a binary archive, a
+source tarball, an sdist archive or a direct reference to a tag or
+specific commit in an online version control system. The exact URLs and
+targets supported will be installation tool specific.
+
+All build URL references SHOULD either specify a secure transport
+mechanism (such as ``https``) or else include an expected hash value in the
+URL for verification purposes. If an insecure transport is specified without
+any hash information (or with hash information that the tool doesn't
+understand), automated tools SHOULD at least emit a warning and MAY
+refuse to rely on the URL.
+
+It is RECOMMENDED that only hashes which are unconditionally provided by
+the latest version of the standard library's ``hashlib`` module be used
+for source archive hashes. At time of writing, that list consists of
+``'md5'``, ``'sha1'``, ``'sha224'``, ``'sha256'``, ``'sha384'``, and
+``'sha512'``.
+
+For binary or source archive references, an expected hash value may be
+specified by including a ``<hash-algorithm>=<expected-hash>`` as part of
+the URL fragment.
+
+For version control references, the ``VCS+protocol`` scheme SHOULD be
+used to identify both the version control system and the secure transport.
+
+To support version control systems that do not support including commit or
+tag references directly in the URL, that information may be appended to the
+end of the URL using the ``@<tag>`` notation.
+
+The use of ``is`` when defining dependencies for published distributions
+is strongly discouraged as it greatly complicates the deployment of
+security fixes. The build label matching operator is intended primarily
+for use when defining dependencies for repeatable *deployments of
+applications* while using a shared distribution index, as well as to
+reference dependencies which are not published through an index server.
+
+Publication tools and index servers SHOULD at least emit a warning when
+dependencies are pinned in this fashion and MAY refuse to allow publication
+of such overly specific dependencies.
 
 
 Ordered comparison
@@ -771,8 +795,8 @@ Open issues
 
 * The new ``is`` operator seems like a reasonable way to cleanly allow
   *deployments* to bring in non-published dependencies, while heavily
-  discouraging the practice for published libraries. However, it's a
-  first draft of the idea, so feedback is definitely welcome.
+  discouraging the practice for published libraries. However, it's an
+  early draft of the idea, so feedback is definitely welcome.
 
 
 Summary of differences from \PEP 386
@@ -788,7 +812,8 @@ Summary of differences from \PEP 386
 
 * added the "build reference" clause
 
-* separated the two kinds of "version matching" clause (strict and prefix)
+* added the trailing wildcard syntax for prefix based version matching
+  and exclusion
 
 * changed the top level sort position of the ``.devN`` suffix
 
@@ -841,17 +866,15 @@ migrate to the latest version of the metadata standard.
 Another change to the version scheme is to allow single number
 versions, similar to those used by non-Python projects like Mozilla
 Firefox, Google Chrome and the Fedora Linux distribution. This is actually
-expected to be more useful for version specifiers (allowing things like
-the simple ``Requires-Python: 3`` rather than the more convoluted
-``Requires-Python: >= 3.0, < 4``), but it is easier to allow it for both
-version specifiers and release numbers, rather than splitting the
-two definitions.
+expected to be more useful for version specifiers, but it is easier to
+allow it for both version specifiers and release numbers, rather than
+splitting the two definitions.
 
 The exclusion of leading and trailing whitespace was made explicit after
 a couple of projects with version identifiers differing only in a
 trailing ``\n`` character were found on PyPI.
 
-The exclusion of major release numbers that looks like dates was implied
+The exclusion of major release numbers that look like dates was implied
 by the overall text of PEP 386, but not clear in the definition of the
 version scheme. This exclusion has been made clear in the definition of
 the release component.
@@ -971,9 +994,14 @@ in order to allow easier conversion to the legacy ``pkg_resources`` version
 specifier format (which omits the parentheses, but requires a comparison
 operator).
 
-The two kinds of version matching (strict and prefix based) were separated
-to make it possible to sensibly define the compatible release clauses and the
-desired pre-release handling semantics for ``<`` and ``>`` ordered
+Further improvements are also planned to the handling of parallel
+installation of multiple versions of the same library, but these will
+depend on updates to the installation database definition along with
+improved tools for dynamic path manipulation.
+
+The trailing wildcard syntax to request prefix based version matching was
+added to make it possible to sensibly define both compatible release clauses
+and the desired pre-release handling semantics for ``<`` and ``>`` ordered
 comparison clauses.
 
 
