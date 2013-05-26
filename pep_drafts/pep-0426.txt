@@ -97,11 +97,15 @@ server or otherwise made available for installation.
 "Versions" are uniquely identified snapshots of a distribution.
 
 "Distribution archives" are the packaged files which are used to publish
-and distribute the software. "Source archives" require a build system to
-be available on the target system, while "binary archives" only require that
-prebuilt files be moved to the correct location on the target system. As
-Python is a dynamically bound cross-platform language, many "binary"
-archives will contain only pure Python source code.
+and distribute the software.
+
+"Source archives" require build tools to be available on the target
+system.
+
+"Binary archives" only require that prebuilt files be moved to the correct
+location on the target system. As Python is a dynamically bound
+cross-platform language, many "binary" archives will contain only pure
+Python source code.
 
 "Build tools" are automated tools intended to run on development systems,
 producing source and binary distribution archives. Build tools may also be
@@ -441,7 +445,7 @@ Example::
     hyphens) before they can migrate to the new metadata formats.
 
     Donald Stufft ran an analysis, and the new restrictions impact less
-    than 230 projects out of those already on PyPI. This isn't that
+    than 230 projects out of the ~31k already on PyPI. This isn't that
     surprising given the fact that many existing tools could already
     exhibit odd behaviour when attempting to deal with non-compliant
     names, implicitly discouraging the use of more exotic names.
@@ -514,8 +518,15 @@ version control system.
 All version URL references SHOULD either specify a secure transport
 mechanism (such as ``https``) or else include an expected hash value in the
 URL for verification purposes. If an insecure transport is specified without
-any hash information, automated tools SHOULD at least emit a warning and MAY
+any hash information (or with hash information that the tool doesn't
+understand), automated tools SHOULD at least emit a warning and MAY
 refuse to rely on the URL.
+
+It is RECOMMENDED that only hashes which are unconditionally provided by
+the latest version of the standard library's ``hashlib`` module be used
+for source archive hashes. At time of writing, that list consists of
+``'md5'``, ``'sha1'``, ``'sha224'``, ``'sha256'``, ``'sha384'``, and
+``'sha512'``.
 
 For source archive references, an expected hash value may be specified by
 including a ``<hash-algorithm>=<expected-hash>`` as part of the URL
