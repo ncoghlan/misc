@@ -127,7 +127,7 @@ distribution.
 
 "Legacy metadata" refers to earlier versions of this metadata specification,
 along with the supporting metadata file formats defined by the
- ``setuptools`` project.
+``setuptools`` project.
 
 
 Development and distribution activities
@@ -377,7 +377,7 @@ Name
 
 The name of the distribution.
 
-As distribution names are used as part URLs, filenames, command line
+As distribution names are used as part of URLs, filenames, command line
 parameters and must also interoperate with other packaging systems, the
 permitted characters are constrained to:
 
@@ -453,7 +453,8 @@ Example::
     with ``setuptools`` (which powers both ``easy_install`` and ``pip``).
 
     The remaining ~30 will be investigated manually and decided upon on a
-    case by case basis how to migrate them to the new naming rules.
+    case by case basis how to migrate them to the new naming rules (in
+    consultation with the maintainers of those projects where possible).
 
 
 Version
@@ -476,7 +477,8 @@ This section specifies fields that provide other identifying details
 that are unique to this distribution.
 
 All of these fields are optional. Automated tools MUST operate correctly if
-a distribution does not provide them.
+a distribution does not provide them, including failing cleanly when an
+operation depending on one of these fields is requested.
 
 
 Build label
@@ -563,7 +565,8 @@ This section specifies fields that provide additional information regarding
 the distribution and its contents.
 
 All of these fields are optional. Automated tools MUST operate correctly if
-a distribution does not provide them.
+a distribution does not provide them, including failing cleanly when an
+operation depending on one of these fields is requested.
 
 Summary
 -------
@@ -731,6 +734,10 @@ The different contact types are as follows:
    much ignore everything other than the contact/contributor distinction
    if they so choose.
 
+Contact metadata is optional. Automated tools MUST operate correctly if
+a distribution does not provide them, including failing cleanly when an
+operation depending on one of these fields is requested.
+
 
 Contacts
 --------
@@ -827,6 +834,9 @@ and specification scheme defined in PEP 440.
     way, ``Setup-Requires-Dist`` maps to ``build_requires`` and
     ``Requires-Dist`` maps to ``requires``.
 
+All of these fields are optional. Automated tools MUST operate correctly if
+a distribution does not provide them, by assuming that a missing field
+indicates "Not applicable for this distribution".
 
 
 Dependency specifications
@@ -870,15 +880,15 @@ each entry indicated a required dependency.
 Conditional dependencies are lists of mappings with the following fields:
 
 * ``dependencies``: a list of relevant dependency specifications
-* ``extra``: the name of the optional feature that needs these dependencies.
-  See `Extras (optional dependencies)`_ for details.
+* ``extra``: the name of a set of optional dependencies that are requested
+  and installed together. See `Extras (optional dependencies)`_ for details.
 * ``environment``: an environment marker defining the environment that
   needs these dependencies. See `Environment markers`_ for details.
 
 The ``dependencies`` field is required, as is at least one of ``extra`` and
 ``environment``. All three fields may be supplied, indicating that the
-dependency is needed only for a particular optional feature when in a
-particular environment.
+dependency is needed only when that particular set of additional
+dependencies is requested in a particular environment.
 
 Note that the same extras and environment markers MAY appear in multiple
 conditional dependencies. This may happen, for example, if an extra itself
@@ -903,8 +913,10 @@ should be installed for the specified activities:
 
     * ``requires``
     * ``may_require``
-    * request the ``test`` extra to get any additional dependencies needed
-      only to run the distribution's test suite
+    * Request the ``test`` extra to also install
+
+      * ``test_requires``
+      * ``test_may_require``
 
 * Build dependencies:
 
@@ -917,6 +929,8 @@ should be installed for the specified activities:
     * ``may_require``
     * ``build_requires``
     * ``build_may_require``
+    * ``test_requires``
+    * ``test_may_require``
     * ``dev_requires``
     * ``dev_may_require``
 
@@ -944,7 +958,7 @@ installation to proceed regardless.
 .. note::
 
     As an example of mapping this to Linux distro packages, assume an
-    example project without any optional features is split into 2 RPMs
+    example project without any extras defined is split into 2 RPMs
     in a SPEC file: example and example-devel
 
     The ``requires`` and applicable ``may_require`` dependencies would be
@@ -956,13 +970,12 @@ installation to proceed regardless.
     mapped to the BuildRequires dependencies for the "example" RPM.
 
     All defined dependencies relevant to Linux, including those in
-    ``dev_requires``, would become Requires dependencies for the
-    "example-devel" RPM.
+    ``dev_requires`` and ``test_requires``, would become Requires
+    dependencies for the "example-devel" RPM.
 
-    If a project defines optional features that need additional
-    dependencies, those would be mapped to additional virtual RPMs with
-    appropriate BuildRequires and Requires entries based on the
-    details of the dependency specifications.
+    If a project defines any extras, those would be mapped to additional
+    virtual RPMs with appropriate BuildRequires and Requires entries based
+    on the details of the dependency specifications.
 
     A documentation toolchain dependency like Sphinx would either go in
     ``build_requires`` (for example, if man pages were included in the
@@ -982,6 +995,22 @@ Example::
     "requires": ["SciPy", "PasteDeploy", "zope.interface (>3.5.0)"]
 
 
+Extras
+------
+
+A list of optional sets of dependencies that may be used to define
+conditional dependencies in ``"may_require"`` and similar fields. See
+`Extras (optional dependencies)`_ for details.
+
+The extra name``"test"`` is reserved for requesting the dependencies
+specified in ``test_requires`` and ``test_may_require`` and is NOT
+permitted in this field.
+
+Example::
+
+    "extras": ["warmup"]
+
+
 May require
 -----------
 
@@ -990,8 +1019,6 @@ is deployed, based on the extras requested and the target deployment
 environment.
 
 Any extras referenced from this field MUST be named in the `Extras`_ field.
-The one exception is ``test``, which is implicitly defined for all
-distributions.
 
 Example::
 
@@ -1003,29 +1030,43 @@ Example::
           {
             "dependencies": ["SoftCushions"],
             "extra": "warmup"
-          },
-          {
-            "dependencies": ["unittest2"],
-            "extra": "test"
           }
         ]
 
-Extras
-------
+Test requires
+-------------
 
-A list of optional runtime feature names that may be used in conditional
-dependencies in ``"may_require"``. See `Extras (optional dependencies)`_
-for details.
-
-The runtime extra ``"test"`` is implicitly defined for all distributions
-and MUST NOT be recorded explicitly in this field. It is used to define the
-additional dependencies needed to run a distribution's
-``test_installed_dist`` metabuild hook that are not otherwise needed to use
-the distribution.
+A list of other distributions needed in order to run the automated tests
+for this distribution, either during development or when running the
+``test_installed_dist`` metabuild when deployed.
 
 Example::
 
-    "extras": ["warmup"]
+    "test_requires": ["unittest2"]
+
+
+Test may require
+----------------
+
+A list of other distributions that may be needed in order to run the
+automated tests for this distribution, either during development or when
+running the ``test_installed_dist`` metabuild when deployed, based on the
+extras requested and the target deployment environment.
+
+Any extras referenced from this field MUST be named in the `Extras`_ field.
+
+Example::
+
+        "test_may_require": [
+          {
+            "dependencies": ["pywin32 (>1.0)"],
+            "environment": "sys.platform == 'win32'"
+          },
+          {
+            "dependencies": ["CompressPadding"],
+            "extra": "warmup"
+          }
+        ]
 
 
 Build requires
@@ -1052,9 +1093,10 @@ features requested and the build environment.
 Note that while these are build dependencies for the distribution being
 built, the installation is a *deployment* scenario for the dependencies.
 
-Any extras referenced from this field MUST be named in the `Extras`_
-field. The one exception is ``test``, which is implicitly defined for all
-distributions.
+Any extras referenced from this field MUST be named in the `Extras`_ field.
+
+Automated tools MAY assume that all extras are implicitly requested when
+installing build dependencies.
 
 Example::
 
@@ -1101,6 +1143,11 @@ this distribution, based on the features requested and the build environment.
 This should only be needed if the project's own utility scripts have
 platform specific dependencies that aren't already defined as deployment
 or build dependencies.
+
+Any extras referenced from this field MUST be named in the `Extras`_ field.
+
+Automated tools MAY assume that all extras are implicitly requested when
+installing development dependencies.
 
 Example::
 
@@ -1219,7 +1266,7 @@ Metabuild system
 The ``metabuild_hooks`` field is used to define various operations that
 may be invoked on a distribution in a platform independent manner.
 
-The metabuild system currently defines two operations as part of the
+The metabuild system currently defines three operations as part of the
 deployment of a distribution:
 
 * Installing to a deployment system
@@ -1235,7 +1282,8 @@ Example metabuild hooks::
 
     "metabuild_hooks": {
         "postinstall": "myproject.build_hooks:postinstall",
-        "preuininstall": "myproject.build_hooks:preuninstall"
+        "preuininstall": "myproject.build_hooks:preuninstall",
+        "test_installed_dist": "some_test_harness.metabuild_hook"
     }
 
 Build and installation tools MAY offer additional operations beyond the
@@ -1249,10 +1297,16 @@ The metabuild hooks are gathered together into a single top level
 ``metabuild_hooks`` field. The individual hooks are:
 
 * ``postinstall``: run after the distribution has been installed to a
-  target deployment system (or after it has been upgraded)
+  target deployment system (or after it has been upgraded). If the hook is
+  not defined, it indicates no distribution specific actions are needed
+  following installation.
 * ``preuninstall``: run before the distribution has been uninstalled from a
-  deployment system (or before it is upgraded)
-* ``test_installed_dist``: test an installed distribution is working
+  deployment system (or before it is upgraded). If the hook is not defined,
+  it indicates no distribution specific actions are needed prior to
+  uninstallation.
+* ``test_installed_dist``: test an installed distribution is working. If the
+  hook is not defined, it indicates the distribution does not support
+  execution of the test suite after deployment.
 
 The expected signatures of these hooks are as follows::
 
@@ -1291,11 +1345,34 @@ The expected signatures of these hooks are as follows::
 Metabuild hooks MUST be called with at least abbreviated metadata, and MAY
 be called with full metadata.
 
+Where necessary, metabuild hooks check for the presence or absence of
+optional dependencies defined as extras using the same techniques used
+during normal operation of the distribution (for example, checking for
+import failures for optional dependencies).
+
+
+Metadata Extensions
+===================
+
+Extensions to the metadata may be present in a mapping under the
+'extensions' key.  The keys must meet the same restrictions as
+distribution names, while the values may be any type natively supported
+in JSON::
+
+    "extensions" : {
+        "chili" : { "type" : "Poblano", "heat" : "Mild" },
+        "languages" : [ "French", "Italian", "Hebrew" ]
+    }
+
+To avoid name conflicts, it is recommended that distribution names be used
+to identify metadata extensions. This practice will also make it easier to
+find authoritative documentation for metadata extensions.
+
 
 Extras (optional dependencies)
 ==============================
 
-Extras are additional dependencies that enable optional features
+Extras are additional dependencies that enable an optional aspect
 of the distribution, generally corresponding to a ``try: import
 optional_dependency ...`` block in the code.  To support the use of the
 distribution with or without the optional dependencies they are listed
@@ -1314,20 +1391,12 @@ Example of a distribution with optional dependencies::
       {
         "dependencies": ["SoftCushions"],
         "extra": "warmup"
-      },
-      {
-        "dependencies": ["unittest2"],
-        "extra": "test"
       }
     ]
     "build_may_require": [
       {
         "dependencies": ["cython"],
         "extra": "c-accelerators"
-      },
-      {
-        "dependencies": ["sphinx (>= 1.0)"],
-        "extra": "docs"
       }
     ]
 
@@ -1339,21 +1408,24 @@ Extra specifications MUST support the following additional syntax:
 
 * Multiple features can be requested by separating them with a comma within
   the brackets.
-* All defined extras may be requested with the ``*`` wildcard character.
-* Extras may be excluded by prefixing their name with a hyphen.
+* All explicitly defined extras may be requested with the ``*`` wildcard
+  character. Note that this does NOT request the implicitly defined
+  ``test`` extra - that must always be requested explicitly when it is
+  desired.
+* Extras may be explicitly excluded by prefixing their name with a hyphen.
 
 Command line based installation tools SHOULD support this same syntax to
-allow optional features to be requested explicitly.
+allow extras to be requested explicitly.
 
 The full set of dependency requirements is then based on the top level
-dependencies, along with those of any requested optional features.
+dependencies, along with those of any requested extras.
 
 Example::
 
     "requires": ["ComfyChair[warmup]"]
         -> requires ``ComfyChair`` and ``SoftCushions`` at run time
 
-    "requires": ["ComfyChair[*,-test]"]
+    "requires": ["ComfyChair[*]"]
         -> requires ``ComfyChair`` and ``SoftCushions`` at run time, but
            will also pick up any new optional dependencies other than those
            needed solely to run the tests
@@ -1433,28 +1505,6 @@ The ``python_full_version`` marker variable is derived from
         return version
 
 
-
-Metadata Extensions
-===================
-
-Extensions
-----------
-
-Extensions to the metadata may be present in a mapping under the
-'extensions' key.  The keys must meet the same restrictions as
-distribution names, while the values may be any type natively supported
-in JSON::
-
-    "extensions" : {
-        "chili" : { "type" : "Poblano", "heat" : "Mild" },
-        "languages" : [ "French", "Italian", "Hebrew" ]
-    }
-
-To avoid name conflicts, it is recommended that distribution names be used
-to identify metadata extensions. This practice will also make it easier to
-find authoritative documentation for metadata extensions.
-
-
 Updating the metadata specification
 ===================================
 
@@ -1490,9 +1540,9 @@ Summary of differences from \PEP 345
 
 * Added the build label mechanism as described in PEP 440
 
-* Support for different development, build and deployment dependencies
+* Support for different development, build, test and deployment dependencies
 
-* The "Extras" optional feature and dependency mechanism
+* The "Extras" optional dependency mechanism
 
 * A well-defined metadata extension mechanism
 
@@ -1598,23 +1648,22 @@ As distribution metadata improves, this should allow much greater control
 over where particular dependencies end up being installed .
 
 
-Support for optional features of distributions
-----------------------------------------------
+Support for optional dependencies for distributions
+---------------------------------------------------
 
 The new extras system allows distributions to declare optional
 features, and to use the ``may_require`` and ``build_may_require`` fields
 to indicate when particular dependencies are needed only to support those
 features. It is derived from the equivalent system that is already in
 widespread use as part of ``setuptools`` and allows that aspect of the
-``setuptools`` metadata to be accurately represented.
+legacy ``setuptools`` metadata to be accurately represented in the new
+metadata format.
 
-The ``test`` extra is implicitly defined for all distributions, as
-an additional motivation behind standardising this feature is to encourage
-more distributions to explicitly declare the dependencies needed to run
-their automatic tests, without demanding those dependencies be present
-in order to merely install or use the software. Identifying test suite
+The ``test`` extra is implicitly defined for all distributions, as it
+ties in with the new metabuild hook offering a standard way to request
+execution of a distribution's test suite. Identifying test suite
 dependencies is already one of the most popular uses of the extras system
-in ``setuptools``).
+in ``setuptools``.
 
 
 Support for metadata extensions
@@ -1634,12 +1683,17 @@ particular extensions to be provided as optional features.
 Support for metabuild hooks
 ---------------------------
 
-The new metabuild system is designed to eliminate the Python packaging
-ecosystem's current reliance on the fragile and implementation
-dependent ``setup.py`` command system.
+The new metabuild system is designed to allow the wheel format to fully
+replace direct installation on deployment targets, by allows projects like
+Twisted to still execute code following installation from a wheel file.
 
 Falling back to invoking ``setup.py`` directly rather than using a
-metabuild hook will remain an option when relying on version 1.x metadata.
+metabuild hook will remain an option when relying on version 1.x metadata,
+and is also used as the interim solution for installation from source
+archives.
+
+The ``test_installed_dist`` metabuild hook is included as a complement to
+the ability to explicitly specify test dependencies.
 
 
 Changes to environment markers
