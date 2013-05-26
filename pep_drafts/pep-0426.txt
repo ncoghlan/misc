@@ -315,6 +315,8 @@ fields:
 * ``obsoleted_by``
 * ``supports_environments``
 
+When serialised to a file, the name used for this metadata set SHOULD
+be ``pymeta-minimal.json``.
 
 Abbreviated metadata
 --------------------
@@ -328,6 +330,9 @@ The abbreviated metadata for a distribution consists of all fields
 
 * ``description``
 * ``contributors``
+
+When serialised to a file, the name used for this metadata set SHOULD
+be ``pymeta-short.json``.
 
 
 Core metadata
@@ -384,17 +389,28 @@ permitted characters are constrained to:
 
 Distributions named MUST start and end with an ASCII letter or digit.
 
+Automated tools MUST reject non-compliant names.
+
 All comparisons of distribution names MUST be case insensitive, and MUST
 consider hyphens and underscores to be equivalent.
 
-Automated tools MUST reject non-compliant names.
+Index servers MAY consider "confusable" characters (as defined by the
+Unicode Consortium in `TR39: Unicode Security Mechanisms <TR39>`__) to be
+equivalent.
 
-.. note::
+Index servers that permit arbitrary distribution name registrations from
+untrusted sources SHOULD consider confusable characters to be equivalent
+when registering new distributions (and hence reject them as duplicates).
 
-   Open question: we could also require o, O and 0 be considered equivalent,
-   along with i, I, 1, and l. I'm sure there was a reference in distutils-sig
-   to a standard algorithm that covers pure ASCII confusables, but I can't
-   find it now :(
+Installation tools MUST NOT silently accept a confusable alternate
+spelling as matching a requested distribution name.
+
+At time of writing, the characters in the ASCII subset designated as
+confusables by the Unicode Consortium are:
+
+* ``1`` (DIGIT ONE), ``l`` (LATIN SMALL LETTER L), and ``I`` (LATIN CAPITAL
+  LETTER I)
+* ``0`` (DIGIT ZERO), and ``O`` (LATIN CAPITAL LETTER O)
 
 
 Example::
@@ -425,10 +441,19 @@ Example::
     hyphens) before they can migrate to the new metadata formats.
 
     Donald Stufft ran an analysis, and the new restrictions impact less
-    than 230 projects out of the 28k+ already on PyPI. This isn't that
+    than 230 projects out of those already on PyPI. This isn't that
     surprising given the fact that many existing tools could already
     exhibit odd behaviour when attempting to deal with non-compliant
     names, implicitly discouraging the use of more exotic names.
+
+    Of those projects, ~200 have the only non-compliant character as an
+    internal space (e.g. "Twisted Web"). These will be automatically
+    migrated by replacing the spaces with hyphens (e.g. "Twisted-Web"),
+    which is what you have to actually type to install these distributions
+    with ``setuptools`` (which powers both ``easy_install`` and ``pip``).
+
+    The remaining ~30 will be investigated manually and decided upon on a
+    case by case basis how to migrate them to the new naming rules.
 
 
 Version
@@ -484,9 +509,15 @@ Some appropriate targets for a version URL are a source tarball, an sdist
 archive or a direct reference to a tag or specific commit in an online
 version control system.
 
-All version URL references SHOULD specify a secure transport mechanism,
-typically ``https``. If an insecure transport is specified, automated
-tools SHOULD at least emit a warning and MAY refuse to rely on the URL.
+All version URL references SHOULD either specify a secure transport
+mechanism (such as ``https``) or else include an expected hash value in the
+URL for verification purposes. If an insecure transport is specified without
+any hash information, automated tools SHOULD at least emit a warning and MAY
+refuse to rely on the URL.
+
+For source archive references, an expected hash value may be specified by
+including a ``<hash-algorithm>=<expected-hash>`` as part of the URL
+fragment.
 
 For version control references, the ``VCS+protocol`` scheme SHOULD be
 used to identify both the version control system and the secure transport.
@@ -498,6 +529,7 @@ end of the URL using the ``@<tag>`` notation.
 Example::
 
     "version_url": "https://github.com/pypa/pip/archive/1.3.1.zip"
+    "version_url": "http://github.com/pypa/pip/archive/1.3.1.zip#sha1=da9234ee9982d4bbb3c72346a6de940a148ea686"
     "version_url": "git+https://github.com/pypa/pip.git@1.3.1"
 
 .. note::
@@ -576,6 +608,33 @@ Example::
    use as an input format for build tools.
 
 
+Description Format
+------------------
+
+A field indicating the intended format of the text in the description field.
+This allows index servers to render the description field correctly and
+provide feedback on rendering errors, rather than having to guess the
+intended format.
+
+If this field is omitted, or contains an unrecognised value, the default
+rendering format MUST be plain text.
+
+The following format names SHOULD be used for the specified markup formats:
+
+* ``txt``: Plain text (default handling if field is omitted)
+* ``rst``: reStructured Text
+* ``md``: Markdown (exact syntax variant will be implementation dependent)
+* ``adoc``: AsciiDoc
+* ``html``: HTML
+
+Automated tools MAY render one or more of the listed formats as plain
+text and MAY accept other markup formats beyond those listed.
+
+Example::
+
+    "description_format": "rst"
+
+
 Keywords
 --------
 
@@ -651,6 +710,8 @@ These details are recorded as mappings with the following subfields:
 
 The ``name`` subfield is required, the other subfields are optional.
 
+If no specific contact type is stated, the default is ``individual``.
+
 The different contact types are as follows:
 
 * ``author``: the original creator of a distribution
@@ -660,8 +721,6 @@ The different contact types are as follows:
   distribution
 * ``organization``: indicates that these contact details are for an
   organization (formal or informal) rather than for a specific individual
-
-If no specific contact type is stated, the default is ``individual``.
 
 .. note::
 
@@ -1018,10 +1077,15 @@ A list of any additional distributions needed during development of this
 distribution that aren't already covered by the deployment and build
 dependencies.
 
-This is generally limited to the distributions specifically needed to
-create a source archive, as well as those needed for other activities that
-aren't part of the distribution itself (such as generating documentation
-that is published online rather than shipped as part of the software).
+Additional dependencies that may be listed in this field include:
+
+* tools needed to create a source archive
+* tools needed to generate project documentation that is published online
+  rather than distributed along with the rest of the software
+* additional test dependencies for tests which are not executed when the
+  test is invoked through the ``test_installed_dist`` metabuild hook (for
+  example, tests that require a local database server and web server and
+  may not work when fully installed on a production system)
 
 Example::
 
@@ -1160,6 +1224,8 @@ deployment of a distribution:
 
 * Installing to a deployment system
 * Uninstalling from a deployment system
+* Running the distribution's test suite on a deployment system (hence the
+  ``test`` runtime extra)
 
 Distributions may define handles for each of these operations as an
 "entry point", a reference to a Python callable, with the module name
@@ -1186,6 +1252,7 @@ The metabuild hooks are gathered together into a single top level
   target deployment system (or after it has been upgraded)
 * ``preuninstall``: run before the distribution has been uninstalled from a
   deployment system (or before it is upgraded)
+* ``test_installed_dist``: test an installed distribution is working
 
 The expected signatures of these hooks are as follows::
 
@@ -1207,6 +1274,18 @@ The expected signatures of these hooks are as follows::
         *next_meta* is either missing or ``None`` (indicating complete
         uninstallation) or else the distribution metadata for the version
         that is about to be installed (indicating an upgrade or downgrade).
+        """
+
+    def test_installed_dist(current_meta):
+        """Check an installed distribution is working correctly
+
+        Note that this check should always be non-destructive as it may be
+        invoked automatically by some tools.
+
+        Requires that the distribution's test dependencies be installed
+        (indicated by the ``test`` runtime extra).
+
+        Returns ``True`` if the check passes, ``False`` otherwise.
         """
 
 Metabuild hooks MUST be called with at least abbreviated metadata, and MAY
@@ -1323,25 +1402,36 @@ The pseudo-grammar is ::
     MARKER: EXPR [(and|or) EXPR]*
     EXPR: ("(" MARKER ")") | (SUBEXPR [(in|==|!=|not in) SUBEXPR])
 
-where ``SUBEXPR`` belongs to any of the following (the details after the
-colon in each entry define the value represented by that subexpression):
+where ``SUBEXPR`` is either a Python string (such as ``'2.4'``, or
+``'win32'``) or one of the following marker variables:
 
-* ``python_version``: ``'%s.%s' % (sys.version_info[0], sys.version_info[1])``
-* ``python_full_version``: ``sys.version.split()[0]``
+* ``python_version``: ``'{0.major}.{0.minor}'.format(sys.version_info)``
+* ``python_full_version``: see definition below
 * ``os_name````: ``os.name``
 * ``sys_platform````: ``sys.platform``
 * ``platform_version``: ``platform.version()``
 * ``platform_machine``: ``platform.machine()``
 * ``platform_python_implementation``: ``platform.python_implementation()``
-* ``'text'``: a free string, like ``'2.4'``, or ``'win32'``
 
 Note that all subexpressions are restricted to strings or one of the
-predefined variable names, meaning that it is not possible to use
-other sequences like tuples or lists on the right side of the ``in`` and
+marker variable names, meaning that it is not possible to use other
+sequences like tuples or lists on the right side of the ``in`` and
 ``not in`` operators.
 
 Unlike Python, chaining of comparison operations is NOT permitted in
 environment markers.
+
+The ``python_full_version`` marker variable is derived from
+``sys.version_info()`` in accordance with the following algorithm::
+
+    def format_full_version():
+        info = sys.version_info
+        version = '{0.major}.{0.minor}.{0.micro}'.format(info)
+        kind = info.releaselevel
+        if kind != 'final':
+            version += kind[0] + str(info.serial)
+        return version
+
 
 
 Metadata Extensions
@@ -1398,6 +1488,8 @@ Summary of differences from \PEP 345
 
 * Changed the version scheme to be based on PEP 440 rather than PEP 386
 
+* Added the build label mechanism as described in PEP 440
+
 * Support for different development, build and deployment dependencies
 
 * The "Extras" optional feature and dependency mechanism
@@ -1421,6 +1513,8 @@ Summary of differences from \PEP 345
 * Updated obsolescence mechanism
 
 * Added "License URL" field
+
+* Explicit declaration of description markup format
 
 * With all due respect to Charles Schulz and Peanuts, many of the examples
   have been updated to be more `thematically appropriate`_ for Python ;)
@@ -1487,6 +1581,12 @@ See PEP 440 for a detailed rationale for the various changes made to the
 versioning scheme.
 
 
+Build labels
+------------
+
+See PEP 440 for the rationale behind the addition of this field.
+
+
 Development, build and deployment dependencies
 ----------------------------------------------
 
@@ -1504,13 +1604,17 @@ Support for optional features of distributions
 The new extras system allows distributions to declare optional
 features, and to use the ``may_require`` and ``build_may_require`` fields
 to indicate when particular dependencies are needed only to support those
-features.
+features. It is derived from the equivalent system that is already in
+widespread use as part of ``setuptools`` and allows that aspect of the
+``setuptools`` metadata to be accurately represented.
 
-The ``test`` features is implicitly defined for all distributions, as
-one key motivation for this feature is to encourage distributions to
-explicitly declare the dependencies needed to run their automatic tests,
-without demanding those dependencies be present in order to merely
-install or use the software.
+The ``test`` extra is implicitly defined for all distributions, as
+an additional motivation behind standardising this feature is to encourage
+more distributions to explicitly declare the dependencies needed to run
+their automatic tests, without demanding those dependencies be present
+in order to merely install or use the software. Identifying test suite
+dependencies is already one of the most popular uses of the extras system
+in ``setuptools``).
 
 
 Support for metadata extensions
@@ -1521,10 +1625,10 @@ namespace to be delegated to other distributions, while preserving a
 standard overal format metadata format for easy of processing by
 distribution tools that do not support a particular extension.
 
-It also works well in combination with the new ``Setup-Requires-Dist`` field
+It also works well in combination with the new ``build_requires`` field
 to allow a distribution to depend on tools which *do* know how to handle
-the chosen extension, and the new optional features mechanism, allowing
-support for particular extensions to be provided as optional features.
+the chosen extension, and the new extras mechanism, allowing support for
+particular extensions to be provided as optional features.
 
 
 Support for metabuild hooks
@@ -1600,6 +1704,19 @@ The ``Obsoletes-Dist`` header is removed rather than deprecated as it
 is not widely supported, and so removing it does not present any significant
 barrier to tools and projects adopting the new metadata format.
 
+Explicit markup for description
+-------------------------------
+
+Currently, PyPI attempts to detect the markup format by rendering it as
+reStructuredText, and if that fails, treating it as plain text. Allowing
+the intended format to be stated explicitly will allow this guessing to be
+removed, and more informative error reports to be provided to users when
+a rendering error occurs.
+
+This is especially necessary since PyPI applies additional restrictions to
+the rendering process for security reasons, thus a description that renders
+correctly on a developer's system may still fail to render on the server.
+
 
 Deferred features
 =================
@@ -1619,15 +1736,6 @@ the creation of metadata 2.1 with these additional features.
    Given the nature of this PEP as an interoperability specification,
    this section will probably be removed before the PEP is accepted.
    However, it's useful to have it here while discussion is ongoing.
-
-
-Alternative markup formats
---------------------------
-
-It may be useful to support explicit markup declarations for the description
-field, perhaps using mime types. This can be handled easily enough by
-adding a separate field with this information later, so further
-consideration of the idea has been postponed.
 
 
 String methods in environment markers
@@ -1675,9 +1783,6 @@ The following draft metabuild operations have been deferred for now:
 * Generating the metadata file on a development system
 * Generating a source archive on a development system
 * Generating a binary archive on a build system
-* Running the distribution's test suite on a deployment system (hence the
-  ``test`` runtime extra)
-
 
 Metadata 2.0 deliberately focuses on wheel based installation, leaving
 tarball and sdist based installation to use the existing ``setup.py``
@@ -1689,7 +1794,6 @@ through the ``distutils``/``setuptools`` command system:
 * ``python setup.py dist_info``
 * ``python setup.py sdist``
 * ``python setup.py bdist_wheel``
-* ``python setup.py test``
 
 The following additional metabuild hooks may be added in metadata 2.1 to
 cover these operations without relying on ``setup.py``:
@@ -1698,7 +1802,6 @@ cover these operations without relying on ``setup.py``:
 * ``make_sdist``: construct a source archive
 * ``build_wheel``: construct a binary wheel archive from an sdist source
   archive
-* ``test_installed_dist``: test an installed distribution is working
 
 Tentative signatures have been designed for those hooks, but they will
 not be pursued further until 2.1 (note that the current signatures for
@@ -1743,16 +1846,6 @@ the hooks do *not* adequately handle the "extras" concept)::
         Returns the actual compatibility tag for the build
         """
 
-    def test_installed_dist(current_meta):
-        """Check an installed distribution is working correctly
-
-        Note that this check should always be non-destructive as it may be
-        invoked automatically by some tools.
-
-        Requires that the distribution's test dependencies be installed.
-
-        Returns ``True`` if the check passes, ``False`` otherwise.
-        """
 
 Rejected Features
 =================
@@ -1849,12 +1942,14 @@ justifications for needing such a standard can be found in PEP 386.
 .. [1] reStructuredText markup:
    http://docutils.sourceforge.net/
 
-.. _`Python Package Index`: http://pypi.python.org/pypi/
+.. _Python Package Index: http://pypi.python.org/pypi/
 
 .. [2] PEP 301:
    http://www.python.org/dev/peps/pep-0301/
 
-.. _`thematically appropriate`: https://www.youtube.com/watch?v=CSe38dzJYkY
+.. _thematically appropriate: https://www.youtube.com/watch?v=CSe38dzJYkY
+
+.. _TR39: http://www.unicode.org/reports/tr39/tr39-1.html#Confusable_Detection
 
 
 Copyright
