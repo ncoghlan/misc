@@ -12,7 +12,7 @@ Type: Standards Track
 Content-Type: text/x-rst
 Requires: 440
 Created: 30 Aug 2012
-Post-History: 14 Nov 2012, 5 Feb 2013, 7 Feb 2013, 9 Feb 2013
+Post-History: 14 Nov 2012, 5 Feb 2013, 7 Feb 2013, 9 Feb 2013, 27-May-2013
 Replaces: 345
 
 
@@ -1214,7 +1214,7 @@ A string that indicates that this project is no longer being developed.  The
 named project provides a substitute or replacement.
 
 A version declaration may be supplied and must follow the rules described
-in `Version specifiers`_.
+in PEP 440.
 
 Possible uses for this field include handling project name changes and
 project mergers.
