@@ -488,9 +488,10 @@ operation depending on one of these fields is requested.
 Build label
 -----------
 
-A relatively arbitrary build label, as defined in PEP 440. Build labels
+A constrained identifying text string, as defined in PEP 440. Build labels
 cannot be used in ordered version comparisons, but may be used to select
 an exact version (see PEP 440 for details).
+
 
 Examples::
 
