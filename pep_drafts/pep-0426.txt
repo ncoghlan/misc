@@ -1747,14 +1747,14 @@ and is also used as the interim solution for installation from source
 archives.
 
 The ``test_installed_dist`` metabuild hook is included in order to integrate
-with build systems that can automatically integrate test suites, and as
+with build systems that can automatically invoke test suites, and as
 a complement to the ability to explicitly specify test dependencies.
 
 
 Changes to environment markers
 ------------------------------
 
-There are three substantive changes to environment markers in this version::
+There are three substantive changes to environment markers in this version:
 
 * ``platform_release`` was added, as it provides more useful information
   than ``platform_version`` on at least Linux and Mac OS X (specifically,
