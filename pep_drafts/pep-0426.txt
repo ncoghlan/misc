@@ -817,7 +817,7 @@ Example::
     "project_urls": {
         "Documentation": "https://distlib.readthedocs.org"
         "Home": "https://bitbucket.org/pypa/distlib"
-        "Source": "https://bitbucket.org/pypa/distlib/src"
+        "Repository": "https://bitbucket.org/pypa/distlib/src"
         "Tracker": "https://bitbucket.org/pypa/distlib/issues"
     }
 
