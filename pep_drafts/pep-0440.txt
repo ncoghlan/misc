@@ -521,7 +521,7 @@ clause:
 * ``~=``: `Compatible release`_ clause
 * ``==``: `Version matching`_ clause
 * ``!=``: `Version exclusion`_ clause
-* ``is``: `Source reference`_ clause
+* ``is``: `Direct reference`_ clause
 * ``<=``, ``>=``: `Inclusive ordered comparison`_ clause
 * ``<``, ``>``: `Exclusive ordered comparison`_ clause
 
@@ -645,13 +645,13 @@ match or not as shown::
     != 1.1.*      # Same prefix, so 1.1.post1 does not match clause
 
 
-Source reference
+Direct reference
 ----------------
 
-A source reference includes the source reference operator ``is`` and
-a source label or a source URL.
+A direct reference includes the direct reference operator ``is`` and
+an explicit URL.
 
-Installation tools MAY also permit direct references to a platform
+Installation tools SHOULD permit direct references to a platform
 appropriate binary archive in a source reference clause.
 
 Publication tools and public index servers SHOULD NOT permit direct

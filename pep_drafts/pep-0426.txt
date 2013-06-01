@@ -83,20 +83,82 @@ identification scheme.
    "rationale" section at the end of the document, as it would otherwise be
    an irrelevant distraction for future readers.
 
+Purpose
+=======
 
-Definitions
-===========
+The purpose of this PEP is to define a common metadata interchange format
+for communication between software publication tools and software integration
+tools in the Python ecosystem. One key aim is to support full dependency
+analysis in the PyPI ecosystem without requiring the execution of arbitrary
+Python code by those doing the analysis. Another aim is to encourage good
+software distribution practices by default, while continuing to support the
+current practices of almost all existing PyPI users.
+
+The design draws on 15 years of experience with distutils based software
+distribution, and incorporates ideas and concepts from other distribution
+systems, including Python's setuptools, pip and other projects,
+Ruby's gems, Perl's CPAN, Node.js's npm, PHP's composer and Linux software
+distribution systems such as RPM and APT.
+
+
+Phases of Development, Distribution and Deployment
+==================================================
+
+The metadata design in this PEP is based on a particular conceptual model
+of the software development and distribution process. This model consists of
+the following phases:
+
+* Software development: this phase involves working with a source checkout
+  for a particular application to add features and fix problems. It is
+  expected that developers in this phase will need to be able to run the
+  software's automated test suite, build the software, run project specific
+  utility scripts and publish the software.
+
+* Software publication: this phase involves taking the developed software
+  and making it available for use by software integrators. This includes
+  creating the descriptive metadata defined in this PEP, as well making the
+  software available (typically by uploading it to an index server).
+
+* Software integration: this phase involves taking published software
+  components and combining them into a coherent, integrated system. This
+  may be done directly using Python specific cross-platform tools, or it may
+  be handled through conversion to development language neutral platform
+  specific packaging systems.
+
+* Software deployment: this phase involves taking integrated software
+  components and deploying them on to the target system where the software
+  will actually execute.
+
+The publication and integration phases are collectively referred to as
+the distribution phase, and the individual software components distributed
+in that phase are referred to as "distributions".
+
+The exact details of these phases will vary greatly for particular use cases.
+Deploying a web application to a public Platform-as-a-Service provider is
+a very different experience from publishing a new release of a web framework
+or scientific library.
+
+The complexity of the metadata described in this PEP arises directly from the
+actual complexities associated with software development, distribution and
+deployment.
+
+
+Supporting definitions
+----------------------
 
 The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT",
 "SHOULD", "SHOULD NOT", "RECOMMENDED",  "MAY", and "OPTIONAL" in this
 document are to be interpreted as described in RFC 2119.
 
-"Distributions" are deployable software components published through an index
-server or otherwise made available for installation.
+"Projects" are software components that are made available for integration.
+Projects include Python libraries, frameworks, scripts, plugins,
+applications, collections of data or other resources, and various
+combinations thereof. Public Python projects are typically registered on
+the `Python Package Index <https://pypi.python.org>`__.
 
-"Versions" are uniquely identified snapshots of a distribution.
+"Versions" are uniquely identified snapshots of a project.
 
-"Distribution archives" are the packaged files which are used to publish
+"Distributions" are the packaged files which are used to publish
 and distribute the software.
 
 "Source archives" require build tools to be available on the target
@@ -118,24 +180,27 @@ dependency metadata and place constraints on the permitted metadata.
 "Publication tools" are automated tools intended to run on development
 systems and upload source and binary distribution archives to index servers.
 
-"Installation tools" are automated tools intended to run on production
-systems, consuming source and binary distribution archives from an index
-server or other designated location and deploying them to the target system.
+"Integration tools" are automated tools that consume the metadata and
+distribution archives published by an index server or other designated
+source, and make use of them in some fashion, such as installing them or
+converting them to a platform specific packaging format.
+
+"Installation tools" are integration tools specifically intended to run on
+deployment targets, consuming source and binary distribution archives from
+an index server or other designated location and deploying them to the target
+system.
 
 "Automated tools" is a collective term covering build tools, index servers,
-publication tools, installation tools and any other software that produces
+publication tools, integration tools and any other software that produces
 or consumes distribution version and dependency metadata.
-
-"Projects" refers to the developers that manage the creation of a particular
-distribution.
 
 "Legacy metadata" refers to earlier versions of this metadata specification,
 along with the supporting metadata file formats defined by the
 ``setuptools`` project.
 
 
-Development and distribution activities
-=======================================
+Development and publication of distributions
+--------------------------------------------
 
 Making effective use of a common metadata format requires a common
 understanding of the most complex development and distribution model
@@ -155,6 +220,10 @@ PEP is based on the following activities:
      based on a command given in a standard input file. This spec
      deliberately avoids handling that scenario, instead falling back on
      the existing ``setup.py`` functionality.
+
+
+Integration and deployment of distributions
+-------------------------------------------
 
 * Build: the build step is the process of turning a source archive into a
   binary archive. Dependencies must be available in order to build and
