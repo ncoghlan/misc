@@ -571,7 +571,9 @@ versions are designed for consumption by automated tools and support a
 variety of flexible version specification mechanisms (see PEP 440 for
 details).
 
-Distribution versions MUST be unique within each project.
+Version identifiers MUST comply with the format defined in PEP 440.
+
+Version identifiers MUST be unique within each project.
 
 Example::
 
@@ -596,9 +598,10 @@ A constrained identifying text string, as defined in PEP 440. Source labels
 cannot be used in version specifiers - they are included for information
 purposes only.
 
+Source labels MUST meet the character restrictions defined in PEP 440.
+
 Source labels MUST be unique within each project and MUST NOT match any
 defined version for the project.
-
 
 Examples::
 

@@ -105,8 +105,16 @@ Source labels
 Source labels are text strings with minimal defined semantics.
 
 To ensure source labels can be readily incorporated as part of file names
-and URLs, they MUST be comprised of only ASCII alphanumerics, plus signs,
-periods and hyphens.
+and URLs, and to avoid formatting inconsistences in hexadecimal hash
+representations they MUST be limited to the following set of permitted
+characters:
+
+* Lowercase ASCII letters (``[a-z]``)
+* ASCII digits (``[0-9]``)
+* underscores (``_``)
+* hyphens (``-``)
+* periods (``.``)
+* plus signs (``+``)
 
 In addition, source labels MUST be unique within a given distribution.
 
