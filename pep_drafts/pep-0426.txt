@@ -21,8 +21,7 @@ Abstract
 
 This PEP describes a mechanism for publishing and exchanging metadata
 related to Python distributions. It includes specifics of the field names,
-and their semantics and
-usage.
+and their semantics and usage.
 
 This document specifies version 2.0 of the metadata format.
 Version 1.0 is specified in PEP 241.
@@ -340,6 +339,12 @@ is not provided for an optional field, that field MUST be omitted entirely.
 Automated tools MAY automatically derive valid values from other
 information sources (such as a version control system).
 
+Automated tools, especially public index servers, MAY impose additional
+length restrictions on metadata beyond those enumerated in this PEP. Such
+limits SHOULD be imposed where necessary to protect the integrity of a
+service, based on the available resources and the service provider's
+judgment of reasonable metadata capacity requirements.
+
 
 Metadata files
 --------------
@@ -401,8 +406,8 @@ fields:
 * ``source_label``
 * ``source_url``
 * ``extras``
-* ``distributes``
-* ``may_distribute``
+* ``meta_requires``
+* ``meta_may_require``
 * ``run_requires``
 * ``run_may_require``
 * ``build_requires``
@@ -414,7 +419,7 @@ fields:
 * ``supports_environments``
 
 When serialised to a file, the name used for this metadata set SHOULD
-be ``pymeta-deps.json``.
+be ``pymeta-dependencies.json``.
 
 
 Abbreviated metadata
@@ -427,8 +432,8 @@ without providing significant benefits.
 The abbreviated metadata for a distribution consists of all fields
 *except* the following:
 
-* ``description``
 * ``contributors``
+* all ``embedded`` and ``embedded_format`` subfields of text document fields
 
 When serialised to a file, the name used for this metadata set SHOULD
 be ``pymeta-short.json``.
@@ -696,53 +701,36 @@ All of these fields are optional. Automated tools MUST operate correctly if
 a distribution does not provide them, including failing cleanly when an
 operation depending on one of these fields is requested.
 
+Some of these fields are defined as text document fields. A text document
+field consists of the following subfields:
 
-Summary
--------
+* ``summary``: a short summary of the field contents. This field SHOULD
+   contain fewer than 512 characters and MUST contain fewer than 2048.
+* ``embedded``: directly embedded document content for the field
+* ``embedded_format``: an optional markup format specifier for the embedded
+  document content
 
-A one-line summary of what the distribution does.
+A text document field, if provided, MUST include at least the ``summary``
+subfield.
 
-Publication tools SHOULD emit a warning if this field is not provided. Index
-servers MAY require that this field be present before allowing a
-distribution to be uploaded.
+The ``embedded`` subfield, if present, should contain a full text document,
+as appropriate for the specific field. This field may use inline markup,
+as defined by the ``embedded_format`` subfield.
 
-Example::
+Automated tools SHOULD NOT make any assumptions regarding the maximum length
+of embedded text document content, except as necessary to protect the
+integrity of a service.
 
-    "summary": "A module that is more fiendish than soft cushions."
+The ``embedded_format`` subfield allows index servers and other automated
+tools to render any embedded text documents correctly and provide feedback
+on rendering errors, rather than having to guess the intended format.
 
-
-Description
------------
-
-The distribution metadata should include a longer description of the
-distribution that may run to several paragraphs. Software that deals
-with metadata should not assume any maximum size for the description.
-
-The distribution description can be written using reStructuredText
-markup [1]_.  For programs that work with the metadata, supporting
-markup is optional; programs may also display the contents of the
-field as plain text without any special formatting.  This means that
-authors should be conservative in the markup they use.
-
-Example::
-
-    "description": "The ComfyChair module replaces SoftCushions.\\n\\nUse until lunchtime, but pause for a cup of coffee at eleven."
-
-
-Description Format
-------------------
-
-A field indicating the intended format of the text in the description field.
-This allows index servers to render the description field correctly and
-provide feedback on rendering errors, rather than having to guess the
-intended format.
-
-If this field is omitted, or contains an unrecognised value, the default
+If this subfield is omitted, or contains an unrecognised value, the default
 rendering format MUST be plain text.
 
 The following format names SHOULD be used for the specified markup formats:
 
-* ``txt``: Plain text (default handling if field is omitted)
+* ``txt``: Plain text (also default handling if subfield is omitted)
 * ``rst``: reStructured Text
 * ``md``: Markdown (exact syntax variant will be implementation dependent)
 * ``adoc``: AsciiDoc
@@ -751,9 +739,52 @@ The following format names SHOULD be used for the specified markup formats:
 Automated tools MAY render one or more of the listed formats as plain
 text and MAY accept other markup formats beyond those listed.
 
+
+Description
+-----------
+
+A text document field providing general information about the distribution.
+
+The ``summary`` subfield should contain a one-line summary of what the
+distribution does.
+
+The ``embedded`` subfield should include a longer description of the
+distribution that may run to several paragraphs.
+
+Publication tools SHOULD emit a warning if at least the summary subfield
+of this field is not provided. Index servers MAY require that a descriptive
+summary be provided before allowing a distribution to be uploaded.
+
 Example::
 
-    "description_format": "rst"
+    "description": {
+      "summary": "A module that is more fiendish than soft cushions.",
+      "embedded": "The ComfyChair module replaces SoftCushions.\\n\\nUse until lunchtime, but pause for a cup of coffee at eleven."
+    }
+
+
+License
+-------
+
+A text document field providing details of the distribution's license.
+
+Note that distributions that provide this field should still specify any
+applicable license Trove classifiers in the `Classifier`__ field.
+
+The ``summary`` subfield should contain a short string describing the
+license used. When an appropriate Trove classifier is used, the summary
+can be a good way to specify a particular version of that license, or to
+indicate a variation or exception to the license.
+
+The ``embedded`` subfield, if used, should contain the full text of the
+license that applies to the distribution.
+
+Example::
+
+    "license": {
+      "summary": "GPL version 3, excluding DRM provisions",
+      "embedded": "<Full license text>"
+    }
 
 
 Keywords
@@ -767,31 +798,6 @@ Example::
     "keywords": ["comfy", "chair", "cushions", "too silly", "monty python"]
 
 
-License
--------
-
-A string indicating the license covering the distribution where the license
-is not a simple selection from the "License" Trove classifiers. See
-Classifiers" below.  This field may also be used to specify a
-particular version of a license which is named via the ``Classifier``
-field, or to indicate a variation or exception to such a license.
-
-Example::
-
-    "license": "GPL version 3, excluding DRM provisions"
-
-
-License URL
------------
-
-A specific URL referencing the full licence text for this version of the
-distribution.
-
-Example::
-
-    "license_url": "https://github.com/pypa/pip/blob/1.3.1/LICENSE.txt"
-
-
 Classifiers
 -----------
 
@@ -801,8 +807,9 @@ for the distribution.  Classifiers are described in PEP 301 [2].
 Example::
 
     "classifiers": [
-        "Development Status :: 4 - Beta",
-        "Environment :: Console (Text Based)"
+      "Development Status :: 4 - Beta",
+      "Environment :: Console (Text Based)",
+      "License :: OSI Approved :: GNU General Public License v3 (GPLv3)"
     ]
 
 
@@ -891,12 +898,12 @@ are the same as those for the main contact field.
 Example::
 
     "contributors": [
-        {"name": "John C."},
-        {"name": "Erik I."},
-        {"name": "Terry G."},
-        {"name": "Mike P."},
-        {"name": "Graeme C."},
-        {"name": "Terry J."}
+      {"name": "John C."},
+      {"name": "Erik I."},
+      {"name": "Terry G."},
+      {"name": "Mike P."},
+      {"name": "Graeme C."},
+      {"name": "Terry J."}
     ]
 
 
@@ -917,10 +924,10 @@ permitted as a URL label.
 Example::
 
     "project_urls": {
-        "Documentation": "https://distlib.readthedocs.org"
-        "Home": "https://bitbucket.org/pypa/distlib"
-        "Repository": "https://bitbucket.org/pypa/distlib/src"
-        "Tracker": "https://bitbucket.org/pypa/distlib/issues"
+      "Documentation": "https://distlib.readthedocs.org"
+      "Home": "https://bitbucket.org/pypa/distlib"
+      "Repository": "https://bitbucket.org/pypa/distlib/src"
+      "Tracker": "https://bitbucket.org/pypa/distlib/issues"
     }
 
 
@@ -941,9 +948,9 @@ and specification scheme defined in PEP 440.
     dependency parameters). The translation is that ``dev_requires`` and
     ``build_requires`` both map to ``Setup-Requires-Dist``
     in 1.2 (aka ``install_requires`` in setuptools), while ``run_requires``
-    and ``distributes`` map to ``Requires-Dist``.
+    and ``meta_requires`` map to ``Requires-Dist``.
     To go the other  way, ``Setup-Requires-Dist`` maps to ``build_requires``
-    and ``Requires-Dist`` maps to ``distributes`` (for exact comparisons)
+    and ``Requires-Dist`` maps to ``meta_requires`` (for exact comparisons)
     and ``run_requires`` (for all other version specifiers).
 
 All of these fields are optional. Automated tools MUST operate correctly if
@@ -1021,31 +1028,32 @@ The different categories of dependency are based on the various distribution
 and development activities identified above, and govern which dependencies
 should be installed for the specified activities:
 
-* Runtime dependencies:
+* Implied runtime dependencies:
 
-    * ``distributes``
-    * ``may_distribute``
+    * ``meta_requires``
+    * ``meta_may_require``
     * ``run_requires``
     * ``run_may_require``
 
-* Build dependencies:
+* Implied build dependencies:
 
     * ``build_requires``
     * ``build_may_require``
     * If running the distribution's test suite as part of the build process,
-      request the ``:run:`` and ``:test:`` extras to also install:
+      request the ``:meta:``, ``:run:`` and ``:test:`` extras to also
+      install:
 
-      * ``distributes``
-      * ``may_distribute``
+      * ``meta_requires``
+      * ``meta_may_require``
       * ``run_requires``
       * ``run_may_require``
       * ``test_requires``
       * ``test_may_require``
 
-* Development and publication dependencies:
+* Implied development and publication dependencies:
 
-    * ``distributes``
-    * ``may_distribute``
+    * ``meta_requires``
+    * ``meta_may_require``
     * ``run_requires``
     * ``run_may_require``
     * ``build_requires``
@@ -1055,58 +1063,15 @@ should be installed for the specified activities:
     * ``dev_requires``
     * ``dev_may_require``
 
-
-To ease compatibility with existing two phase setup/deployment toolchains,
-installation tools MAY treat ``test_requires``, ``test_may_require``,
-``dev_requires``, ``dev_may_require`` as additions to ``build_requires``
-and ``build_may_require`` rather than as separate fields.
-
-Installation tools SHOULD allow users to request at least the following
-operations for a named distribution:
-
-* Install the distribution and any deployment dependencies.
-* Install just the build dependencies without installing the distribution
-* Install just the development dependencies without installing
-  the distribution
-* Install just the development dependencies without installing
-  the distribution or any dependencies listed in ``distributes``
-
-The notation described in `Extras (optional dependencies)`_ SHOULD be used to
-request additional optional dependencies when installing deployment
-or build dependencies.
+The notation described in `Extras (optional dependencies)`__ SHOULD be used
+to determine exactly what gets installed for various operations.
 
 Installation tools SHOULD report an error if dependencies cannot be found,
 MUST at least emit a warning, and MAY allow the user to force the
 installation to proceed regardless.
 
-.. note::
-
-    As an example of mapping this to Linux distro packages, assume an
-    example project without any extras defined is split into 2 RPMs
-    in a SPEC file: example and example-devel
-
-    The ``distributes``, ``run_requires`` and applicable ``run_may_require``
-    dependencies would be mapped to the Requires dependencies for the
-    "example" RPM (a mapping from environment markers to SPEC file
-    conditions would also allow those to be handled correctly)
-
-    The ``build_requires`` and ``build_may_require`` dependencies would be
-    mapped to the BuildRequires dependencies for the "example" RPM.
-
-    All defined dependencies relevant to Linux, including those in
-    ``dev_requires`` and ``test_requires``, would become Requires
-    dependencies for the "example-devel" RPM.
-
-    If a project defines any extras, those would be mapped to additional
-    virtual RPMs with appropriate BuildRequires and Requires entries based
-    on the details of the dependency specifications.
-
-    A documentation toolchain dependency like Sphinx would either go in
-    ``build_requires`` (for example, if man pages were included in the
-    built distribution) or in ``dev_requires`` (for example, if the
-    documentation is published solely through ReadTheDocs or the
-    project website). This would be enough to allow an automated converter
-    to map it to an appropriate dependency in the spec file.
+See Appendix B for an overview of mapping these dependencies to an RPM
+spec file.
 
 
 Extras
@@ -1114,7 +1079,7 @@ Extras
 
 A list of optional sets of dependencies that may be used to define
 conditional dependencies in ``"may_distribute"``, ``"run_may_require"`` and
-similar fields. See `Extras (optional dependencies)`_ for details.
+similar fields. See `Extras (optional dependencies)`__ for details.
 
 The names of extras MUST abide by the same restrictions as those for
 distribution names.
@@ -1124,11 +1089,12 @@ Example::
     "extras": ["warmup"]
 
 
-Distributes
------------
+Meta requires
+-------------
 
-A list of subdistributions that can easily be installed and used together
-by depending on this metadistribution.
+An abbreviation of "metadistribution requires". This is a list of
+subdistributions that can easily be installed and used together by
+depending on this metadistribution.
 
 Automated tools MUST allow strict version matching and direct reference
 clauses in this field and MUST NOT allow more permissive version specifiers.
@@ -1142,15 +1108,16 @@ field.
 
 Example::
 
-    "distributes": ["ComfyUpholstery (== 1.0a2)",
-                    "ComfySeatCushion (== 1.0a2)"]
+    "meta_requires": ["ComfyUpholstery (== 1.0a2)",
+                      "ComfySeatCushion (== 1.0a2)"]
 
 
-May distribute
---------------
+Meta may require
+----------------
 
-A list of subdistributions that can easily be installed and used together
-by depending on this metadistribution, but are not required in all
+An abbreviation of "metadistribution may require". This is a list of
+subdistributions that can easily be installed and used together by
+depending on this metadistribution, but are not required in all
 circumstances.
 
 Any extras referenced from this field MUST be named in the `Extras`_ field.
@@ -1167,16 +1134,16 @@ field.
 
 Example::
 
-    "may_distribute": [
-          {
-            "dependencies": ["CupOfTeaAtEleven (== 1.0a2)"],
-            "environment": "'linux' in sys.platform"
-          }
+    "meta_may_require": [
+      {
+        "dependencies": ["CupOfTeaAtEleven (== 1.0a2)"],
+        "environment": "'linux' in sys.platform"
+      }
     ]
 
 
-Requires
---------
+Run requires
+------------
 
 A list of other distributions needed to actually run this distribution.
 
@@ -1186,11 +1153,11 @@ instead.
 
 Example::
 
-    "requires": ["SciPy", "PasteDeploy", "zope.interface (>3.5.0)"]
+    "run_requires": ["SciPy", "PasteDeploy", "zope.interface (>3.5.0)"]
 
 
-May require
------------
+Run may require
+---------------
 
 A list of other distributions that may be needed to actually run this
 distribution, based on the extras requested and the target deployment
@@ -1204,16 +1171,16 @@ instead.
 
 Example::
 
-        "may_require": [
-          {
-            "dependencies": ["pywin32 (>1.0)"],
-            "environment": "sys.platform == 'win32'"
-          },
-          {
-            "dependencies": ["SoftCushions"],
-            "extra": "warmup"
-          }
-        ]
+    "run_may_require": [
+      {
+        "dependencies": ["pywin32 (>1.0)"],
+        "environment": "sys.platform == 'win32'"
+      },
+      {
+        "dependencies": ["SoftCushions"],
+        "extra": "warmup"
+      }
+    ]
 
 Test requires
 -------------
@@ -1242,16 +1209,16 @@ references in this field and SHOULD at least emit a warning for such clauses.
 
 Example::
 
-        "test_may_require": [
-          {
-            "dependencies": ["pywin32 (>1.0)"],
-            "environment": "sys.platform == 'win32'"
-          },
-          {
-            "dependencies": ["CompressPadding"],
-            "extra": "warmup"
-          }
-        ]
+    "test_may_require": [
+      {
+        "dependencies": ["pywin32 (>1.0)"],
+        "environment": "sys.platform == 'win32'"
+      },
+      {
+        "dependencies": ["CompressPadding"],
+        "extra": "warmup"
+      }
+    ]
 
 
 Build requires
@@ -1291,16 +1258,16 @@ references in this field and SHOULD at least emit a warning for such clauses.
 
 Example::
 
-        "build_may_require": [
-          {
-            "dependencies": ["pywin32 (>1.0)"],
-            "environment": "sys.platform == 'win32'"
-          },
-          {
-            "dependencies": ["cython"],
-            "extra": "c-accelerators"
-          }
-        ]
+    "build_may_require": [
+      {
+        "dependencies": ["pywin32 (>1.0)"],
+        "environment": "sys.platform == 'win32'"
+      },
+      {
+        "dependencies": ["cython"],
+        "extra": "c-accelerators"
+      }
+    ]
 
 
 Dev requires
@@ -1344,12 +1311,12 @@ references in this field and SHOULD at least emit a warning for such clauses.
 
 Example::
 
-        "dev_may_require": [
-          {
-            "dependencies": ["pywin32 (>1.0)"],
-            "environment": "sys.platform == 'win32'"
-          }
-        ]
+    "dev_may_require": [
+      {
+        "dependencies": ["pywin32 (>1.0)"],
+        "environment": "sys.platform == 'win32'"
+      }
+    ]
 
 
 Provides
@@ -1472,8 +1439,8 @@ separated from the reference within the module by a colon (``:``).
 Example metabuild hooks::
 
     "metabuild_hooks": {
-        "postinstall": "myproject.build_hooks:postinstall",
-        "preuininstall": "myproject.build_hooks:preuninstall"
+      "postinstall": "myproject.build_hooks:postinstall",
+      "preuininstall": "myproject.build_hooks:preuninstall"
     }
 
 Build and installation tools MAY offer additional operations beyond the
@@ -1540,8 +1507,8 @@ distribution names, while the values may be any type natively supported
 in JSON::
 
     "extensions" : {
-        "chili" : { "type" : "Poblano", "heat" : "Mild" },
-        "languages" : [ "French", "Italian", "Hebrew" ]
+      "chili" : { "type" : "Poblano", "heat" : "Mild" },
+      "languages" : [ "French", "Italian", "Hebrew" ]
     }
 
 To avoid name conflicts, it is RECOMMENDED that distribution names be used
@@ -1584,29 +1551,32 @@ Other distributions require the additional dependencies by placing the
 relevant extra names inside square brackets after the distribution name when
 specifying the dependency.
 
-Extra specifications MUST support the following additional syntax:
+Extra specifications MUST allow the following additional syntax:
 
-* Multiple features can be requested by separating them with a comma within
+* Multiple extras can be requested by separating them with a comma within
   the brackets.
-* All explicitly defined extras may be requested with the ``*`` wildcard
-  character. Note that this does NOT request the implicitly defined
-  ``:test:``, ``:build:`` or ``:dev:`` extras - those must always be
-  requested explicitly when desired.
-* Extras may be explicitly excluded by prefixing their name with a hyphen.
-* The implicitly defined ``:run:`` extra may be requested in order to
-  install relevant dependencies defined in ``distributes``,
-  ``may_distribute``, ``run_requires`` and ``run_may_require`` (note that
-  in most cases, installation of these dependencies is automatically
-  implied when installing the distribution at all).
-* The implicitly defined ``:test:`` extra may be requested in order to
-  install relevant dependencies defined in ``test_requires`` and
-  ``test_may_require``.
-* The implicitly defined ``:build:`` extra may be requested in order to
-  install relevant dependencies defined in ``build_requires`` and
-  ``build_may_require``.
-* The implicitly defined ``:dev:`` extra may be requested in order to
-  install relevant dependencies defined in ``dev_requires`` and
-  ``dev_may_require``.
+* The following special extras request processing of the corresponding
+  lists of dependencies:
+
+  * ``:meta:``: ``meta_requires`` and ``meta_may_require``
+  * ``:run:``: ``run_requires`` and ``run_may_require``
+  * ``:test:``: ``test_requires`` and ``test_may_require``
+  * ``:build:``: ``build_requires`` and ``build_may_require``
+  * ``:dev:``: ``dev_requires`` and ``dev_may_require``
+  * ``:*:``: process *all* dependency lists
+
+* The ``*`` character as an extra is a wild card that enables all of the
+  entries defined in the distribution's ``extras`` field.
+* Extras may be explicitly excluded by prefixing their name with a ``-``
+  character (this is useful in conjunction with ``*`` to exclude only
+  particular extras that are definitely not wanted, while enabling all
+  others).
+
+* The ``-`` character as an extra specification indicates that the
+  distribution itself should NOT be installed, and also disables the
+  normally implied processing of ``:meta:`` and ``:run:`` dependencies
+  (those may still be requested explicitly using the appropriate extra
+  specifications).
 
 Command line based installation tools SHOULD support this same syntax to
 allow extras to be requested explicitly.
@@ -1614,7 +1584,7 @@ allow extras to be requested explicitly.
 The full set of dependency requirements is then based on the top level
 dependencies, along with those of any requested extras.
 
-Example::
+Dependency examples::
 
     "run_requires": ["ComfyChair[warmup]"]
         -> requires ``ComfyChair`` and ``SoftCushions`` at run time
@@ -1622,6 +1592,23 @@ Example::
     "run_requires": ["ComfyChair[*]"]
         -> requires ``ComfyChair`` and ``SoftCushions`` at run time, but
            will also pick up any new extras defined in later versions
+
+Command line examples::
+
+    pip install ComfyChair
+        -> installs ComfyChair with applicable :meta: and :run: dependencies
+
+    pip install ComfyChair[*]
+        -> as above, but also installs all extra dependencies
+
+    pip install ComfyChair[-,:build:,*]
+        -> installs just the build dependencies with all extras
+
+    pip install ComfyChair[-,:build:,:run:,:meta:,:test:,*]
+        -> as above, but also installs dependencies needed to run the tests
+
+    pip install ComfyChair[-,:*:,*]
+        -> installs the full set of development dependencies
 
 
 Environment markers
@@ -1699,6 +1686,10 @@ The ``python_full_version`` marker variable is derived from
             version += kind[0] + str(info.serial)
         return version
 
+``python_full_version`` will typically correspond to the leading segment
+of ``sys.version()``.
+
+
 Updating the metadata specification
 ===================================
 
@@ -1716,7 +1707,41 @@ Appendix A: Conversion notes for legacy metadata
 TBD pending feedback from Daniel & Donald
 
 
-Appendix B: Summary of differences from \PEP 345
+Appendix B: Mapping dependency declarations to an RPM SPEC file
+===============================================================
+
+
+As an example of mapping this to Linux distro packages, assume an
+example project without any extras defined is split into 2 RPMs
+in a SPEC file: ``example`` and ``example-devel``.
+
+The ``meta_requires``, ``run_requires`` and applicable
+``meta_may_require`` ``run_may_require`` dependencies would be mapped
+to the Requires dependencies for the "example" RPM (a mapping from
+environment markers relevant to Linux to SPEC file conditions would
+also allow those to be handled correctly)
+
+The ``build_requires`` and ``build_may_require`` dependencies would be
+mapped to the BuildRequires dependencies for the "example" RPM.
+
+All defined dependencies relevant to Linux, including those in
+``dev_requires``, ``test_requires``, ``dev_may_require``, and
+``test_may_require`` would become Requires dependencies for the
+"example-devel" RPM.
+
+If the project did define any extras, those would likely be mapped to
+additional virtual RPMs with appropriate BuildRequires and Requires
+entries based on the details of the dependency specifications.
+
+A documentation toolchain dependency like Sphinx would either go in
+``build_requires`` (for example, if man pages were included in the
+built distribution) or in ``dev_requires`` (for example, if the
+documentation is published solely through ReadTheDocs or the
+project website). This would be enough to allow an automated converter
+to map it to an appropriate dependency in the spec file.
+
+
+Appendix C: Summary of differences from \PEP 345
 =================================================
 
 * Metadata-Version is now 2.0, with semantics specified for handling
@@ -1740,7 +1765,7 @@ Appendix B: Summary of differences from \PEP 345
 
 * Added the source label mechanism as described in PEP 440
 
-* Support for different development, build, test and deployment dependencies
+* Support for different kinds of dependencies
 
 * The "Extras" optional dependency mechanism
 
@@ -1764,7 +1789,10 @@ Appendix B: Summary of differences from \PEP 345
 
 * Added "License URL" field
 
-* Explicit declaration of description markup format
+* Embedded text document support:
+
+  * Explicit declaration of description markup format
+  * Full embedded license text
 
 * With all due respect to Charles Schulz and Peanuts, many of the examples
   have been updated to be more `thematically appropriate`_ for Python ;)
@@ -1837,20 +1865,31 @@ Build labels
 See PEP 440 for the rationale behind the addition of this field.
 
 
-Development, build and deployment dependencies
-----------------------------------------------
+Support for different kinds of dependencies
+-------------------------------------------
 
-The separation of the ``run_requires``, ``build_requires`` and
-`dev_requires`` fields allows a distribution to indicate whether a
-dependency is needed specifically to develop, build or use the distribution.
+The separation of the five different kinds of dependency allows a
+distribution to indicate whether a dependency is needed specifically to
+develop, build, test or use the distribution.
 
 To allow for metadistributions like PyObjC, while still actively
 discouraging overly strict dependency specifications, the separate
-``distributes`` field is used to separate out those dependencies where
-exact version specifications are appropriate.
+``meta`` dependency fields are used to separate out those dependencies
+where exact version specifications are appropriate.
 
-As distribution metadata improves, this should allow much greater control
-over where particular dependencies end up being installed .
+The advantage of having these distinctions supported in the upstream Python
+specific metadata is that even if a project doesn't care about these
+distinction themselves, they may be more amenable to patches from
+downstream redistributors that separate the fields appropriately. Over time,
+this should allow much greater control over where and when particular
+dependencies end up being installed.
+
+The names for the dependency fields have been deliberately chosen to avoid
+conflicting with the existing terminology in setuptools and previous
+versions of the metadata standard. Specifically, the names ``requires``,
+``install_requires`` and ``setup_requires`` are not used, which will
+hopefully reduce confustion when converting legacy metadata to the new
+standard.
 
 
 Support for optional dependencies for distributions
@@ -1863,12 +1902,10 @@ derived from the equivalent system that is already in widespread use as
 part of ``setuptools`` and allows that aspect of the legacy ``setuptools``
 metadata to be accurately represented in the new metadata format.
 
-The ``:test:``, ``:build:`` and ``:dev:`` extras are implicitly defined for
-all distributions, as a way of exposing the other top level dependencies
-fields to the dependency specification system. Identifying test suite
-dependencies is already one of the most popular uses of the extras system
-in ``setuptools``, and the ``:test:`` extra in particular ties in nicely
-with the new metabuild hook for testing installed distributions.
+The additions to the extras syntax relative to setuptools are defined to
+make it easier to express the various possible combinations of dependencies,
+in particular those associated with build systems (with optional support
+for running the test suite) and development systems.
 
 
 Support for metadata extensions
@@ -1952,8 +1989,9 @@ platforms in a way that is actually amenable to automated processing. This
 has been used to replace several older fields with poorly defined semantics.
 
 For the moment, the old ``Requires-External`` field has been removed
-entirely. Possible replacements may be explored through the metadata
-extension mechanism.
+entirely. The combination of cleaner support for post install hooks and the
+metadata extension mechanism will hopefully prove to be a more useful
+replacement.
 
 
 Updated obsolescence mechanism
@@ -1971,21 +2009,27 @@ The ``Obsoletes-Dist`` header is removed rather than deprecated as it
 is not widely supported, and so removing it does not present any significant
 barrier to tools and projects adopting the new metadata format.
 
-Explicit markup for description
--------------------------------
 
-Currently, PyPI attempts to detect the markup format by rendering it as
-reStructuredText, and if that fails, treating it as plain text. Allowing
-the intended format to be stated explicitly will allow this guessing to be
-removed, and more informative error reports to be provided to users when
-a rendering error occurs.
+Embedded text documents
+-----------------------
+
+Currently, PyPI attempts to determine the description's markup format by
+rendering it as reStructuredText, and if that fails, treating it as plain
+text. Allowing the intended format to be stated explicitly will allow
+this guessing to be removed, and more informative error reports to be
+provided to users when a rendering error occurs.
 
 This is especially necessary since PyPI applies additional restrictions to
 the rendering process for security reasons, thus a description that renders
 correctly on a developer's system may still fail to render on the server.
 
+The embedded text document system used to achieve this then makes it
+relatively straightforward to allow declaration of alternative markup
+formats like HTML, Markdown and AsciiDoc, as well as to define a similar
+field for the project's license.
 
-Appendix C: Deferred features
+
+Appendix D: Deferred features
 =============================
 
 Several potentially useful features have been deliberately deferred in
@@ -2009,7 +2053,11 @@ following MIME type registration requests to IANA:
 * Full metadata: ``application/vnd.python.pymeta+json``
 * Abbreviated metadata: ``application/vnd.python.pymeta-short+json``
 * Essential dependency resolution metadata:
-  ``application/vnd.python.pymeta-deps+json``
+  ``application/vnd.python.pymeta-dependencies+json``
+
+It's even possible we may be able to just register the ``vnd.python``
+namespace under the banner of the PSF rather than having to register
+the individual subformats.
 
 
 String methods in environment markers
@@ -2038,7 +2086,7 @@ explicitly providing the parent namespace package).
 Example::
 
     "modules": [
-        "comfy.chair"
+      "comfy.chair"
     ]
 
 Explicitly providing a list of public module names will likely help
@@ -2047,6 +2095,53 @@ as providing richer static metadata for analysis from PyPI.
 
 However, this is just extra info that doesn't impact installing from wheels,
 so it is a good candidate for postponing to metadata 2.1.
+
+
+Changelog
+---------
+
+A text document field providing details of changes made to the distribution.
+
+The ``summary`` subfield should at least indicate which version the
+embedded list of changes is relative to. The summary may also be used
+to indicate another location for the details of changes (such as
+a reference to a ``NEWS`` or ``CHANGES`` file included with the
+distribution).
+
+The ``embedded`` subfield should describe the changes made to the
+distribution. This may take the form of a simple itemised list, or a
+more detailed explanation of the update.
+
+Example::
+
+    "changelog": {
+      "summary": "Changes since version 0.9",
+      "embedded": "<Itemised list of changes>"
+    }
+
+Current this information tends to be embedded in the description field
+(if it is provided at all). Separating it out may help nudge projects in
+the direction of providing one, as well as giving tools more flexibility
+in how they are displayed.
+
+However, this is just extra info that doesn't impact installing from wheels,
+so it is a good candidate for postponing to metadata 2.1.
+
+
+External text document references
+---------------------------------
+
+Rather than allowing embedded text documents to be referenced via URL and
+distributed separately, this PEP instead defines two metadata subsets
+that should support more reasonable caching and API designs (for example,
+only the essential dependency resolution metadata would be distributed
+through TUF, and it is entirely possible the updated sdist, wheel and
+installation database specs will use the abbreviated metadata, leaving
+the full metadata as the province of index servers).
+
+Future iterations may add an ``external`` subfield to the text document
+definition that allows the content to be provided as a URL reference
+rather than by directly embedding the content.
 
 
 Additional metabuild hooks
@@ -2143,24 +2238,12 @@ way it doesn't matter if the additional dependencies were requested
 explicitly or just happen to be available on the system.
 
 
-Appendix D: Rejected features
+Appendix E: Rejected features
 =============================
 
 The following features have been explicitly considered and rejected as
 introducing too much additional complexity for too small a gain in
 expressiveness.
-
-
-Detached metadata
------------------
-
-Rather than allowing some large items (such as the description field) to
-be distributed separately, this PEP instead defines two metadata subsets
-that should support more reasonable caching and API designs (for example,
-only the essential dependency resolution metadata would be distributed
-through TUF, and it is entirely possible the updated sdist, wheel and
-installation database specs will use the abbreviated metadata, leaving
-the full metadata as the province of index servers).
 
 
 Depending on source labels
