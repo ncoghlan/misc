@@ -667,7 +667,7 @@ warnings and MAY reject them entirely when direct references are used
 inappropriately.
 
 Depending on the use case, some appropriate targets for a direct URL
-reference are a source tarball, an sdist archive, a wheel archive or a
+reference are a source archive, an sdist, a wheel binary archive or a
 direct reference to a tag or specific commit in an online version control
 system. The exact URLs and targets supported will be automated tool
 specific.
