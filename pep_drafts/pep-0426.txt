@@ -794,6 +794,12 @@ The following document paths can be defined:
 If this field is provided at all, it MUST define at least one document
 path.
 
+Document paths MUST use the forward slash character (``"/"``) to separate
+directories, regardless of operating system.
+
+Document paths MUST be relative to the base of the sdist (a leading directory
+separate is NOT permitted).
+
 The markup format (if any) for the file is indicated by the file extension.
 See `Extracted documents`__ for details.
 
