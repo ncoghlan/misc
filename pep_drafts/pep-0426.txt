@@ -159,13 +159,13 @@ applications, collections of data or other resources, and various
 combinations thereof. Public Python projects are typically registered on
 the `Python Package Index <https://pypi.python.org>`__.
 
-"Versions" are uniquely identified snapshots of a project.
+"Releases" are uniquely identified snapshots of a project.
 
 "Distributions" are the packaged files which are used to publish
-and distribute the software.
+and distribute a release.
 
 "Source archive" and "VCS checkout" both refer to the raw source code for
-a distribution, prior to creation of an sdist or binary archive.
+a release, prior to creation of an sdist or binary archive.
 
 An "sdist" is a publication format providing the distribution metadata and
 and any source files that are essential to creating a binary archive for
@@ -194,6 +194,10 @@ sdists rather than prebuilt binary archives.
 
 "Index servers" are active distribution registries which publish version and
 dependency metadata and place constraints on the permitted metadata.
+
+"Public index servers" are index servers which allow distribution uploads
+from untrusted third parties. The
+`Python Package Index <https://pypi.python.org>`__ is a public index server.
 
 "Publication tools" are automated tools intended to run on development
 systems and upload source and binary distribution archives to index servers.
@@ -304,7 +308,7 @@ system to support other necessary development and publication activities:
 
 * ``python setup.py dist_info``: generate the ``pymeta.json`` file for a
   distribution
-* ``python setup.py make_sdist``: create an sdist from a source archive
+* ``python setup.py sdist``: create an sdist from a source archive
   or VCS checkout
 * ``python setup.py test``: run the distribution's test suite on a built
   (but not yet installed) distribution
@@ -429,22 +433,17 @@ When serialised to a file, the name used for this metadata set SHOULD
 be ``pymeta-dependencies.json``.
 
 
-Derived metadata
-----------------
+Included documents
+------------------
 
-Some metadata may be derived from the contents of a source or binary
-archive, rather than being specified separately. This iteration of the
-metadata defines the following sets of derived metadata:
+Rather than being incorporated directly into the structured metadata, some
+supporting documents are included alongside the metadata file in the
+``dist-info`` metadata directory.
 
-* Extracted documents: based on the ``document_paths`` field, certain text
-  documents may be extracted from an sdist and republished by index
-  servers. The `Extracted documents`__ section provides details on
-  which documents may be republished this way.
-
-Automated tools SHOULD NOT include any derived metadata in sdists.
-
-Automated tools MAY include derived metadata in the installation
-database and in binary archives.
+To accommodate the variety of existing naming conventions for these files,
+they are explicitly identified in the ``documents`` field, rather
+than expecting index servers and other automated tools to identify them
+automatically.
 
 
 Metadata validation
@@ -452,6 +451,9 @@ Metadata validation
 
 A `jsonschema <https://pypi.python.org/pypi/jsonschema>`__ description of
 the defined metadata schema will be provided prior to PEP acceptance.
+
+Except where otherwise noted, all URL fields in the metadata MUST comply
+with RFC 3986.
 
 
 Core metadata
@@ -506,7 +508,7 @@ permitted characters are constrained to:
 * hyphens (``-``)
 * periods (``.``)
 
-Distributions named MUST start and end with an ASCII letter or digit.
+Distribution names MUST start and end with an ASCII letter or digit.
 
 Automated tools MUST reject non-compliant names.
 
@@ -554,26 +556,9 @@ Example::
     the automated tools in the chain.
 
     PyPI has recently been updated to reject non-compliant names for newly
-    registered projects, but existing non-compliant names are still
-    tolerated when using legacy metadata formats. Affected distributions
-    will need to change their names (typically be replacing spaces with
-    hyphens) before they can migrate to the new metadata formats.
-
-    Donald Stufft ran an analysis, and the new restrictions impact less
-    than 230 projects out of the ~31k already on PyPI. This isn't that
-    surprising given the fact that many existing tools could already
-    exhibit odd behaviour when attempting to deal with non-compliant
-    names, implicitly discouraging the use of more exotic names.
-
-    Of those projects, ~200 have the only non-compliant character as an
-    internal space (e.g. "Twisted Web"). These will be automatically
-    migrated by replacing the spaces with hyphens (e.g. "Twisted-Web"),
-    which is what you have to actually type to install these distributions
-    with ``setuptools`` (which powers both ``easy_install`` and ``pip``).
-
-    The remaining ~30 will be investigated manually and decided upon on a
-    case by case basis how to migrate them to the new naming rules (in
-    consultation with the maintainers of those projects where possible).
+    registered projects, and the ~230 existing non-compliant names have
+    been updated to become compliant (mostly by replacing spaces with
+    hyphens).
 
 
 Version
@@ -642,11 +627,12 @@ commit in an online version control system that permits creation of a
 suitable VCS checkout. It is intended primarily for integrators that
 wish to recreate the distribution from the original source form.
 
-All source URL references SHOULD either specify a secure transport
-mechanism (such as ``https``) or else include an expected hash value in the
-URL for verification purposes. If an insecure transport is specified without
-any hash information (or with hash information that the tool doesn't
-understand), automated tools SHOULD at least emit a warning and MAY
+All source URL references SHOULD specify a secure transport
+mechanism (such as ``https``), include an expected hash value in the
+URL for verification purposes, or both. If an insecure transport is specified
+without any hash information, with hash information that the tool doesn't
+understand, or with a selected hash algortihm that the tool considers too
+weak to trust, automated tools SHOULD at least emit a warning and MAY
 refuse to rely on the URL.
 
 It is RECOMMENDED that only hashes which are unconditionally provided by
@@ -724,7 +710,7 @@ This field SHOULD contain fewer than 512 characters and MUST contain fewer
 than 2048.
 
 A more complete description SHOULD be included as a separate file in the
-sdist for the distribution. See `Extracted documents`__ for details.
+sdist for the distribution. See `Documents`__ for details.
 
 Example::
 
@@ -746,7 +732,7 @@ This field SHOULD contain fewer than 512 characters and MUST contain fewer
 than 2048.
 
 The full license text SHOULD be included as a separate file in the source
-archive for the distribution. See `Extracted documents`__ for details.
+archive for the distribution. See `Documents`__ for details.
 
 Example::
 
@@ -779,33 +765,51 @@ Example::
     ]
 
 
-Document paths
---------------
+Documents
+---------
 
-A list of paths within the distribution's sdist identifying text documents
-providing additional information about the distribution.
+Filenames for supporting documents included in the distribution's
+``dist-info`` metadata directory.
 
-The following document paths can be defined:
+The following supporting documents can be named:
 
 * ``description``: a file containing a long description of the distribution
 * ``license``: a file with the full text of the distribution's license
 * ``changelog``: a file describing changes made to the distribution
 
-If this field is provided at all, it MUST define at least one document
-path.
+If this field is provided at all, it MUST name at least one included
+document.
 
-Document paths MUST use the forward slash character (``"/"``) to separate
-directories, regardless of operating system.
-
-Document paths MUST be relative to the base of the sdist (a leading directory
-separate is NOT permitted).
+Supporting documents MUST be included directly in the ``dist-info``
+directory. Directory separators are NOT permitted in document names.
 
 The markup format (if any) for the file is indicated by the file extension.
-See `Extracted documents`__ for details.
+This allows index servers and other automated tools to render included
+text documents correctly and provide feedback on rendering errors, rather
+than having to guess the intended format.
+
+If the filename has no extension, or the extension is not recognised, the
+default rendering format MUST be plain text.
+
+The following markup renderers SHOULD be used for the specified file
+extensions:
+
+* Plain text: ``.txt``, no extension, unknown extension
+* reStructured Text: ``.rst``
+* Markdown: ``.md``
+* AsciiDoc: ``.adoc``, ``.asc``, ``.asciidoc``
+* HTML: ``.html``, ``.htm``
+
+Automated tools MAY render one or more of the specified formats as plain
+text and MAY render other markup formats beyond those listed.
+
+Automated tools SHOULD NOT make any assumptions regarding the maximum length
+of supporting document content, except as necessary to protect the
+integrity of a service.
 
 Example::
 
-    "document_paths": {
+    "documents": {
         "description": "README.rst",
         "license": "LICENSE.rst",
         "changelog": "NEWS"
@@ -829,6 +833,12 @@ The ``name`` subfield is required, the other subfields are optional.
 
 If no specific role is stated, the default is ``contributor``.
 
+Email addresses must be in the form ``local-part@domain`` where the
+local-part may be up to 64 characters long and the entire email address
+contains no more than 254 characters. The formal specification of the
+format is in RFC 5322 (sections 3.2.3 and 3.4.1) and RFC 5321, with a more
+readable form given in the informational RFC 3696 and the associated errata.
+
 The defined contributor roles are as follows:
 
 * ``author``: the original creator of a distribution
@@ -849,11 +859,6 @@ The defined contributor roles are as follows:
 Contact and contributor metadata is optional. Automated tools MUST operate
 correctly if a distribution does not provide it, including failing cleanly
 when an operation depending on one of these fields is requested.
-
-.. note::
-
-   TODO: Add the appropriate RFC refs to constrain the values in the email
-   field.
 
 
 Contacts
@@ -937,10 +942,27 @@ Dependency metadata allows distributions to make use of functionality
 provided by other distributions, without needing to bundle copies of those
 distributions.
 
-Semantic dependencies are designed to allow integrators to install just the
-dependencies they need for specific activities, making it easier to
-minimise installation footprints in constrained environments (regardless
-of the reasons for the constraints).
+Semantic dependencies allow publishers to indicate not only which other
+distirbutions are needed, but also *why* they're needed. This additional
+information allows integrators to install just the dependencies they need
+for specific activities, making it easier to minimise installation
+footprints in constrained environments (regardless of the reasons for
+those constraints).
+
+Distributions may declare five differents kinds of dependency:
+
+* "Meta" dependencies: subdistributions that are grouped together into a
+  single larger metadistribution for ease of reference and installation.
+* Runtime dependencies: other distributions that are needed to actually use
+  this distribution (but are not considered subdistributions).
+* Test dependencies: other distributions that are needed to run the
+  automated test suite for this distribution (but are not needed just to
+  use it).
+* Build dependencies: other distributions that are needed to build this
+  distribution.
+* Development dependencies: other distributions that are needed when
+  working on this distribution (but do not fit into one of the other
+  dependency categories).
 
 Dependency management is heavily dependent on the version identification
 and specification scheme defined in PEP 440.
@@ -1100,11 +1122,15 @@ An abbreviation of "metadistribution requires". This is a list of
 subdistributions that can easily be installed and used together by
 depending on this metadistribution.
 
-Automated tools MUST allow strict version matching and direct reference
-clauses in this field and MUST NOT allow more permissive version specifiers.
+In this field, automated tools:
 
-Index servers MAY place additional restrictions on direct references (such
-as requiring all references be to files hosted on the index server itself).
+* MUST allow strict version matching
+* MAY allow direct reference clauses
+* MUST NOT allow more permissive version specifiers.
+
+Public index servers SHOULD NOT allow the use of direct references in
+uploaded distributions. Direct references are intended as a tool for
+software integrators rather than publishers.
 
 Distributions that rely on direct references to platform specific binary
 archives SHOULD place appropriate entries in their ``supports_environment``
@@ -1126,11 +1152,15 @@ circumstances.
 
 Any extras referenced from this field MUST be named in the `Extras`_ field.
 
-Automated tools MUST allow strict version matching and direct reference
-clauses in this field and MUST NOT allow more permissive version specifiers.
+In this field, automated tools:
 
-Index servers MAY place additional restrictions on direct references (such
-as requiring all references be to files hosted on the index server itself).
+* MUST allow strict version matching
+* MAY allow direct reference clauses
+* MUST NOT allow more permissive version specifiers.
+
+Public index servers SHOULD NOT allow the use of direct references in
+uploaded distributions. Direct references are intended as a tool for
+software integrators rather than publishers.
 
 Distributions that rely on direct references to platform specific binary
 archives SHOULD place appropriate entries in their ``supports_environment``
@@ -1152,8 +1182,8 @@ Run requires
 A list of other distributions needed to actually run this distribution.
 
 Automated tools MUST NOT allow strict version matching clauses or direct
-references in this field - such clauses should appear in ``distributes``
-instead.
+references in this field - if permitted at all, such clauses should appear
+in ``meta_requires`` instead.
 
 Example::
 
@@ -1170,8 +1200,8 @@ environment.
 Any extras referenced from this field MUST be named in the `Extras`_ field.
 
 Automated tools MUST NOT allow strict version matching clauses or direct
-references in this field - such clauses should appear in ``may_distribute``
-instead.
+references in this field - if permitted at all, such clauses should appear
+in ``meta_may_require`` instead.
 
 Example::
 
@@ -1186,14 +1216,18 @@ Example::
       }
     ]
 
+
 Test requires
 -------------
 
 A list of other distributions needed in order to run the automated tests
 for this distribution..
 
-Automated tools MAY disallow strict version matching clauses and source
+Automated tools MAY disallow strict version matching clauses and direct
 references in this field and SHOULD at least emit a warning for such clauses.
+
+Public index servers SHOULD disallow strict version matching clauses and
+direct references in this field.
 
 Example::
 
@@ -1208,8 +1242,11 @@ automated tests for this distribution.
 
 Any extras referenced from this field MUST be named in the `Extras`_ field.
 
-Automated tools MAY disallow strict version matching clauses and source
+Automated tools MAY disallow strict version matching clauses and direct
 references in this field and SHOULD at least emit a warning for such clauses.
+
+Public index servers SHOULD disallow strict version matching clauses and
+direct references in this field.
 
 Example::
 
@@ -1234,8 +1271,11 @@ A list of other distributions needed when this distribution is being built
 Note that while these are build dependencies for the distribution being
 built, the installation is a *deployment* scenario for the dependencies.
 
-Automated tools MAY disallow strict version matching clauses and source
+Automated tools MAY disallow strict version matching clauses and direct
 references in this field and SHOULD at least emit a warning for such clauses.
+
+Public index servers SHOULD disallow strict version matching clauses and
+direct references in this field.
 
 Example::
 
@@ -1257,8 +1297,11 @@ Any extras referenced from this field MUST be named in the `Extras`_ field.
 Automated tools MAY assume that all extras are implicitly requested when
 installing build dependencies.
 
-Automated tools MAY disallow strict version matching clauses and source
+Automated tools MAY disallow strict version matching clauses and direct
 references in this field and SHOULD at least emit a warning for such clauses.
+
+Public index servers SHOULD disallow strict version matching clauses and
+direct references in this field.
 
 Example::
 
@@ -1287,8 +1330,11 @@ Additional dependencies that may be listed in this field include:
 * tools needed to generate project documentation that is published online
   rather than distributed along with the rest of the software
 
-Automated tools MAY disallow strict version matching clauses and source
+Automated tools MAY disallow strict version matching clauses and direct
 references in this field and SHOULD at least emit a warning for such clauses.
+
+Public index servers SHOULD disallow strict version matching clauses and
+direct references in this field.
 
 Example::
 
@@ -1310,8 +1356,11 @@ Any extras referenced from this field MUST be named in the `Extras`_ field.
 Automated tools MAY assume that all extras are implicitly requested when
 installing development dependencies.
 
-Automated tools MAY disallow strict version matching clauses and source
+Automated tools MAY disallow strict version matching clauses and direct
 references in this field and SHOULD at least emit a warning for such clauses.
+
+Public index servers SHOULD disallow strict version matching clauses and
+direct references in this field.
 
 Example::
 
@@ -1341,6 +1390,19 @@ that this project is a substitute for another.
 For instance, with distribute merged back into setuptools, the merged
 project is able to include a ``"provides": ["distribute"]`` entry to
 satisfy any projects that require the now obsolete distribution's name.
+
+To avoid malicious hijacking of names, when interpreting metadata retrieved
+from a public index server, automated tools MUST prefer the distribution
+named in a version specifier over other distributions using that
+distribution's name in a ``"provides"`` entry. Index servers MAY drop such
+entries from the metadata they republish, but SHOULD NOT refuse to publish
+such distributions.
+
+However, to appropriately handle project forks and mergers, automated tools
+MUST accept ``"provides"`` entries that name other distributions when the
+entry is retrieved from a local installation database or when there is a
+corresponding ``"obsoleted_by"`` entry in the metadata for the named
+distribution.
 
 A distribution may also provide a "virtual" project name, which does
 not correspond to any separately distributed project:  such a name
@@ -1490,6 +1552,16 @@ The expected signatures of these hooks are as follows::
 
 Metabuild hooks MUST be called with at least abbreviated metadata, and MAY
 be called with full metadata.
+
+To avoid depending on specific parameter names, metabuild hooks MUST be
+called solely with positional arguments.
+
+Installation tools MUST NOT silently ignore the ``postinstall`` and
+``preuninstall`` metabuild hooks, as failing to call these hooks may
+result in a misconfigured installation that fails unexpectedly at runtime.
+Installation tools MAY refuse to install distributions that define these
+hooks, or require that users explicitly opt in to permitting the execution
+of such hooks.
 
 Metabuild hook implementations MUST NOT make any assumptions regarding the
 current working directory when they are invoked, and SHOULD NOT make
@@ -1694,120 +1766,6 @@ The ``python_full_version`` marker variable is derived from
 of ``sys.version()``.
 
 
-Extracted documents
-===================
-
-Based on the ``document_paths`` field, some documents may be extracted
-and republished by index servers and other automated tools.
-
-Each extracted document is described using the following fields:
-
-* ``summary``: a short summary of the field contents.
-* ``path``: the path of the document within the sdist
-* ``text``: the content of the document
-
-Automated tools SHOULD NOT make any assumptions regarding the maximum length
-of extracted text document content, except as necessary to protect the
-integrity of a service.
-
-The file extension on the ``path`` subfield allows index servers and other
-automated tools to render extracted text documents correctly and provide
-feedback on rendering errors, rather than having to guess the intended
-format.
-
-If the file path has no extension, or the extension is not recognised, the
-default rendering format MUST be plain text.
-
-The following markup formats SHOULD be used for the specified file
-extensions:
-
-* Plain text: ``.txt`` (also default handling)
-* reStructured Text: ``.rst``
-* Markdown: ``.md``
-* AsciiDoc: ``.adoc``, ``.asc``, ``.asciidoc``
-* HTML: ``.html``, ``.htm``
-
-Automated tools MAY render one or more of the specified formats as plain
-text and MAY render other markup formats beyond those listed.
-
-
-Description
------------
-
-An extracted document providing general information about the distribution.
-
-The ``summary`` subfield is take from the ``summary`` field of the main
-distribution metadata.
-
-The ``path`` subfield is taken from the ``description`` subfield of the
-``document_paths`` field
-
-The ``text`` subfield is read from the specified path within the sdist.
-
-Example::
-
-    {
-      "summary": "A module that is more fiendish than soft cushions.",
-      "path": "README.rst",
-      "text": "The ComfyChair module replaces SoftCushions.\\n\\nUse until lunchtime, but pause for a cup of coffee at eleven."
-    }
-
-When serialised to a file, the name used for this extracted document SHOULD
-be ``pymeta-description.json``.
-
-
-License
--------
-
-An extracted document providing details of the distribution's license.
-
-The ``summary`` subfield is take from the ``license`` field of the main
-distribution metadata.
-
-The ``path`` subfield is taken from the ``license`` subfield of the
-``document_paths`` field
-
-The ``text`` subfield is read from the specified path within the sdist.
-
-Example::
-
-    {
-      "summary": "GPL version 3, excluding DRM provisions",
-      "path": "LICENSE.rst",
-      "text": "<Full license text>"
-    }
-
-When serialised to a file, the name used for this extracted document SHOULD
-be ``pymeta-license.json``.
-
-
-Changelog
----------
-
-An extracted document providing details of changes made to the distribution.
-
-The ``summary`` subfield is derived from the ``name`` and ``version``
-fields of the main distribution metadata using the format::
-
-    Changelog for {name} ({version})
-
-The ``path`` subfield is taken from the ``changelog`` subfield of the
-``document_paths`` field
-
-The ``text`` subfield is read from the specified path within the sdist.
-
-Example::
-
-    {
-      "summary": "Changelog for ComfyChair (1.0a2)",
-      "path": "NEWS",
-      "text": "<Full changelog contents>"
-    }
-
-When serialised to a file, the name used for this extracted document SHOULD
-be ``pymeta-changelog.json``.
-
-
 Updating the metadata specification
 ===================================
 
@@ -1905,11 +1863,11 @@ Appendix C: Summary of differences from \PEP 345
 
 * Updated obsolescence mechanism
 
-* Mechanism for extracting documents from the sdist for republication:
+* Identification of supporting documents in the ``dist-info`` directory:
 
   * Allows markup formats to be indicated through file extensions
   * Standardises the common practice of taking the description from README
-  * Also supports extraction of license files and changelogs
+  * Also supports inclusion of license files and changelogs
 
 * With all due respect to Charles Schulz and Peanuts, many of the examples
   have been updated to be more `thematically appropriate`_ for Python ;)
@@ -2127,8 +2085,8 @@ is not widely supported, and so removing it does not present any significant
 barrier to tools and projects adopting the new metadata format.
 
 
-Extracted text documents
-------------------------
+Included text documents
+-----------------------
 
 Currently, PyPI attempts to determine the description's markup format by
 rendering it as reStructuredText, and if that fails, treating it as plain
@@ -2141,10 +2099,10 @@ only expected to increase, as many online version control systems
 on the landing page for the project.
 
 Standardising on the inclusion of the long description as a separate
-file in the sdist allows this to be simplified:
+file in the ``dist-info`` directory allows this to be simplified:
 
-* A separate file is required and then referenced from the metadata, rather
-  than copied into it
+* An existing file can just be copied into the ``dist-info`` directory as
+  part of creating the sdist
 * The expected markup format can be determined by inspecting the file
   extension of the specified path
 
@@ -2156,11 +2114,21 @@ This is especially helpful since PyPI applies additional restrictions to
 the rendering process for security reasons, thus a description that renders
 correctly on a developer's system may still fail to render on the server.
 
-The text document extraction system used to achieve this then makes it
-relatively straightforward to allow declaration of alternative markup
-formats like HTML, Markdown and AsciiDoc through the use of appropriate
-file extensions, as well as to define similar fields for the project's
-license and changelog.
+The document naming system used to achieve this then makes it relatively
+straightforward to allow declaration of alternative markup formats like
+HTML, Markdown and AsciiDoc through the use of appropriate file
+extensions, as well as to define similar included documents for the
+project's license and changelog.
+
+Grouping the included document names into a single top level field gives
+automated tools the option of treating them as arbitrary documents without
+worrying about their contents.
+
+Requiring that the included documents be added to the ``dist-info`` metadata
+directory means that the complete metadata for the distribution can be
+extracted from an sdist or binary archive simply by extracting that
+directory, without needing to check for references to other files in the
+sdist.
 
 
 Appendix D: Deferred features
@@ -2403,6 +2371,14 @@ Accordingly, the ``test_installed_dist`` metabuild hook has been removed,
 and the ``test_built_dist`` hook has been defined. However, along with most
 of the other metabuild hooks, further consideration has been deferred until
 metadata 2.1 at the earliest.
+
+
+Requiring acceptance of arbitrary keyword arguments in metabuild hooks
+----------------------------------------------------------------------
+
+This specification is versioned. If the signature of the metabuild hooks
+changes, then the version number will be updated and tools will know which
+version of the hook API to invoke.
 
 
 References

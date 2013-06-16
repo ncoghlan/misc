@@ -33,21 +33,21 @@
       "description": "A one-line summary of what the distribution does.",
       "type": "string"
     },
-    "document_paths": {
-      "description": "Paths to particular documents in the sdist",
+    "documents": {
+      "description": "Names of supporting metadata documents",
       "type": "object",
       "properties": {
         "description": {
           "type": "string",
-          "$ref": "#/definitions/sdist_path"
+          "$ref": "#/definitions/document_name"
         },
         "changelog": {
           "type": "string",
-          "$ref": "#/definitions/sdist_path"
+          "$ref": "#/definitions/document_name"
         },
         "license": {
           "type": "string",
-          "$ref": "#/definitions/sdist_path"
+          "$ref": "#/definitions/document_name"
         }
       },
       "additionalProperties": false
@@ -237,7 +237,7 @@
     "environment_marker": {
         "type": "string"
     },
-    "sdist_path": {
+    "document_name": {
         "type": "string"
     }
   }
