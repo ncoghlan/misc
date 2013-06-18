@@ -441,7 +441,7 @@ supporting documents are included alongside the metadata file in the
 ``dist-info`` metadata directory.
 
 To accommodate the variety of existing naming conventions for these files,
-they are explicitly identified in the ``documents`` field, rather
+they are explicitly identified in the ``document_names`` field, rather
 than expecting index servers and other automated tools to identify them
 automatically.
 
@@ -710,7 +710,7 @@ This field SHOULD contain fewer than 512 characters and MUST contain fewer
 than 2048.
 
 A more complete description SHOULD be included as a separate file in the
-sdist for the distribution. See `Documents`__ for details.
+sdist for the distribution. See `Document names`__ for details.
 
 Example::
 
@@ -732,7 +732,7 @@ This field SHOULD contain fewer than 512 characters and MUST contain fewer
 than 2048.
 
 The full license text SHOULD be included as a separate file in the source
-archive for the distribution. See `Documents`__ for details.
+archive for the distribution. See `Document names`__ for details.
 
 Example::
 
@@ -765,8 +765,8 @@ Example::
     ]
 
 
-Documents
----------
+Document names
+--------------
 
 Filenames for supporting documents included in the distribution's
 ``dist-info`` metadata directory.
@@ -809,7 +809,7 @@ integrity of a service.
 
 Example::
 
-    "documents": {
+    "document_names": {
         "description": "README.rst",
         "license": "LICENSE.rst",
         "changelog": "NEWS"
@@ -1486,14 +1486,15 @@ Examples::
    as Python 2 only and Python 3 only distributions.
 
 
-Metabuild system
-================
+Install hooks
+=============
 
-The ``metabuild_hooks`` field is used to define various operations that
-may be invoked on a distribution in a platform independent manner.
+The ``install_hooks`` field is used to define various operations that
+may be invoked on a distribution at install time in a platform
+independent manner.
 
-The metabuild system currently defines two operations as part of the
-deployment of a distribution:
+The install hooks system currently defines two operations as part of the
+installation of a distribution:
 
 * Installing to a deployment system
 * Uninstalling from a deployment system
@@ -1502,22 +1503,14 @@ Distributions may define handlers for each of these operations as an
 "entry point", a reference to a Python callable, with the module name
 separated from the reference within the module by a colon (``:``).
 
-Example metabuild hooks::
+Example install hooks::
 
-    "metabuild_hooks": {
+    "install_hooks": {
       "postinstall": "myproject.build_hooks:postinstall",
       "preuininstall": "myproject.build_hooks:preuninstall"
     }
 
-Build and installation tools MAY offer additional operations beyond the
-core metabuild operations. These operations SHOULD be composed from the
-defined metabuild operations where appropriate.
-
-Build and installation tools SHOULD support the legacy ``setup.py`` based
-commands for metabuild operations not yet defined as metabuild hooks.
-
-The metabuild hooks are gathered together into a single top level
-``metabuild_hooks`` field. The individual hooks are:
+The currently defined install hooks are:
 
 * ``postinstall``: run after the distribution has been installed to a
   target deployment system (or after it has been upgraded). If the hook is
@@ -1535,7 +1528,7 @@ The expected signatures of these hooks are as follows::
 
         *current_meta* is the distribution metadata for the version now
         installed on the current system
-        *previous_meta* is either missing or ``None`` (indicating a fresh
+        *previous_meta* is either omitted or ``None`` (indicating a fresh
         install) or else the distribution metadata for the version that
         was previously installed (indicating an upgrade or downgrade).
         """
@@ -1545,33 +1538,52 @@ The expected signatures of these hooks are as follows::
 
         *current_meta* is the distribution metadata for the version now
         installed on the current system
-        *next_meta* is either missing or ``None`` (indicating complete
+        *next_meta* is either omitted or ``None`` (indicating complete
         uninstallation) or else the distribution metadata for the version
         that is about to be installed (indicating an upgrade or downgrade).
         """
 
-Metabuild hooks MUST be called with at least abbreviated metadata, and MAY
-be called with full metadata.
+Install hooks SHOULD NOT be used to provide functionality that is
+expected to be provided by installation tools (such as rewriting of
+shebang lines and generation of executable wrappers for Windows).
 
-To avoid depending on specific parameter names, metabuild hooks MUST be
-called solely with positional arguments.
+Installation tools MUST ensure the distribution is fully installed, and
+available through the import system and installation database when invoking
+install hooks.
 
-Installation tools MUST NOT silently ignore the ``postinstall`` and
-``preuninstall`` metabuild hooks, as failing to call these hooks may
-result in a misconfigured installation that fails unexpectedly at runtime.
-Installation tools MAY refuse to install distributions that define these
-hooks, or require that users explicitly opt in to permitting the execution
-of such hooks.
+Installation tools MUST call install hooks with full metadata, rather than
+only the essential dependency resolution metadata.
 
-Metabuild hook implementations MUST NOT make any assumptions regarding the
-current working directory when they are invoked, and SHOULD NOT make
+The given parameter names are considered part of the hook signature.
+Installation tools MUST call install hooks solely with keyword arguments.
+Install hook implementations MUST use the given parameter names.
+
+Installation tools SHOULD invoke install hooks automatically after
+installing a distribution from a binary archive. When installing from
+an sdist, source archive or VCS checkout using ``setup.py install``
+installation tools MUST NOT invoke the install hooks - it is assumed
+that the ``setup.py`` script will already invoke any necessary
+post-installation behaviour.
+
+Installation tools MUST NOT silently ignore install hooks, as failing
+to call these hooks may result in a misconfigured installation that fails
+unexpectedly at runtime. Installation tools MAY refuse to install
+distributions that define install hooks, or require that users
+explicitly opt in to permitting the execution of such hooks.
+
+Install hook implementations MUST NOT make any assumptions regarding the
+current working directory when they are invoked, and MUST NOT make
 persistent alterations to the working directory or any other process global
-state.
+state (other than potentially importing additional modules).
 
-Where necessary, metabuild hooks check for the presence or absence of
-optional dependencies defined as extras using the same techniques used
-during normal operation of the distribution (for example, checking for
-import failures for optional dependencies).
+Install hooks have access to the full metadata for the release being
+installed, that of the previous/next release (as appropriate), as well as
+to all the normal runtime information (such as available imports). Hook
+implementations can use this information to perform additional platform
+specific installation steps. To check for the presence or absence of
+"extras", hook implementations should use the same runtime checks that
+would be used during normal operation (such as checking for the availability
+of the relevant dependencies).
 
 
 Metadata Extensions
@@ -1847,7 +1859,7 @@ Appendix C: Summary of differences from \PEP 345
 
 * A well-defined metadata extension mechanism
 
-* Metabuild hook system
+* Install hook system
 
 * Clarify and simplify various aspects of environment markers:
 
@@ -1916,7 +1928,7 @@ eventually even the option to embed arbitrary JSON inside particular
 subfields.
 
 The old serialisation format also wasn't amenable to easy conversion to
-standard Python data structures for use in the new metabuild hook APIs, or
+standard Python data structures for use in the new install hook APIs, or
 in future extensions to the importer APIs to allow them to provide
 information for inclusion in the installation database.
 
@@ -1997,17 +2009,15 @@ the chosen extension, and the new extras mechanism, allowing support for
 particular extensions to be provided as optional features.
 
 
-Support for metabuild hooks
+Support for install hooks
 ---------------------------
 
-The new metabuild system is designed to allow the wheel format to fully
+The new install hook system is designed to allow the wheel format to fully
 replace direct installation on deployment targets, by allowing projects like
 Twisted to still execute code following installation from a wheel file.
 
-Falling back to invoking ``setup.py`` directly rather than using a
-metabuild hook will remain an option when relying on version 1.x metadata,
-and is also used as the interim solution for installation from source
-archives.
+Falling back to invoking ``setup.py install`` directly remains as the
+interim solution for installation from source archives.
 
 
 Changes to environment markers
@@ -2190,10 +2200,15 @@ from wheels, so it is a good candidate for postponing to metadata 2.1
 (at the earliest).
 
 
-Additional metabuild hooks
---------------------------
+Metabuild system
+----------------
 
-The following draft metabuild operations have been deferred for now:
+This version of the metadata specification continues to use ``setup.py``
+and the distutils command syntax to invoke build and test related
+operations on a source archive or VCS checkout.
+
+It may be desirable to replace these in the future with tool independent
+entry points that support:
 
 * Generating the metadata file on a development system
 * Generating an sdist on a development system
@@ -2201,8 +2216,8 @@ The following draft metabuild operations have been deferred for now:
 * Running the test suite on a built (but not installed) distribution
 
 Metadata 2.0 deliberately focuses on wheel based installation, leaving
-tarball and sdist based installation to use the existing ``setup.py``
-based ``distutils`` command interface.
+sdist, source archive, and VCS checkout based installation to use the
+existing ``setup.py`` based ``distutils`` command interface.
 
 In the meantime, the above operations will be handled through the
 ``distutils``/``setuptools`` command system:
@@ -2212,7 +2227,7 @@ In the meantime, the above operations will be handled through the
 * ``python setup.py bdist_wheel``
 * ``python setup.py test``
 
-The following additional metabuild hooks may be added in metadata 2.1 to
+The following metabuild hooks may be defined in metadata 2.1 to
 cover these operations without relying on ``setup.py``:
 
 * ``make_dist_info``: generate the sdist's dist_info directory
@@ -2278,7 +2293,7 @@ use cases, they will not be pursued further until metadata 2.1::
         Returns ``True`` if the check passes, ``False`` otherwise.
         """
 
-As with the existing metabuild hooks, checking for extras would be done
+As with the existing install hooks, checking for extras would be done
 using the same import based checks as are used for runtime extras. That
 way it doesn't matter if the additional dependencies were requested
 explicitly or just happen to be available on the system.
@@ -2356,10 +2371,10 @@ is rejected unless someone can present a compelling use case (and even then
 the idea won't be reconsidered until metadata 2.1 at the earliest).
 
 
-A metabuild hook for running tests on installed distributions
+An install hook for running tests on installed distributions
 -------------------------------------------------------------
 
-Earlier drafts of this PEP defined a metabuild hook for running automated
+Earlier drafts of this PEP defined a hook for running automated
 tests against an *installed* distribution. This isn't actually what you
 generally want - you want the ability to test a *built* distribution,
 potentially relying on files which won't be included in the binary archives.
@@ -2367,18 +2382,44 @@ potentially relying on files which won't be included in the binary archives.
 RPM's "check" step also runs between the build step and the install step,
 rather than after the install step.
 
-Accordingly, the ``test_installed_dist`` metabuild hook has been removed,
-and the ``test_built_dist`` hook has been defined. However, along with most
-of the other metabuild hooks, further consideration has been deferred until
-metadata 2.1 at the earliest.
+Accordingly, the ``test_installed_dist`` hook has been removed, and the
+``test_built_dist`` metabuild hook has been tentatively defined. However,
+along with the rest of the metabuild hooks, further consideration has been
+deferred until metadata 2.1 at the earliest.
 
 
-Requiring acceptance of arbitrary keyword arguments in metabuild hooks
-----------------------------------------------------------------------
+Extensible signatures for the install hooks
+-------------------------------------------
 
-This specification is versioned. If the signature of the metabuild hooks
-changes, then the version number will be updated and tools will know which
-version of the hook API to invoke.
+The install hooks have been deliberately designed to NOT accept arbitary
+keyword arguments that the hook implementation is then expected to ignore.
+
+The argument in favour of that API design technique is to allow the addition
+of new optional arguments in the future, without requiring the definition
+of a new install hook, or migration to version 3.0 of the metadata
+specification. It is a technique very commonly seen in function wrappers
+which merely pass arguments along to the inner function rather than
+processing them directly.
+
+However, the install hooks are already designed to have access to the full
+metadata for the distribution (including all metadata extensions and
+the previous/next version when appropriate), as well as to the full target
+deployment environment.
+
+This means the only possible candidate for additional information that
+could be passed as arbitrary keyword arguments is installer dependent
+settings. Endorsing that practice runs explicitly counter to one of the
+core goals of the metadata 2.0 specification: decoupling the software
+developer's choice of development and publication tools from the software
+integrator's choice of integration and deployment tools.
+
+In the event the current design proves too limiting in practice (which
+seems unlikely), installer developers may either implicitly inject an
+additional metadata extension when invoking the install hook, or else
+define an alternate hook signature as a distinct metadata extension to be
+provided by the distribution. Either approach makes the introduction of
+installer-dependent behaviour suitably explicit in either the install hook
+implementation or the distribution metadata.
 
 
 References

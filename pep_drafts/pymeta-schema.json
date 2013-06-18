@@ -33,7 +33,7 @@
       "description": "A one-line summary of what the distribution does.",
       "type": "string"
     },
-    "documents": {
+    "document_names": {
       "description": "Names of supporting metadata documents",
       "type": "object",
       "properties": {
