@@ -1133,7 +1133,7 @@ uploaded distributions. Direct references are intended as a tool for
 software integrators rather than publishers.
 
 Distributions that rely on direct references to platform specific binary
-archives SHOULD place appropriate entries in their ``supports_environment``
+archives SHOULD place appropriate entries in their ``supports_environments``
 field.
 
 Example::
@@ -1163,7 +1163,7 @@ uploaded distributions. Direct references are intended as a tool for
 software integrators rather than publishers.
 
 Distributions that rely on direct references to platform specific binary
-archives SHOULD place appropriate entries in their ``supports_environment``
+archives SHOULD place appropriate entries in their ``supports_environments``
 field.
 
 Example::
@@ -1489,25 +1489,21 @@ Examples::
 Install hooks
 =============
 
-The ``install_hooks`` field is used to define various operations that
-may be invoked on a distribution at install time in a platform
-independent manner.
-
-The install hooks system currently defines two operations as part of the
-installation of a distribution:
+The ``install_hooks`` field is used to define operations to be
+invoked on the distribution  in the following situations:
 
 * Installing to a deployment system
 * Uninstalling from a deployment system
 
 Distributions may define handlers for each of these operations as an
-"entry point", a reference to a Python callable, with the module name
-separated from the reference within the module by a colon (``:``).
+"entry point", which is a reference to a Python callable, with the module
+name separated from the reference within the module by a colon (``:``).
 
 Example install hooks::
 
     "install_hooks": {
-      "postinstall": "myproject.build_hooks:postinstall",
-      "preuininstall": "myproject.build_hooks:preuninstall"
+      "postinstall": "ComfyChair.install_hooks:postinstall",
+      "preuininstall": "ComfyChair.install_hooks:preuninstall"
     }
 
 The currently defined install hooks are:
@@ -1521,7 +1517,7 @@ The currently defined install hooks are:
   it indicates no distribution specific actions are needed prior to
   uninstallation.
 
-The expected signatures of these hooks are as follows::
+The required signatures of these hooks are as follows::
 
     def postinstall(current_meta, previous_meta=None):
         """Run following installation or upgrade of the distribution
@@ -1542,6 +1538,10 @@ The expected signatures of these hooks are as follows::
         uninstallation) or else the distribution metadata for the version
         that is about to be installed (indicating an upgrade or downgrade).
         """
+
+When install hooks are defined, it is assumed that they MUST be executed
+to obtain a properly working installation of the distribution, and to
+properly remove the distribution from a system.
 
 Install hooks SHOULD NOT be used to provide functionality that is
 expected to be provided by installation tools (such as rewriting of
@@ -1574,7 +1574,8 @@ explicitly opt in to permitting the execution of such hooks.
 Install hook implementations MUST NOT make any assumptions regarding the
 current working directory when they are invoked, and MUST NOT make
 persistent alterations to the working directory or any other process global
-state (other than potentially importing additional modules).
+state (other than potentially importing additional modules, or other
+expected side effects of running the distribution).
 
 Install hooks have access to the full metadata for the release being
 installed, that of the previous/next release (as appropriate), as well as
@@ -2013,8 +2014,31 @@ Support for install hooks
 ---------------------------
 
 The new install hook system is designed to allow the wheel format to fully
-replace direct installation on deployment targets, by allowing projects like
-Twisted to still execute code following installation from a wheel file.
+replace direct installation on deployment targets, by allowing projects to
+explicitly define code that should be executed following installation from
+a wheel file.
+
+This may be something relatively simple, like the `two line
+refresh <https://twistedmatrix.com/documents/current/core/howto/plugin.html#auto3>`__
+of the Twisted plugin caches that the Twisted developers recommend for
+any project that provides Twisted plugins, to more complex platform
+dependent behaviour, potentially in conjunction with appropriate
+metadata extensions and ``supports_environments`` entries.
+
+For example, upstream declaration of external dependencies for various
+Linux distributions in a distribution neutral format may be supported by
+defining an appropriate metadata extension that is read by a postinstall
+hook and converted into an appropriate invocation of the system package
+manager. Other operations (such as registering COM DLLs on Windows,
+registering services for automatic startup on any platform, or altering
+firewall settings) may need to be undertaken with elevated privileges,
+meaning they cannot be deferred to implicit execution on first use of the
+distribution.
+
+The install hook and metadata extension systems allow support for such
+activities to be pursued independently by the individual platform
+communities, while still interoperating with the cross-platform Python
+tools.
 
 Falling back to invoking ``setup.py install`` directly remains as the
 interim solution for installation from source archives.
@@ -2074,7 +2098,7 @@ platforms in a way that is actually amenable to automated processing. This
 has been used to replace several older fields with poorly defined semantics.
 
 For the moment, the old ``Requires-External`` field has been removed
-entirely. The combination of cleaner support for post install hooks and the
+entirely. The combination of explicit support for post install hooks and the
 metadata extension mechanism will hopefully prove to be a more useful
 replacement.
 
@@ -2338,7 +2362,7 @@ case would arguably be better served by an SQL Alchemy defined "supported
 database driver" metadata extension where a project depends on SQL Alchemy,
 and then declares in the extension which database drivers are checked for
 compatibility by the upstream project (similar to the advisory
-``supports_environment`` field in the main metadata).
+``supports_environments`` field in the main metadata).
 
 We're also getting better support for "virtual provides" in this version of
 the metadata standard, so this may end up being an installer and index
@@ -2371,8 +2395,8 @@ is rejected unless someone can present a compelling use case (and even then
 the idea won't be reconsidered until metadata 2.1 at the earliest).
 
 
-An install hook for running tests on installed distributions
--------------------------------------------------------------
+A hook to run tests against installed distributions
+---------------------------------------------------
 
 Earlier drafts of this PEP defined a hook for running automated
 tests against an *installed* distribution. This isn't actually what you
@@ -2406,20 +2430,27 @@ metadata for the distribution (including all metadata extensions and
 the previous/next version when appropriate), as well as to the full target
 deployment environment.
 
-This means the only possible candidate for additional information that
-could be passed as arbitrary keyword arguments is installer dependent
-settings. Endorsing that practice runs explicitly counter to one of the
-core goals of the metadata 2.0 specification: decoupling the software
-developer's choice of development and publication tools from the software
-integrator's choice of integration and deployment tools.
+This means there are two candidates for additional information that
+could be passed as arbitrary keyword arguments:
 
-In the event the current design proves too limiting in practice (which
-seems unlikely), installer developers may either implicitly inject an
+* installer dependent settings
+* user provided installation options
+
+The first of those runs explicitly counter to one of the core goals of the
+metadata 2.0 specification: decoupling the software developer's choice of
+development and publication tools from the software integrator's choice of
+integration and deployment tools.
+
+The second is a complex problem that has a readily available workaround in
+the form of operating system level environment variables (this is also
+one way to interoperate with platform specific installation tools).
+
+Alternatively, installer developers may either implicitly inject an
 additional metadata extension when invoking the install hook, or else
 define an alternate hook signature as a distinct metadata extension to be
-provided by the distribution. Either approach makes the introduction of
-installer-dependent behaviour suitably explicit in either the install hook
-implementation or the distribution metadata.
+provided by the distribution. Either of these approaches makes the
+reliance on installer-dependent behaviour suitably explicit in either
+the install hook implementation or the distribution metadata.
 
 
 References
