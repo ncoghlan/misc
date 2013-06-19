@@ -271,7 +271,12 @@ This is also the reason we're not going to provide an ``ImplicitEnum``
 implementation in the standard library at this time - it's not yet clear
 if that's the right answer to the problem.
 
-I do like the idea of using the members qualified names as their values for
-the enum functional API, though, so I've `filed an issue
+I did like the idea of using the members qualified names as their values for
+the enum functional API, though, so I `filed an issue
 <http://bugs.python.org/issue17947>`__ suggesting we change to that after the
-core implementation of the PEP has been put in place.
+core implementation of the PEP has been put in place. However, as I noted
+when ultimately rejecting that change, the current approach works well
+with any likely concrete subclasses (specifically numbers and strings),
+whereas the same cannot be said for using the member names (that would
+break as soon as you tried to use the functional API with a numeric
+subclass).
