@@ -157,7 +157,7 @@ document are to be interpreted as described in RFC 2119.
 Projects include Python libraries, frameworks, scripts, plugins,
 applications, collections of data or other resources, and various
 combinations thereof. Public Python projects are typically registered on
-the `Python Package Index <https://pypi.python.org>`__.
+the `Python Package Index`_.
 
 "Releases" are uniquely identified snapshots of a project.
 
@@ -196,8 +196,8 @@ sdists rather than prebuilt binary archives.
 dependency metadata and place constraints on the permitted metadata.
 
 "Public index servers" are index servers which allow distribution uploads
-from untrusted third parties. The
-`Python Package Index <https://pypi.python.org>`__ is a public index server.
+from untrusted third parties. The `Python Package Index`_ is a public index
+server.
 
 "Publication tools" are automated tools intended to run on development
 systems and upload source and binary distribution archives to index servers.
@@ -516,7 +516,7 @@ All comparisons of distribution names MUST be case insensitive, and MUST
 consider hyphens and underscores to be equivalent.
 
 Index servers MAY consider "confusable" characters (as defined by the
-Unicode Consortium in `TR39: Unicode Security Mechanisms <TR39>`__) to be
+Unicode Consortium in `TR39: Unicode Security Mechanisms <TR39>`_) to be
 equivalent.
 
 Index servers that permit arbitrary distribution name registrations from
@@ -710,7 +710,7 @@ This field SHOULD contain fewer than 512 characters and MUST contain fewer
 than 2048.
 
 A more complete description SHOULD be included as a separate file in the
-sdist for the distribution. See `Document names`__ for details.
+sdist for the distribution. See `Document names`_ for details.
 
 Example::
 
@@ -723,7 +723,7 @@ License
 A short string summarising the license used for this distribution.
 
 Note that distributions that provide this field should still specify any
-applicable license Trove classifiers in the `Classifier`__ field. Even
+applicable license Trove classifiers in the `Classifiers`_ field. Even
 when an appropriate Trove classifier is available, the license summary can
 be a good way to specify a particular version of that license, or to
 indicate any variations or exception to the license.
@@ -732,7 +732,7 @@ This field SHOULD contain fewer than 512 characters and MUST contain fewer
 than 2048.
 
 The full license text SHOULD be included as a separate file in the source
-archive for the distribution. See `Document names`__ for details.
+archive for the distribution. See `Document names`_ for details.
 
 Example::
 
@@ -943,7 +943,7 @@ provided by other distributions, without needing to bundle copies of those
 distributions.
 
 Semantic dependencies allow publishers to indicate not only which other
-distirbutions are needed, but also *why* they're needed. This additional
+distributions are needed, but also *why* they're needed. This additional
 information allows integrators to install just the dependencies they need
 for specific activities, making it easier to minimise installation
 footprints in constrained environments (regardless of the reasons for
@@ -1089,7 +1089,7 @@ should be installed for the specified activities:
     * ``dev_requires``
     * ``dev_may_require``
 
-The notation described in `Extras (optional dependencies)`__ SHOULD be used
+The notation described in `Extras (optional dependencies)`_ SHOULD be used
 to determine exactly what gets installed for various operations.
 
 Installation tools SHOULD report an error if dependencies cannot be found,
@@ -1105,7 +1105,7 @@ Extras
 
 A list of optional sets of dependencies that may be used to define
 conditional dependencies in ``"may_distribute"``, ``"run_may_require"`` and
-similar fields. See `Extras (optional dependencies)`__ for details.
+similar fields. See `Extras (optional dependencies)`_ for details.
 
 The names of extras MUST abide by the same restrictions as those for
 distribution names.
