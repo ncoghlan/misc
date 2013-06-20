@@ -12,7 +12,8 @@ Type: Standards Track
 Content-Type: text/x-rst
 Requires: 440
 Created: 30 Aug 2012
-Post-History: 14 Nov 2012, 5 Feb 2013, 7 Feb 2013, 9 Feb 2013, 27-May-2013
+Post-History: 14 Nov 2012, 5 Feb 2013, 7 Feb 2013, 9 Feb 2013,
+              27 May 2013, 20 Jun 2013
 Replaces: 345
 
 
@@ -421,6 +422,8 @@ fields:
 * ``meta_may_require``
 * ``run_requires``
 * ``run_may_require``
+* ``test_requires``
+* ``test_may_require``
 * ``build_requires``
 * ``build_may_require``
 * ``dev_requires``
@@ -450,7 +453,11 @@ Metadata validation
 -------------------
 
 A `jsonschema <https://pypi.python.org/pypi/jsonschema>`__ description of
-the defined metadata schema will be provided prior to PEP acceptance.
+the distribution metadata is `available
+<http://hg.python.org/peps/file/default/pep-0426/pymeta-schema.json>`__.
+
+This schema does NOT currently handle validation of some of the more complex
+string fields (instead treating them as opaque strings).
 
 Except where otherwise noted, all URL fields in the metadata MUST comply
 with RFC 3986.
@@ -776,9 +783,6 @@ The following supporting documents can be named:
 * ``description``: a file containing a long description of the distribution
 * ``license``: a file with the full text of the distribution's license
 * ``changelog``: a file describing changes made to the distribution
-
-If this field is provided at all, it MUST name at least one included
-document.
 
 Supporting documents MUST be included directly in the ``dist-info``
 directory. Directory separators are NOT permitted in document names.
@@ -1565,6 +1569,13 @@ installation tools MUST NOT invoke the install hooks - it is assumed
 that the ``setup.py`` script will already invoke any necessary
 post-installation behaviour.
 
+Installation tools SHOULD treat an exception thrown by a postinstall hook
+as a failure of the installation and revert any other changes made to the
+system.
+
+Installation tools SHOULD treat an exception thrown by a preuninstall hook
+as an indication the removal of the distribution should be aborted.
+
 Installation tools MUST NOT silently ignore install hooks, as failing
 to call these hooks may result in a misconfigured installation that fails
 unexpectedly at runtime. Installation tools MAY refuse to install
@@ -2222,6 +2233,26 @@ as providing richer static metadata for analysis from PyPI.
 However, this is just extra info that doesn't impact reliably installing
 from wheels, so it is a good candidate for postponing to metadata 2.1
 (at the earliest).
+
+
+Additional install hooks
+------------------------
+
+In addition to the postinstall and preuninstall hooks described in the PEP,
+other distribution systems (like RPM) include the notion of preinstall
+and postuninstall hooks. These hooks would run with the runtime dependencies
+installed, but without the distribution itself. These have been deliberately
+omitted, as they're well suited to being explored further as metadata
+extensions.
+
+Similarly, the idea of "optional" postinstall and preuninstall hooks can
+be pursued as a metadata extension.
+
+By contrast, the mandatory postinstall and preuninstall hooks have been
+included directly in the PEP, specifically to ensure installation tools
+don't silently ignore them. This ensures users will either be able to
+install such distributions, or else receive an explicit error at installation
+time.
 
 
 Metabuild system
