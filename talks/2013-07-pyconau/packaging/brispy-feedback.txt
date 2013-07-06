@@ -1,0 +1,15 @@
+
+- really condense the history
+
+- some diagrams to give more context
+
+- much briefer coverage of the near term fixes
+
+- reorder new metadata standard bullet points
+
+- break it up by problem rather than presenting all the problems then all
+  the solutions
+
+If keeping PEP history (which I probably won't)
+- describe PEP process
+- date the changes to BDFL delegates
