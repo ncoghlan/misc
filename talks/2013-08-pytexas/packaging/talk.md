@@ -428,7 +428,7 @@
 
 Presentation source:
 
-    https://bitbucket.org/ncoghlan/misc/src/default/talks/2013-pyconau/packaging
+    https://bitbucket.org/ncoghlan/misc/src/default/talks/2013-08-pytexas/packaging
 
 Presentation tools:
 
