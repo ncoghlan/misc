@@ -457,7 +457,7 @@ implementations that don't use refcounting for object lifecycle management.
 Finally, Python 3.3 has converted the bulk of the import system over to pure
 Python code so that all implementations can finally start sharing a common
 import implementation. Some work will be needed from each implementation to
-work out how to boostrap that code into the running interpreter (this was
+work out how to bootstrap that code into the running interpreter (this was
 one of the trickiest aspects for CPython), but once that hurdle is passed
 all future import changes should be supported with minimal additional effort.
 
