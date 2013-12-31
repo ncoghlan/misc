@@ -149,7 +149,7 @@ following categories:
 * replacing concrete list and dict objects with more memory efficient
   alternatives
 * renaming modules to be more PEP 8 compliant and to automatically use C
-  accelerator when available
+  accelerators when available
 
 The first of those were aimed at making the language easier to learn, and
 easier to maintain. Keeping deprecated features around isn't free: in order
@@ -189,11 +189,16 @@ No backwards incompatible changes were made just for the sake of making them.
 Each one was justified (at least at the time) on the basis of making the
 language either easier to learn or easier to use.
 
-With the benefit of hindsight, several of these other changes would probably
-have been better avoided (especially the renaming ones), but even in those
-cases at least seemed like a good idea at the time and now internal
+With the benefit of hindsight, a number of these other changes would probably
+have been better avoided (especially some of the renaming ones), but even those
+cases at least seemed like a good idea at the time. At this point, internal
 backwards compatibility requirements within the Python 3.x series mean it
-isn't worth the hassle of changing them back.
+isn't worth the hassle of changing them back, especially given the existence
+of the `six`_ compatibility project and other third party modules that
+support both Python 2 and Python 3 (for example, the ``requests`` package
+is an excellent alternative to using the low level ``urllib`` interfaces
+directly, even though ``six`` does provide appropriate cross-version
+compatible access through the ``six.moves.urllib`` namespace).
 
 
 When can we expect Python 3 to be the obvious choice for new projects?
@@ -206,7 +211,7 @@ it to be recommended unreservedly for all *new* Python projects.
 
 Since 3.0 turned out to be a false start due to its IO stack being unusably
 slow, I start that counter from the release of 3.1: June 27, 2009.
-In the latest update of this Q&A (December 21, 2013), that puts us only
+In the latest update of this Q&A (December 31, 2013), that puts us only
 6 months away from that original goal.
 
 In the past few years, key parts of the ecosystem have successfully added
@@ -231,11 +236,11 @@ provides a reasonably up to date overview of the current state of the
 transition.
 
 I think Python 3.3 is a superior language to 2.7 in almost every way (with
-the exception handling improvements being the ones I miss most in my day job
+the error reporting improvements being the ones I miss most in my day job
 working on a Python 2.6 application). There are still a couple of rough edges
-where certain text and binary data manipulation operations are less
-convenient than they are in 2.7, but most of those have been squared away in
-3.4 (there are a couple of remaining issues that should mainly only
+in Python 3.3 where certain text and binary data manipulation operations are
+less convenient than they are in 2.7, but most of those have been squared
+away in 3.4 (there are a couple of remaining issues that should mainly only
 affect system admininstators and people writing operating system level
 utilities, and only in the presence of improperly encoded data or
 misconfigured systems that incorrectly tell Python to use the POSIX locale).
@@ -287,12 +292,41 @@ since that also becomes the system Python in downstream rebuilds like CentOS
 and Scientific Linux).
 
 
-.. slow-uptake:
+.. _slow-uptake:
 
 But uptake is so slow, doesn't this mean Python 3 is failing as a platform?
 ---------------------------------------------------------------------------
 
-Several of the actions taken by the core development team have been
+A common thread I have seen running through such declarations of "failure" is
+people not quite understanding the key questions where the transition plan is
+aiming to change the answers. These are the two key questions:
+
+* "I am interested in learning Python. Should I learn Python 2 or Python 3?"
+  (this particularly question has a closely related variant: "I am
+  interested in teaching a beginner's Python workshop. Should I teach Python
+  2 or Python 3?")
+* "I am an experienced Python developer starting a new project. Should I
+  use Python 2 or Python 3?"
+
+At the start of the migration, the answer to both of those questions was
+*obviously* Python 2. Right now (December 2013), the answer is "either is a
+reasonable choice". With the release of Python 3.4 next year, the answer
+*should* become "Python 3.4, unless you have a compelling reason to choose
+Python 2 instead" (where possible compelling reasons include "I only use
+the version of Python provided by my Linux distro vendor and they currently
+only support Python 2" and "I am teaching the course to new maintainers
+of an existing Python 2 code base".
+
+Note the question that *isn't* on the list: "I have a large Python 2
+application which is working well for me. Should I migrate it to Python 3?".
+We're quite happy for the answer to *that* question to remain "No"
+indefinitely. While it is likely that platform effects will eventually shift
+even the answer to that question to "Yes" (and Python 2 will have a much
+nicer exit strategy to a newer language than COBOL ever did), the time
+frame for *that* change is a lot longer than the five years that was
+projected for changing the default version choice for green field projects.
+
+Several of the actions taken by the core development team have actually been
 deliberately designed to keep conservative users *away* from Python 3 as a
 way of providing time for the ecosystem to mature. Now, if Python 3 failed
 to offer a desirable platform, nobody would care about this in the
@@ -312,8 +346,9 @@ slightest. Instead, what we currently see is the following:
 This difference in perspective appears to be an instance of the classic early
 adopter/early majority divide in platform adoption. The deliberately gentle
 migration plan is for the benefit of the late adopters that drive Python's
-overall popularity, not the early adopters that make up the software
-development blogging community.
+overall popularity, not the early adopters that make up both the open source
+development community and the (slightly) broader software development
+blogging community.
 
 It's important to keep in mind that Python 2.6 (released October 2008) is
 still one of the most widely deployed versions of Python, purely through
@@ -344,19 +379,23 @@ core team, but feedback from a variety of sources is invaluable for a
 change of this magnitude).
 
 That feedback has already resulted in major improvements in the Unicode
-support for Python 3.2, 3.3, and the upcoming 3.4 release. While the
-upcoming Python 3.4 release is the first one where the transition feels
-mostly finished to me in terms of coping with the full implications of a
+support for Python 3.2, 3.3, and the upcoming 3.4 release. With the
+``codecs`` and ``email`` modules being brought into line, the upcoming
+Python 3.4 release is the first one where the transition feels close to
+being "done" to me in terms of coping with the full implications of a
 strictly enforced distinction between binary and text data in the standard
-library, I also expect that feedback process will continue throughout the
-3.x series (for example, there are definitely still some edge cases related
-to malformed data and misconfigured systems that aren't handled well).
+library. However, I still expect that feedback process will continue
+throughout the 3.x series (for example, there are definitely still some
+edge cases related to malformed data and misconfigured systems that aren't
+handled well, and there are still some annoyances around appropriately
+configuring pipes for communication with subprocesses).
 
-Furthermore, we're forcing even developers in strict ASCII-only environments
-to have to care about Unicode correctness, or else explicitly tell the
-interpreter not to worry about it, so Python 2 users that may have
-previously been able to ignore Unicode issues may need to account for them
-properly when migrating to Python 3.
+In addition to the cases where blurring the binary/text distinction really
+did make things simpler in Python 2, we're also forcing even developers in
+strict ASCII-only environments to have to care about Unicode correctness,
+or else explicitly tell the interpreter not to worry about it. This means
+that Python 2 users that may have previously been able to ignore Unicode
+issues may need to account for them properly when migrating to Python 3.
 
 I've written more extensively on both of these topics in
 :ref:`binary-protocols` and :ref:`py3k-text-files`.
@@ -368,10 +407,10 @@ What changes in Python 3 have been made specifically to simplify migration?
 The biggest change made specifically to ease migration from Python 2 was the
 reintroduction of Unicode literals in Python 3.3 (in :pep:`414`). This
 allows developers supporting both Python 2 and 3 in a single code base to
-easily distinguish binary literals (``b"binary"`` means bytes in Python 3,
-str in Python 2), text literals (``u"text"`` means str in Python 3.3+,
-unicode in Python 2) and native strings (``"native"`` means str in both
-Python 2 and 3).
+easily distinguish binary literals, text literals and native strings, as
+``b"binary"`` means bytes in Python 3 and str in Python 2, ``u"text"``
+means str in Python 3.3+ and unicode in Python 2, while ``"native"`` means
+str in both Python 2 and 3.
 
 A smaller change to simplify migration was the reintroduction of the
 non-text encoding codecs (like ``hex_codec``) in Python 3.2, and the
@@ -398,14 +437,19 @@ That approach is still a reasonable choice for migrating a fully integrated
 application that can completely abandon Python 2 support at the time of the
 conversion, but is no longer considered a good option for migration of
 libraries, frameworks and applications that want to add Python 3 support
-without losing Python 2 support.
+without losing Python 2 support. The approach of running ``2to3``
+automatically at install time is also no longer recommended, as it creates
+an undesirable discrepancy between the code running on end user systems and
+the code in source control that makes it difficult to correctly interpret
+any reported tracebacks.
 
 Instead, the preferred alternative in the latter case is now to create a
 single code base that can run under both Python 2 and 3. The `six`_
 compatibility library can help with several aspects of that, and the
 `python-modernize`_ utility is designed to take existing code that supports
 older Python versions and update it to run in the large common subset of
-Python 2.6+ and Python 3.2+ (or 3.3+).
+Python 2.6+ and Python 3.3+ (or 3.2+ if the unicode literal support in
+Python 3 isn't needed).
 
 The "code modernisation" approach also has the advantage of being able to be
 done incrementally over several releases, as failures under Python 3 can be
@@ -413,9 +457,10 @@ addressed progressively by modernising the relevant code, until eventually
 the code runs correctly under both versions.
 
 The `landing page for the Python documentation <http://docs.python.org>`__
-was switched some time ago to display the Python 3 documentation by default,
-although deep links still refer to the Python 2 documentation in order to
-preserve the accuracy of third party references (see :pep:`430` for details).
+was also switched some time ago to display the Python 3 documentation by
+default, although deep links still refer to the Python 2 documentation in
+order to preserve the accuracy of third party references (see :pep:`430`
+for details).
 
 
 Didn't you strand the major alternative implementations on Python 2?
@@ -528,14 +573,14 @@ compatibility break was the only way we could find to solve it once and
 for all.
 
 For the inverse question relating to the concern that the existing migration
-plan is too *conservative*, see :ref:`abandoning-users`.
+plan is too *conservative*, see :ref:`slow-uptake`.
 
 .. _python-modernize: https://github.com/mitsuhiko/python-modernize
 .. _six: http://pypi.python.org/pypi/six
 
 
-What would it take to make us change our minds?
------------------------------------------------
+What would it take to make you change your minds about the current plan?
+------------------------------------------------------------------------
 
 An important thing to understand for anyone hoping to convince the core
 development team to change direction in regards to Python 3 development
@@ -564,6 +609,14 @@ but Python is working its way into more and more niches *despite* the
 Python 3 transition, so the only case that can be made is "adoption would
 be growing even faster without Python 3 in the picture", which is a hard
 statement to prove.
+
+A third alternative that would make us seriously question our current
+strategy is if community workshops aimed at new programmers chose not to
+switch to recommending Python 3.4 by default after it is released, *despite*
+the significant carrots of ``pip`` being provided by default on Windows and
+Mac OS X and integrated into ``pyvenv`` on all platforms, the inclusion
+of :mod:`pathlib`, :mod:`statistics`, :mod:`asyncio`, more secure default
+settings for SSL/TLS, `etc <http://docs.python.org/3.4/whatsnew/3.4.html>`__.
 
 
 Aren't you concerned Python 2 users will abandon Python over this?
