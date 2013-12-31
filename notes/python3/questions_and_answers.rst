@@ -678,8 +678,9 @@ Python 3 features that are technically backwards compatible with Python 2
 attractive are:
 
 * Live without the features for the moment and continue to use Python 2.7
-* For standard library modules/features, create a backport (either private or
-  public on PyPI) and use the backported version
+* For standard library modules/features, use a backported version from PyPI
+  (or create a backport if one doesn't already exist and the module doesn't
+  rely specifically on Python 3 only language features)
 * Migrate to Python 3 themselves
 * Fork Python 2 to add the missing features for their own benefit
 * Migrate to a language other than Python
