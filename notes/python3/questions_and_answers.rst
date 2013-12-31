@@ -459,9 +459,9 @@ conversion, but is no longer considered a good option for migration of
 libraries, frameworks and applications that want to add Python 3 support
 without losing Python 2 support. The approach of running ``2to3``
 automatically at install time is also no longer recommended, as it creates
-an undesirable discrepancy between the code running on end user systems and
-the code in source control that makes it difficult to correctly interpret
-any reported tracebacks.
+an undesirable discrepancy between the deployed code and the code in source
+control that makes it difficult to correctly interpret any reported
+tracebacks.
 
 Instead, the preferred alternative in the latter case is now to create a
 single code base that can run under both Python 2 and 3. The `six`_
@@ -469,7 +469,7 @@ compatibility library can help with several aspects of that, and the
 `python-modernize`_ utility is designed to take existing code that supports
 older Python versions and update it to run in the large common subset of
 Python 2.6+ and Python 3.3+ (or 3.2+ if the unicode literal support in
-Python 3 isn't needed).
+Python 3.3 isn't needed).
 
 The "code modernisation" approach also has the advantage of being able to be
 done incrementally over several releases, as failures under Python 3 can be
