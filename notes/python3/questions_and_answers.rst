@@ -478,12 +478,12 @@ Python 2.7 release. We knew it would take some time before the Python 3
 ecosystem caught up to the Python 2 ecosystem in terms of real world
 usability. Thus, the extended maintenance period on 2.7 to ensure it
 continues to build and run on new platforms. While python-dev maintenance
-of 2.7 is slated to revert to security-fix only mode in just over 2 years
-time (July 2015), even after python-dev upstream maintenance ends, Python 2.6
-will still be supported by enterprise Linux vendors until at least 2020,
-while Python 2.7 will be supported until at least 2023. On Windows and Mac
-OS X, commercial Python redistributors are also likely to fill the gap once
-upstream maintenance ends.
+of 2.7 is slated to revert to security-fix only mode in July 2015, even
+after python-dev upstream maintenance ends, Python 2.6 will still be
+supported by enterprise Linux vendors until at least 2020, while Python 2.7
+will be supported until at least 2023. On Windows and Mac OS X, commercial
+Python redistributors are also likely to fill the support gap once upstream
+maintenance ends.
 
 We have also implemented various mechanisms which are designed to ease the
 transition from Python 2 to Python 3. The ``-3`` command line switch in
