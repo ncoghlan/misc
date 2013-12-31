@@ -118,7 +118,7 @@ well be titled "This is why Python 3 exists".
 
 Python 3 also embeds Unicode support more deeply into the language itself.
 With UTF-8 as the default source encoding (instead of ASCII) and all text
-being handling as Unicode, many parts of the language that were previously
+being handled as Unicode, many parts of the language that were previously
 restricted to ASCII text (such as identifiers) now permit a much wider range
 of Unicode characters. This permits developers with a native language other
 than English to use names in their own language rather than being forced to
