@@ -359,11 +359,11 @@ It's important to keep in mind that Python 2.6 (released October 2008) is
 still one of the most widely deployed versions of Python, purely through
 being the system Python in Red Hat Enterprise Linux 6 and its derivatives,
 and usage of Python 2.4 (released November 2004) is non-trivial for the
-same reason with respect to Red Hat Enterprise Linux 5. There's likely a
-similar effect from stable versions of Debian, Ubuntu LTS releases SuSe EL
-releases, but (by a strange coincidence) I'm not as familiar with the Python
-versions and end-of-support dates for those as I am with those for the
-products sold by my employer ;)
+same reason with respect to Red Hat Enterprise Linux 5. I expect there is a
+similar effect from stable versions of Debian, Ubuntu LTS releases and SUSE
+Linux Enterprise releases, but (by some strange coincidence) I'm not as
+familiar with the Python versions and end-of-support dates for those as I
+am with those for the products sold by my employer ;)
 
 If we weren't getting complaints from the early adopter crowd about the pace
 of the migration, *then* I'd be worried (because it would indicate they had
