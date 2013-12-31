@@ -6,10 +6,11 @@ Last Updated: 31st December, 2013
 With the long transition to "Python 3 by default" still in progress, the
 question is occasionally raised as to whether or not the core Python
 developers are acting as reasonable stewards of the Python language. It's
-an entirely appropriate question, as embarking down the path of asking
-the entire language ecosystem to migrate to a new version that introduces
-backwards incompatible changes that more obviously benefit future users of
-the language than they do current users isn't a decision to be taken lightly.
+an entirely appropriate question, as Python 3 introduces backwards
+incompatible changes that more obviously benefit future users of
+the language than they do current users, so existing users (especially
+library and framework developers) are being asked to devote time and effort
+to a transition that may not benefit them directly for years to come.
 
 Since I've seen variants of these questions several times over the years,
 I now keep this as an intermittently updated record of my thoughts on the
@@ -70,10 +71,11 @@ Why was Python 3 made incompatible with Python 2?
 
 To the best of my knowledge, the initial decision to make Python 3
 incompatible with the Python 2 series arose from Guido's desire to solve
-one core problem: helping *all* Python applications to handle Unicode
-text in a more consistent and reliable fashion without needing to rely
-on third party libraries and frameworks. Even if that wasn't Guido's
-original motivation, it's the rationale that *I* find most persuasive.
+one core problem: helping *all* Python applications (including the
+standard library itself) to handle Unicode text in a more consistent and
+reliable fashion without needing to rely on third party libraries and
+frameworks. Even if that wasn't Guido's original motivation, it's the
+rationale that *I* find most persuasive.
 
 The core Unicode support in the Python 2 series has the honour of being
 documented in PEP 100.
@@ -204,7 +206,7 @@ compatible access through the ``six.moves.urllib`` namespace).
 When can we expect Python 3 to be the obvious choice for new projects?
 ----------------------------------------------------------------------
 
-Going in to this process, my personal estimate was that
+Going in to this transition process, my personal estimate was that
 it would take roughly 5 years to get from the first production ready release
 of Python 3 to the point where its ecosystem would be sufficiently mature for
 it to be recommended unreservedly for all *new* Python projects.
@@ -247,19 +249,20 @@ misconfigured systems that incorrectly tell Python to use the POSIX locale).
 
 Python 3.4 takes a big step forward in usability for beginners by providing
 ``pip`` by default, as well as updating the native virtual environment tool
-(``pyvenv``) to install pip into new environments by default. While trainers
-in enterprise environments may still wish to teach Python 2 by default for
-a few more years, this particular change creates a strong incentive for
-community workshops to favour Python 3.4+ after it is released early in 2014.
+(``pyvenv``) to automatically install pip into new environments. While
+trainers in enterprise environments may still wish to teach Python 2 by
+default for a few more years, this particular change creates a strong
+incentive for community workshops to favour Python 3.4+ after it is
+released early in 2014.
 
 Support in enterprise Linux distributions is also a key point for uptake
 of Python 3. Canonical have already shipped a supported version (Python 3.2
 in Ubuntu 12.04 LTS) with a `stated goal`_ of eliminating Python 2 from the
-live install CD for 14.04. A Python 3 stack has existed in Fedora since
+live install CD for 14.04 LTS. A Python 3 stack has existed in Fedora since
 Fedora 13 and has been growing over time, and there is now a stated goal
 to remove Python 2 from the live install CDs by the `end of 2014`_
 (Fedora 22). Red Hat also now ship a fully supported Python 3.3 runtime as
-part of their "Red Hat Software Collections" product and the OpenShift
+part of our `Red Hat Software Collections`_ product and the OpenShift
 Enterprise self-hosted Platform-as-a-Service offering.
 
 The Arch Linux team have gone even further, making Python 3 the
@@ -270,6 +273,7 @@ complain about the vote of confidence!
 .. _Python 2 or Python 3: http://wiki.python.org/moin/Python2orPython3
 .. _stated goal: https://wiki.ubuntu.com/Python
 .. _end of 2014: https://fedoraproject.org/wiki/Changes/Python_3_as_Default
+.. _Red Hat Software Collections: http://developerblog.redhat.com/2013/09/12/rhscl1-ga/
 .. _default Python: https://www.archlinux.org/news/python-is-now-python-3/
 .. _dubious: http://www.python.org/dev/peps/pep-0394/
 
