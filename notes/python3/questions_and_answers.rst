@@ -1048,6 +1048,11 @@ CPython (note that the descriptions of a number of other projects in the
 linked presentation are inaccurate. In particular, most Python async IO
 libraries, including both Twisted and asyncio, use IOCP on Windows).
 
+Alex Gaynor also pointed out `some interesting research (PDF)
+<http://researcher.watson.ibm.com/researcher/files/jp-ODAIRA/PPoPP2014_RubyGILHTM.pdf>`__
+into replacing Ruby's Giant VM Lock (the equivalent to CPython's GIL in the
+Matz Ruby Interpreter) with appropriate use of Hardware Transactional Memory.
+
 As far as a free-threaded CPython implementation goes, that seems unlikely
 in the absence of a corporate sponsor willing to pay for the development and
 maintenance of the necessary high performance cross-platform threading
