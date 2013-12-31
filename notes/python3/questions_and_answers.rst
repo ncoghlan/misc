@@ -299,32 +299,34 @@ But uptake is so slow, doesn't this mean Python 3 is failing as a platform?
 
 A common thread I have seen running through such declarations of "failure" is
 people not quite understanding the key questions where the transition plan is
-aiming to change the answers. These are the two key questions:
+aiming to change the answers. These are the three key questions:
 
 * "I am interested in learning Python. Should I learn Python 2 or Python 3?"
-  (this particularly question has a closely related variant: "I am
-  interested in teaching a beginner's Python workshop. Should I teach Python
-  2 or Python 3?")
+* "I am teaching a Python class. Should I teach Python 2 or Python 3?"
 * "I am an experienced Python developer starting a new project. Should I
   use Python 2 or Python 3?"
 
-At the start of the migration, the answer to both of those questions was
-*obviously* Python 2. Right now (December 2013), the answer is "either is a
-reasonable choice". With the release of Python 3.4 next year, the answer
-*should* become "Python 3.4, unless you have a compelling reason to choose
-Python 2 instead" (where possible compelling reasons include "I only use
-the version of Python provided by my Linux distro vendor and they currently
-only support Python 2" and "I am teaching the course to new maintainers
-of an existing Python 2 code base".
+At the start of the migration, the answer to all of those questions was
+*obviously* "Python 2". Right now (December 2013), the answer is "either is
+a reasonable choice, although context may favour Python 2". With the release
+of Python 3.4 next year, the obvious answer *should* become "Python 3.4,
+unless you have a compelling reason to choose Python 2 instead". Possible
+compelling reasons include "I only use the version of Python provided by
+my Linux distro vendor and they currently only support Python 2" (although
+that is also changing on the *vendor* side), "I am teaching the course to
+maintainers of an existing Python 2 code base" and "We have large in-house
+collection of existing Python 2 only support libraries we want to reuse".
 
 Note the question that *isn't* on the list: "I have a large Python 2
 application which is working well for me. Should I migrate it to Python 3?".
-We're quite happy for the answer to *that* question to remain "No"
+
+We're happy enough for the answer to *that* question to remain "No"
 indefinitely. While it is likely that platform effects will eventually shift
 even the answer to that question to "Yes" (and Python 2 will have a much
 nicer exit strategy to a newer language than COBOL ever did), the time
 frame for *that* change is a lot longer than the five years that was
-projected for changing the default version choice for green field projects.
+projected for changing the default choice of Python version for green field
+projects.
 
 Several of the actions taken by the core development team have actually been
 deliberately designed to keep conservative users *away* from Python 3 as a
@@ -354,7 +356,11 @@ It's important to keep in mind that Python 2.6 (released October 2008) is
 still one of the most widely deployed versions of Python, purely through
 being the system Python in Red Hat Enterprise Linux 6 and its derivatives,
 and usage of Python 2.4 (released November 2004) is non-trivial for the
-same reason with respect to Red Hat Enterprise Linux 5.
+same reason with respect to Red Hat Enterprise Linux 5. There's likely a
+similar effect from stable versions of Debian, Ubuntu LTS releases SuSe EL
+releases, but (by a strange coincidence) I'm not as familiar with the Python
+versions and end-of-support dates for those as I am with those for the
+products sold by my employer ;)
 
 If we weren't getting complaints from the early adopter crowd about the pace
 of the migration, *then* I'd be worried (because it would indicate they had
@@ -369,9 +375,9 @@ Python 3 is meant to make Unicode easier, so why is <X> harder?
 
 At this point, the Python community as a whole has had more than 13 years
 to get used to the Python 2 way of handling Unicode. For Python 3,
-we've only had a production ready release available for just over 4 and a
+we've only had a production ready release available for around 4 and a
 half years, and since some of the heaviest users of Unicode are the web
-framework developers, and they've only had a viable WSGI target since the
+framework developers, and they've only had a stable WSGI target since the
 release of 3.2, you can drop that down to just over 3 years of intensive
 use by a wide range of developers with extensive practical experiencing
 in handling Unicode (we have some *excellent* Unicode developers in the
@@ -385,10 +391,8 @@ Python 3.4 release is the first one where the transition feels close to
 being "done" to me in terms of coping with the full implications of a
 strictly enforced distinction between binary and text data in the standard
 library. However, I still expect that feedback process will continue
-throughout the 3.x series (for example, there are definitely still some
-edge cases related to malformed data and misconfigured systems that aren't
-handled well, and there are still some annoyances around appropriately
-configuring pipes for communication with subprocesses).
+throughout the 3.x series, since "mostly done" and "done" are very different
+things.
 
 In addition to the cases where blurring the binary/text distinction really
 did make things simpler in Python 2, we're also forcing even developers in
@@ -423,6 +427,19 @@ added to the documentation recently).
 The WSGI update in :pep:`3333` also standardised the Python 3 interface
 between web servers and frameworks, which is what allowed the web frameworks
 to start adding Python 3 support with the release of Python 3.2.
+
+A number of standard library APIs that were originally either binary only or
+text only in Python 3 have also been updated to accept either type. In
+these cases, there is typically a requirement that the "alternative" type be
+strict 7-bit ASCII data - use cases that need anything more than that are
+expected to do their encoding or decoding at the application boundary rather
+than relying on the implicit encoding and decoding provided by the affected
+APIs. This is a concession in the Python 3 text model specifically designed
+to ease migration in "pure ASCII" environments - while relying on it can
+reintroduce the same kind of obscure data driven failures that are seen
+with the implicit encoding and decoding operations in Python 2, these APIs
+are at least unlikely to silently corrupt data streams (even in the presence
+of data encoded using a non-ASCII compatible encoding).
 
 
 What other changes have occurred that simplify migration?
