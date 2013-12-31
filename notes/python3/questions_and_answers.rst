@@ -311,11 +311,14 @@ At the start of the migration, the answer to all of those questions was
 a reasonable choice, although context may favour Python 2". With the release
 of Python 3.4 next year, the obvious answer *should* become "Python 3.4,
 unless you have a compelling reason to choose Python 2 instead". Possible
-compelling reasons include "I only use the version of Python provided by
-my Linux distro vendor and they currently only support Python 2" (although
-that is also changing on the *vendor* side), "I am teaching the course to
-maintainers of an existing Python 2 code base" and "We have large in-house
-collection of existing Python 2 only support libraries we want to reuse".
+compelling reasons include "I am teaching the course to maintainers of an
+existing Python 2 code base" and "We have a large in-house collection of
+existing Python 2 only support libraries we want to reuse" and "I only use
+the version of Python provided by my Linux distro vendor and they currently
+only support Python 2" (although that last is also changing on the *vendor*
+side - Red Hat now supports Python 3.3 through both Red Hat Software
+Collections and as part of OpenShift Enterprise, and Canonical have
+supported Python 3.2 since 12.04 LTS).
 
 Note the question that *isn't* on the list: "I have a large Python 2
 application which is working well for me. Should I migrate it to Python 3?".
