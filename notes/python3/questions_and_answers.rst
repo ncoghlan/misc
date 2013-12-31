@@ -412,6 +412,11 @@ done incrementally over several releases, as failures under Python 3 can be
 addressed progressively by modernising the relevant code, until eventually
 the code runs correctly under both versions.
 
+The `landing page for the Python documentation <http://docs.python.org>`__
+was switched some time ago to display the Python 3 documentation by default,
+although deep links still refer to the Python 2 documentation in order to
+preserve the accuracy of third party references (see :pep:`430` for details).
+
 
 Didn't you strand the major alternative implementations on Python 2?
 --------------------------------------------------------------------
