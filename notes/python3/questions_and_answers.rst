@@ -701,7 +701,7 @@ Doesn't this make Python look like an immature and unstable platform?
 
 Again, many of us in core development are aware of this concern, and
 have been taking active steps to ensure that even the most risk averse
-enterprise users can feel comforting in adopting Python for their
+enterprise users can feel comfortable in adopting Python for their
 development stack, despite the current transition.
 
 Obviously, much of the content in the previous two questions regarding the
