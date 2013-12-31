@@ -620,9 +620,10 @@ So far, we haven't even seen a concerted effort to create a community
 "Python 2.7+" release that bundles all of the available 3.x backport
 libraries with the base 2.7 distribution (which would be a much simpler
 project), so the prospects for a successful Python 2.8 fork that actually
-backports compatible change to the interpreter code seem limited. Heck,
+backports compatible changes to the interpreter core seem limited. Heck,
 even creating and maintaining a *list* of the available backports hasn't
-happened.
+happened (although such a list likely *would* be useful for Python 2.x
+users wishing to access Python 3 standard library features).
 
 A crash in general Python adoption would also make us change our minds,
 but Python is working its way into more and more niches *despite* the
