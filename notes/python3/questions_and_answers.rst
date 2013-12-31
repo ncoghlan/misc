@@ -1051,7 +1051,9 @@ libraries, including both Twisted and asyncio, use IOCP on Windows).
 Alex Gaynor also pointed out `some interesting research (PDF)
 <http://researcher.watson.ibm.com/researcher/files/jp-ODAIRA/PPoPP2014_RubyGILHTM.pdf>`__
 into replacing Ruby's Giant VM Lock (the equivalent to CPython's GIL in the
-Matz Ruby Interpreter) with appropriate use of Hardware Transactional Memory.
+Matz Ruby Interpreter) with appropriate use of Hardware Transactional Memory,
+which may also prove relevant to CPython as HTM capable hardware becomes
+more common.
 
 As far as a free-threaded CPython implementation goes, that seems unlikely
 in the absence of a corporate sponsor willing to pay for the development and
