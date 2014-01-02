@@ -520,18 +520,22 @@ The ``print`` statement is weirdly different from normal function calls::
     1 2 3
 
 And the ``exec`` statement also differs from normal function calls like
-``execfile``::
+``eval`` and ``execfile``::
 
     >>> d = {}
     >>> exec "x = 1" in d
     >>> d["x"]
     1
+    >>> d2 = {"x":[]}
+    >>> eval("x.append(1)", d2)
+    >>> d2["x"]
+    [1]
     >>> with open("example.py", "w") as f:
     ...     f.write("x = 1\n")
     ...
-    >>> d2 = {}
-    >>> execfile("example.py", d2)
-    >>> d2["x"]
+    >>> d3 = {}
+    >>> execfile("example.py", d3)
+    >>> d3["x"]
     1
 
 The ``input`` builtin has some seriously problematic default behaviour::
@@ -691,7 +695,8 @@ they now also work natively with utilities that require real function
 objects (like ``map`` and ``functools.partial``), they can be replaced
 with mock objects when testing and they can be more readily substituted
 with alternative interfaces (such as replacing raw print statements with a
-pretty printer or a logging system).
+pretty printer or a logging system). It also means they can be passed to
+the builtin ``help`` function without quoting, the same as other builtins.
 
 The ``input`` builtin now has the much safer behaviour that is provided as
 ``raw_input`` in Python 2::
