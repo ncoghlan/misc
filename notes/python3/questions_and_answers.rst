@@ -675,7 +675,7 @@ with mock objects when testing and they can be more readily substituted
 with alternative interfaces (such as replacing raw print statements with a
 pretty printer or a logging system).
 
-The `input`` builtin now has the much safer behaviour that is provided as
+The ``input`` builtin now has the much safer behaviour that is provided as
 ``raw_input`` in Python 2::
 
     >>> input("This is no longer dangerous: ")
@@ -774,11 +774,23 @@ And here's the same operation in Python 3.3+::
     ...
     File not found
 
-Here's an example of how to split a package across multiple directories in
-Python 3.3+ (note the lack of ``__init__.py`` files). While technically
-this could be backported, the implementation depends on the new pure Python
-implementation of the import system, which in turn depends on the Unicode
-friendly IO stack in Python 3, so backporting it would be far from trivial::
+(If you're opening the file for writing, then you can use
+`exclusive mode
+<http://docs.python.org/3/whatsnew/3.3.html#builtin-functions-and-types>`__
+to prevent race conditions without using a subdirectory - Python 2 has no
+equivalent. There are many other cases where Python 3 exposes operating
+system level functionality that wasn't broadly available when the feature
+set for Python 2.7 was frozen in April 2010).
+
+Another common complaint with Python 2 is the requirement to use empty
+``__init__.py`` files to indicate a directory is a Python package, and the
+complexity of splitting a package definition across multiple directories.
+By contrast, here's an example of how to split a package across multiple
+directories in Python 3.3+ (note the lack of ``__init__.py`` files). While
+technically this could be backported, the implementation depends on the new
+pure Python implementation of the import system, which in turn depends on
+the Unicode friendly IO stack in Python 3, so backporting it would be far
+from trivial::
 
     $ mkdir -p dir1/nspkg
     $ mkdir -p dir2/nspkg
@@ -787,6 +799,36 @@ friendly IO stack in Python 3, so backporting it would be far from trivial::
     $ PYTHONPATH=dir1:dir2 python3 -c "import nspkg.a, nspkg.b"
     Imported submodule A
     Imported submodule B
+
+That layout doesn't work at all in Python 2 due to the missing
+``__init__.py`` files, and even if you add them, it still won't find
+the second directory::
+
+    $ PYTHONPATH=dir1:dir2 python -c "import nspkg.a, nspkg.b"
+    Traceback (most recent call last):
+      File "<string>", line 1, in <module>
+    ImportError: No module named nspkg.a
+    $ touch dir1/nspkg/__init__.py
+    $ touch dir2/nspkg/__init__.py
+    $ PYTHONPATH=dir1:dir2 python -c "import nspkg.a, nspkg.b"
+    Imported submodule A
+    Traceback (most recent call last):
+      File "<string>", line 1, in <module>
+    ImportError: No module named b
+
+That last actually shows another limitation in Python 2's error handling
+since import failures don't always show the full name of the missing
+module. That is fixed in Python 3::
+
+    $ PYTHONPATH=dir1 python3 -c "import nspkg.a, nspkg.b"
+    Imported submodule A
+    Traceback (most recent call last):
+      File "<string>", line 1, in <module>
+    ImportError: No module named 'nspkg.b'
+
+Python 3.3 also included some `minor <http://bugs.python.org/issue12265>`__
+`improvements <http://bugs.python.org/issue12356>`__ to the error messages
+produced when functions and methods are called with incorrect arguments.
 
 The upcoming Python 3.4 release also aims to provide a significantly more
 complete package for new users, by bundling the ``pip`` installer (see
