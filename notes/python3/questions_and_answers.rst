@@ -722,7 +722,7 @@ when working in Python 2, and the point I consider the single biggest gain
 over Python 3 when migrating *existing* applications - there are few things
 more irritating when debugging a rare production failure than losing the
 real problem details due to a secondary failure in a rarely invoked error
-path).
+path.
 
 In addition to the above changes, Python 3.4 includes `additional changes
 to the codec system
