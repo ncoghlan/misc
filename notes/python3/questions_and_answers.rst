@@ -1118,6 +1118,37 @@ of :mod:`pathlib`, :mod:`statistics`, :mod:`asyncio`, more secure default
 settings for SSL/TLS, `etc <http://docs.python.org/3.4/whatsnew/3.4.html>`__.
 
 
+Aren't the Stackless developers talking about creating a Stackless 2.8?
+-----------------------------------------------------------------------
+
+Yes, they are - they're considering it specifically in the context of
+creating a new version of Stackless for Windows that is `built with Visual
+Studio 2010
+<https://mail.python.org/pipermail/python-dev/2013-November/130421.html>`__
+rather than Visual Studio 2008. Due to the incompatible C runtimes in the
+two versions, such a change will render affected Stackless builds
+incompatible with all Windows C extensions built to be compatible with
+CPython 2.7, and the way such a binary extension incompatibility has
+historically been indicated is through incrementing the second digit in
+the Python version.
+
+With the cooperation of the CPython core development team and interested
+parties from Microsoft, they've explored various alternatives (including
+talking to the Microsoft Visual Studio and MSVC runtime developers about
+ways to support running both the 2008 and 2010 runtimes in the same
+process), but, aside from creating a new binary incompatible version of
+Stackless and incrementing the implementation version number appropriately,
+there currently doesn't seem to be an immediately practical way for the
+Stackless developers to support their users that are asking for Visual
+Studio 2010 compatible builds.
+
+At the request of the core development team, one key aspect of the approach
+the Stackless team are `currently looking at
+<http://stackless.com/pipermail/stackless/2013-November/005934.html>`__
+taking is to consistently use the name "Stackless 2.8" and avoid referring
+to the new variant as a different version of Python.
+
+
 Aren't you concerned Python 2 users will abandon Python over this?
 ------------------------------------------------------------------
 
