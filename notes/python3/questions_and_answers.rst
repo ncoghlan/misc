@@ -241,7 +241,7 @@ transition.
 
 I think Python 3.3 is a superior language to 2.7 in almost every way (with
 the error reporting improvements being the ones I miss most in my day job
-working on a Python 2.6 application). There are still a couple of rough edges
+working on a Python 2.6 application). There are still several rough edges
 in Python 3.3 where certain text and binary data manipulation operations are
 less convenient than they are in 2.7, but most of those have been squared
 away in 3.4 (there are a couple of remaining issues that should mainly only
@@ -318,7 +318,7 @@ a reasonable choice, although context may favour Python 2". With the release
 of Python 3.4 next year, the obvious answer *should* become "Python 3.4,
 unless you have a compelling reason to choose Python 2 instead". Possible
 compelling reasons include "I am teaching the course to maintainers of an
-existing Python 2 code base" and "We have a large in-house collection of
+existing Python 2 code base", "We have a large in-house collection of
 existing Python 2 only support libraries we want to reuse" and "I only use
 the version of Python provided by my Linux distro vendor and they currently
 only support Python 2" (although that last is also changing on the *vendor*
@@ -343,6 +343,14 @@ way of providing time for the ecosystem to mature. Now, if Python 3 failed
 to offer a desirable platform, nobody would care about this in the
 slightest. Instead, what we currently see is the following:
 
+* people coming up with great migration guides and utilities *independently*
+  of the core development team. While `six`_ was created by a core
+  developer (Benjamin Peterson), and `lib2to3` and the main porting guides
+  are published by the core development team, `python-modernize`_ was created
+  by Armin Ronacher (creator of Jinja2 and Flask), while `python-future`_
+  was created by Ed Schofield based on that earlier work. Lennart Regebro
+  has also done stellar work in creating an `in-depth guide to porting to
+  Python 3 <http://python3porting.com/>`__
 * developers lamenting the fact that they *want* to use Python 3, but are
   being blocked by various dependencies being missing, or because they
   currently use Python 2, and need to justify the cost of migration to their
@@ -904,6 +912,12 @@ done incrementally over several releases, as failures under Python 3 can be
 addressed progressively by modernising the relevant code, until eventually
 the code runs correctly under both versions.
 
+More recently, the `python-future`_ project was created to assist those
+developers that would like to primarily write Python 3 code, but would
+also like to support their software on Python 2 for the benefit of
+potential (or existing) users that are not themselves able to upgrade to
+Python 3.
+
 The `landing page for the Python documentation <http://docs.python.org>`__
 was also switched some time ago to display the Python 3 documentation by
 default, although deep links still refer to the Python 2 documentation in
@@ -1040,7 +1054,8 @@ to change behaviour in Python 3 and update it accordingly.
 The automated ``2to3`` code translator can handle many of the mechanical
 changes in updating a code base, and the `python-modernize`_ variant
 performs a similar translation that targets the (large) common subset of
-Python 2.6+ and Python 3 with the aid of the `six`_ compatibility module.
+Python 2.6+ and Python 3 with the aid of the `six`_ compatibility module,
+while `python-future` does something similar with its ``futurize`` utility.
 
 :pep:`414` was implemented in Python 3.3 to restore support for explicit
 Unicode literals primarily to reduce the number of purely mechanical code
@@ -1074,6 +1089,7 @@ plan is too *conservative*, see :ref:`slow-uptake`.
 
 .. _python-modernize: https://github.com/mitsuhiko/python-modernize
 .. _six: http://pypi.python.org/pypi/six
+.. _python-future: http://python-future.org/index.html
 
 
 What would it take to make you change your minds about the current plan?
