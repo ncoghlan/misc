@@ -580,6 +580,18 @@ error::
       File "<stdin>", line 4, in <module>
     NameError: name 'logging' is not defined
 
+Python 2 also presents users with a choice between two relatively
+unattractive alternatives for calling up to a parent class implementation
+from a subclass method::
+
+    class MySubclass(Example):
+
+        def explicit_non_cooperative(self):
+            Example.explicit_non_cooperative(self)
+
+        def explicit_cooperative(self):
+            super(Example, self).explicit_cooperative()
+
 Python 2 is still a good language despite these flaws, but users that are
 happy with Python 2 shouldn't labour under the misapprehension that the
 language is perfect. We have made mistakes, and Python 3 came about because
@@ -747,6 +759,16 @@ more irritating when debugging a rare production failure than losing the
 real problem details due to a secondary failure in a rarely invoked error
 path.
 
+While you probably don't want to know how it works internally, Python 3
+also provides a much cleaner API for calling up to the parent implementation
+of a method::
+
+    class MySubclass(Example):
+
+        def implicit_cooperative(self):
+            super().implicit_cooperative()
+
+
 The above improvements are all changes that *couldn't* be backported to a
 hypothetical Python 2.8 release, since they're backwards incompatible with
 some (but far from all) existing Python 2 code, mostly for obvious reasons.
@@ -758,9 +780,13 @@ of the variable named in an "as" clause of an exception handler (to break
 the cycle, those names are automatically deleted at the end of the relevant
 exception handler in Python 3 - you now need to bind the exception to a
 different local variable name in order to keep a valid reference after
-the handler has finished running). The networking security changes are
-intermixed with the IO stack changes for Unicode support, so backporting
-those, while technically possible, would be a non-trivial task.
+the handler has finished running).
+
+The networking security changes are intermixed with the IO stack changes
+for Unicode support, so backporting those, while technically possible, would
+be a non-trivial task. Similarly, it's perhaps *possible* to backport the
+implicit super change, but it would need to be separated from the other
+backwards incompatible changes to the type system machinery.
 
 There are some other notable changes in Python 3 that are of substantial
 benefit when teaching new users (as well as for old hands), that technically
