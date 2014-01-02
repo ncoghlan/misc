@@ -351,23 +351,27 @@ slightest. Instead, what we currently see is the following:
   was created by Ed Schofield based on that earlier work. Lennart Regebro
   has also done stellar work in creating an `in-depth guide to porting to
   Python 3 <http://python3porting.com/>`__
+* more constrained plugin ecosystems that use an embedded Python interpreter
+  (like Blender, gcc, gdb and the Kate editor either adding Python 3
+  support, or else migrating entirely from Python 2 to 3)
 * developers lamenting the fact that they *want* to use Python 3, but are
   being blocked by various dependencies being missing, or because they
   currently use Python 2, and need to justify the cost of migration to their
   employer
-* library and framework developers being pushed by their users to add Python
-  3 support (sometimes in the form of code contributions, other times in the
-  form of tracker issues, mailing list posts and blog entries)
+* library and framework developers that hadn't already added Python 3 support
+  for their own reasons being strongly encouraged by their users to offer it
+  (sometimes in the form of code contributions, other times in the form of
+  tracker issues, mailing list posts and blog entries)
 * developers complaining that the core development team isn't being
   aggressive enough in forcing the community to migrate promptly rather than
-  allowing the migration to proceed at its own pace
+  allowing the migration to proceed at its own pace (!)
 
-This difference in perspective appears to be an instance of the classic early
-adopter/early majority divide in platform adoption. The deliberately gentle
-migration plan is for the benefit of the late adopters that drive Python's
-overall popularity, not the early adopters that make up both the open source
-development community and the (slightly) broader software development
-blogging community.
+That last case is a new one, and the difference in perspective appears to
+be an instance of the classic early adopter/early majority divide in
+platform adoption. The deliberately gentle migration plan is for the
+benefit of the late adopters that drive Python's overall popularity, not
+the early adopters that make up both the open source development community
+and the (slightly) broader software development blogging community.
 
 It's important to keep in mind that Python 2.6 (released October 2008) is
 still one of the most widely deployed versions of Python, purely through
