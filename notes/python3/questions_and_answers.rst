@@ -412,6 +412,389 @@ I've written more extensively on both of these topics in
 :ref:`binary-protocols` and :ref:`py3k-text-files`.
 
 
+Why is Python 3 considered a better language to teach beginning programmers?
+----------------------------------------------------------------------------
+
+As noted above, Python 2 has some interesting quirks due to its C heritage
+and the way the language has evolved since Guido first created Python in
+1991. These quirks then have to be taught to *every* new Python user so
+that they can avoid them. The following are examples of such quirks that
+are easy to demonstrate in an interactive session (and resist the temptation
+to point out that these can all be worked around - for teaching beginners,
+it's the default behaviour that matters, not what experts can instruct the
+interpreter to do with the right incantations elsewhere in the program).
+
+You can get unexpected encoding errors when attempting to decode values and
+unexpected decoding errors when attempting to encode them, due to the
+presence of encode and decode methods on both ``str`` and ``unicode``
+objects, but more restrictive input type expections for the underlying
+codecs::
+
+    >>> u"\xe9".decode("utf-8")
+    Traceback (most recent call last):
+      File "<stdin>", line 1, in <module>
+      File "/usr/lib64/python2.7/encodings/utf_8.py", line 16, in decode
+        return codecs.utf_8_decode(input, errors, True)
+    UnicodeEncodeError: 'ascii' codec can't encode character u'\xe9' in position 0: ordinal not in range(128)
+    >>> b"\xe9".encode("utf-8")
+    Traceback (most recent call last):
+      File "<stdin>", line 1, in <module>
+    UnicodeDecodeError: 'ascii' codec can't decode byte 0xe9 in position 0: ordinal not in range(128)
+
+Python 2 has a limited and inconsistent understanding of character sets
+beyond those needed to record English text::
+
+    >>> è = 1
+      File "<stdin>", line 1
+        è = 1
+        ^
+    SyntaxError: invalid syntax
+    >>> print("è")
+    è
+
+That second line usually works in the interactive interpreter, but won't work
+by default in a script::
+
+    $ echo 'print("è")' > foo.py
+    $ python foo.py
+      File "foo.py", line 1
+    SyntaxError: Non-ASCII character '\xc3' in file foo.py on line 1, but no encoding declared; see http://www.python.org/peps/pep-0263.html for details
+
+The handling of Unicode module names is also inconsistent::
+
+    $ echo "print(__name__)" > è.py
+    $ python -m è
+    __main__
+    $ python -c "import è"
+      File "<string>", line 1
+        import è
+               ^
+    SyntaxError: invalid syntax
+
+Beginners are often surprised to find that Python 2 can't do basic
+arithmetic correctly::
+
+    >>> 3 / 4
+    0
+
+And may also eventually notice that Python 2 has two different kinds of
+integer::
+
+    >>> type(10) is type(10**100)
+    False
+    >>> type(10) is type(10L)
+    False
+    >>> 10
+    10
+    >>> 10L
+    10L
+
+The ``print`` statement is weirdly different from normal function calls::
+
+    >>> print 1, 2, 3
+    1 2 3
+    >>> print (1, 2, 3)
+    (1, 2, 3)
+    >>> print 1; print 2; print 3
+    1
+    2
+    3
+    >>> print 1,; print 2,; print 3
+    1 2 3
+    >>> import sys
+    >>> print >> sys.stderr, 1, 2, 3
+    1 2 3
+
+And the ``exec`` statement also differs from normal function calls like
+``execfile``::
+
+    >>> d = {}
+    >>> exec "x = 1" in d
+    >>> d["x"]
+    1
+    >>> with open("example.py", "w") as f:
+    ...     f.write("x = 1\n")
+    ...
+    >>> d2 = {}
+    >>> execfile("example.py", d2)
+    >>> d2["x"]
+    1
+
+The ``input`` builtin has some seriously problematic default behaviour::
+
+    >>> input("This is dangerous: ")
+    This is dangerous: __import__("os").system("echo you are in trouble now")
+    you are in trouble now
+    0
+
+The ``open`` builtin doesn't handle non-ASCII files correctly (you have to
+use ``codecs.open`` instead), although this often isn't obvious on POSIX
+systems (where passing the raw bytes through the way Python 2 does often
+works correctly).
+
+You need parentheses to catch multiple exceptions, but forgetting that is
+an error that passes silently::
+
+    >>> try:
+    ...   1/0
+    ... except TypeError, ZeroDivisionError:
+    ...     print("Exception suppressed")
+    ...
+    Traceback (most recent call last):
+      File "<stdin>", line 2, in <module>
+    ZeroDivisionError: integer division or modulo by zero
+    >>> try:
+    ...     1/0
+    ... except (TypeError, ZeroDivisionError):
+    ...     print("Exception suppressed")
+    ...
+    Exception suppressed
+
+And if you make a mistake in an error handler, you'll lose the original
+error::
+
+    >>> try:
+    ...     1/0
+    ... except Exception:
+    ...     logging.exception("Something went wrong")
+    ...
+    Traceback (most recent call last):
+      File "<stdin>", line 4, in <module>
+    NameError: name 'logging' is not defined
+
+Python 2 is still a good language despite these flaws, but users that are
+happy with Python 2 shouldn't labour under the misapprehension that the
+language is perfect. We have made mistakes, and Python 3 came about because
+Guido and the rest of the core development team finally became tired of
+making excuses for those limitations, and decided to start down the long
+road towards fixing them instead.
+
+All of the above issues have been  addressed by backwards incompatible
+changes in Python 3. Once we had made that decision, then adding other
+new features *twice* (once to Python 3 and again to Python 2) imposed
+significant additional development effort, although we *did* do so for a
+number of years (the Python 2.6 and 2.7 releases were both developed in
+parallel with Python 3 releases, and include many changes originally created
+for Python 3 that were backported to Python 2 since they were backwards
+compatible and didn't rely on other Python 3 only changes like the new,
+more Unicode friendly, IO stack).
+
+I'll give several examples below of how the above behaviours have changed in
+Python 3.3 (since that's the currently released version), and then a couple
+more related to codec handling changes in Python 3.4.
+
+In Python 3, the codec related builtin convenience methods are *strictly*
+reserved for use with text encodings. Accordingly, text objects no longer
+even have a ``decode`` method, and binary types no longer have an ``encode``
+method::
+
+    >>> u"\xe9".decode("utf-8")
+    Traceback (most recent call last):
+      File "<stdin>", line 1, in <module>
+    AttributeError: 'str' object has no attribute 'decode'
+    >>> b"\xe9".encode("utf-8")
+    Traceback (most recent call last):
+      File "<stdin>", line 1, in <module>
+    AttributeError: 'bytes' object has no attribute 'encode'
+
+We've made some additional changes in the codec handling in Python 3.4 -
+more on that later.
+
+Python 3 also has a much improved understanding of character sets beyond
+English::
+
+    >>> è = 1
+    >>> è
+    1
+
+And this improved understanding extends to the import system::
+
+    $ echo "print(__name__)" > è.py
+    $ python3 -m è
+    __main__
+    $ python3 -c "import è"
+    è
+
+Python 3 has learned how to do basic arithmetic, and only has one kind of
+integer::
+
+    >>> 3 / 4
+    0.75
+    >>> type(10) is type(10**100)
+    True
+    >>> 10
+    10
+    >>> 10L
+      File "<stdin>", line 1
+        10L
+          ^
+    SyntaxError: invalid syntax
+
+``print`` is now just an ordinary function that accepts keyword arguments,
+rather than having its own custom (and arcane) syntax variations (note
+that controlling the separator between elements is a feature that
+requires preformatting of the string to be printed in Python 2 but was
+trivial to add direct support for when print was converted to an ordinary
+builtin function rather than being a separate statement)::
+
+    >>> print 1, 2, 3
+      File "<stdin>", line 1
+        print 1, 2, 3
+              ^
+    SyntaxError: invalid syntax
+    >>> print(1, 2, 3)
+    1 2 3
+    >>> print((1, 2, 3))
+    (1, 2, 3)
+    >>> print(1); print(2); print(3)
+    1
+    2
+    3
+    >>> print(1, 2, 3, sep="\n")
+    1
+    2
+    3
+    >>> print(1, end=" "); print(2, end=" "); print(3)
+    1 2 3
+    >>> import sys
+    >>> print(1, 2, 3, file=sys.stderr)
+    1 2 3
+
+
+``exec`` is now more consistent with ``execfile``::
+
+    >>> d = {}
+    >>> exec("x=1", d)
+    >>> d["x"]
+    1
+
+Converting ``print`` and ``exec`` to builtins rather than statements means
+they now also work natively with utilities that require real function
+objects (like ``map`` and ``functools.partial``), they can be replaced
+with mock objects when testing and they can be more readily substituted
+with alternative interfaces (such as replacing raw print statements with a
+pretty printer or a logging system).
+
+The `input`` builtin now has the much safer behaviour that is provided as
+``raw_input`` in Python 2::
+
+    >>> input("This is no longer dangerous: ")
+    This is no longer dangerous: __import__("os").system("echo you have foiled my cunning plan")
+    '__import__("os").system("echo you have foiled my cunning plan")'
+
+The entire IO stack has been rewritten in Python 3 to natively handle
+Unicode and (in the absence of system configuration errors), to favour
+UTF-8 by default rather than ASCII. Unlike Python 2, :func:`open` in Python 3
+natively supports ``encoding`` and ``errors`` arguments, and the
+:func:`tokenize.open` function automatically handles Python source file
+encoding cookies.
+
+Failing to trap an exception is no longer silently ignored::
+
+    >>> try:
+    ...     1/0
+    ... except TypeError, ZeroDivisionError:
+      File "<stdin>", line 3
+        except TypeError, ZeroDivisionError:
+                        ^
+    SyntaxError: invalid syntax
+
+And most errors in exception handlers will now still report the original
+error that triggered the exception handler::
+
+    >>> try:
+    ...     1/0
+    ... except Exception:
+    ...     logging.exception("Something went wrong")
+    ...
+    Traceback (most recent call last):
+      File "<stdin>", line 2, in <module>
+    ZeroDivisionError: division by zero
+
+    During handling of the above exception, another exception occurred:
+
+    Traceback (most recent call last):
+      File "<stdin>", line 4, in <module>
+    NameError: name 'logging' is not defined
+
+Note that implicit exception chaining is the thing I miss most frequently
+when working in Python 2, and the point I consider the single biggest gain
+over Python 3 when migrating *existing* applications - there are few things
+more irritating when debugging a rare production failure than losing the
+real problem details due to a secondary failure in a rarely invoked error
+path).
+
+In addition to the above changes, Python 3.4 includes `additional changes
+to the codec system
+<http://docs.python.org/dev/whatsnew/3.4.html#codec-handling-improvements>`__
+to help with more gently easing users into the idea that there are different
+kinds of codecs, and only some of them are text encodings. It also updates
+many of the networking modules to make secure connections much simpler.
+
+The above improvements are all changes that *couldn't* be backported to a
+hypothetical Python 2.8 release, since they're backwards incompatible with
+some (but far from all) existing Python 2 code, mostly for obvious reasons.
+The exception chaining isn't obviously backwards incompatible, but still
+can't be backported due to the fact that handling the implications of
+creating a reference cycle between caught exceptions and the execution
+frames referenced from their tracebacks involved changing the lifecycle
+of the variable named in an "as" clause of an exception handler (to break
+the cycle, those names are automatically deleted at the end of the relevant
+exception handler in Python 3 - you now need to bind the exception to a
+different local variable name in order to keep a valid reference after
+the handler has finished running). The networking security changes are
+intermixed with the IO stack changes for Unicode support, so backporting
+those, while technically possible, would be a non-trivial task.
+
+There are some other notable changes in Python 3 that are of substantial
+benefit when teaching new users (as well as for old hands), that technically
+*could* be included in a Python 2.8 release if someone chose to create one,
+but in practice such a release is unlikely to happen.
+
+:pep:`3151` means that Python 3.3+ has a significantly more sensible system
+for catching particular kinds of operating system errors. Here's the race
+condition free way to detect a missing file in Python 2.7:
+
+    >>> import errno
+    >>> try:
+    ...     f = open("This does not exist")
+    ... except IOError as err:
+    ...     if err.errno != errno.ENOENT:
+    ...         raise
+    ...     print("File not found")
+    ...
+    File not found
+
+And here's the same operation in Python 3.3+::
+
+    >>> try:
+    ...     f = open("This does not exist")
+    ... except FileNotFoundError:
+    ...     print("File not found")
+    ...
+    File not found
+
+Here's an example of how to split a package across multiple directories in
+Python 3.3+ (note the lack of ``__init__.py`` files). While technically
+this could be backported, the implementation depends on the new pure Python
+implementation of the import system, which in turn depends on the Unicode
+friendly IO stack in Python 3, so backporting it would be far from trivial::
+
+    $ mkdir -p dir1/nspkg
+    $ mkdir -p dir2/nspkg
+    $ echo 'print("Imported submodule A")' > dir1/nspkg/a.py
+    $ echo 'print("Imported submodule B")' > dir2/nspkg/b.py
+    $ PYTHONPATH=dir1:dir2 python3 -c "import nspkg.a, nspkg.b"
+    Imported submodule A
+    Imported submodule B
+
+The upcoming Python 3.4 release also aims to provide a significantly more
+complete package for new users, by bundling the ``pip`` installer (see
+:pep:`453`) and integrating it into the ``pyvenv`` virtual environment
+creation utility (Python 3.3 already bundled the Python Launcher for Windows
+with the Windows installers).
+
+
 What changes in Python 3 have been made specifically to simplify migration?
 ---------------------------------------------------------------------------
 
@@ -501,12 +884,8 @@ The language moratorium that severely limited the kinds of changes
 permitted in Python 3.2 was a direct result of that collaboration - it
 gave the other implementations breathing room to catch up to Python 2.7.
 That moratorium was only lifted for 3.3 with the agreement of the development
-leads for those other implementations. Jython is lagging further behind
-than others, with a 2.7 release due out soon, but the key feature of Jython
-is using Python code to script the *Java* ecosystem, reducing the importance
-of compatibility with the Python ecosystem for components with a Java
-equivalent. Significantly, one of the most disruptive aspects of the 3.x
-transition for CPython and PyPy (handling all
+leads for those other implementations.  Significantly, one of the most
+disruptive aspects of the 3.x transition for CPython and PyPy (handling all
 text as Unicode data) was already the case for Jython and IronPython, as
 they use the string model of the underlying JVM and CLR platforms.
 
@@ -534,6 +913,55 @@ import implementation. Some work will be needed from each implementation to
 work out how to bootstrap that code into the running interpreter (this was
 one of the trickiest aspects for CPython), but once that hurdle is passed
 all future import changes should be supported with minimal additional effort.
+
+All that said, there's often a stark difference in the near term *goals* of
+the core development team and the developers for other implementations.
+Criticism of the Python 3 project has been most vocal from a number of
+PyPy core developers, and that makes sense when you consider that one of
+the core aims of PyPy is to provide a better runtime for *existing* Python
+applications. That means their focus is likely to remain on Python 2.7 and
+providing compatibility with the scientific Python stack for some time to
+come.
+
+However, the reasons Armin Rigo originally abandoned psyco to instead
+initiate the PyPy project are *very* similar to the reasons Guido and the
+rest of the core development team put the Python 2 runtime into maintenance
+mode and started focusing feature development efforts on the Python 3
+runtime instead: there were things we wanted to do that were at best
+impractical, and in some cases impossible, within the backwards
+compatibility constraints of Python 2. The key difference is that where
+Armin was constrained solely by the design of the CPython runtime
+implementation, Guido was also constrained by the language definition.
+
+The similarity between the two cases can be seen in the fact that PyPy
+adoption is limited by both the ubiquity of CPython and the need to
+support key extension modules (hence the numpypy project), and Python 3
+adoption is similarly dependent on growing the ecosystem to match that of
+CPython 2.7. Unlike Jython and IronPython, neither Python 3 nor PyPy offer
+an integration story with a pre-existing third party runtime (the JVM for
+Jython and the CLR for IronPython) that makes them especially attractive
+to a specific subset of users - this means that both Python 3 and PyPy
+need to leverage the existing Python 2 ecosystem rather than trying to
+create a new ecosystem from scratch. (The Python 2 ecosystem is
+significant enough in the scientific space that the designers of the new
+scientific language Julia chose to include native integration with Python
+in addition to C and FORTRAN).
+
+It's also notable that the Python 3 compatible branch of PyPy is both
+well funded and well advanced, *despite* the PyPy team's documented
+reservations.
+
+Jython is in a similar situation to PyPy, but a bit further behind -
+their development efforts are currently focused on getting their
+currently-in-beta Python 2.7 support to a full release, and there is also
+some significant work happening on JyNI (which, like PyPy's numpypy project,
+aims to allow the use of the scientific Python stack from the JVM).
+
+The IronPython folks are `looking to have
+<http://blog.jdhardy.ca/2013/06/ironpython-3-todo.html>`__ a Python 3
+compatible version available by mid 2014. IronClad already supports the
+use of `scientific libraries from IronPython
+<https://www.enthought.com/repo/.iron/>`__.
 
 .. _language moratorium: http://www.python.org/dev/peps/pep-3003/
 .. _new guidelines: http://www.python.org/dev/peps/pep-0399/
@@ -610,24 +1038,28 @@ An important thing to understand for anyone hoping to convince the core
 development team to change direction in regards to Python 3 development
 and promotion is to know that mere words aren't enough, it's going to take
 action. That action is defined in :pep:`404`: creating a Python 2.8 release
-and convincing people to use it.
+(under a different name, however, since ``Python`` refers specifically to
+the language versions endorsed by the core development team) and convincing
+people to use it.
 
-If that happens, then we'll accept it as true evidence of demand for a 2.8
-release, and I'll be the first to make the case for us adopting such a fork
-and making it official. I personally doubt that will happen though, as such
-a release likely won't achieve anything that isn't already possible through
-``pip`` and PyPI, would be incredibly time consuming, and would be highly
-unlikely to be seen as providing a good return on investment for potential
-corporate sponsors.
+If that happens, then I expect we'll accept it as true evidence of demand for
+a 2.8 release, and I'll be the first to make the case for us adopting such a
+fork and making it official. I personally doubt that will happen though, as
+such a release wouldn't achieve all that much that isn't already possible
+through ``pip`` and PyPI, would be incredibly time consuming, and would be
+highly unlikely to be seen as providing a good return on investment for
+potential corporate sponsors.
 
 So far, we haven't even seen a concerted effort to create a community
 "Python 2.7+" release that bundles all of the available 3.x backport
 libraries with the base 2.7 distribution (which would be a much simpler
-project), so the prospects for a successful Python 2.8 fork that actually
+project), so the prospect of a successful Python 2.8 fork that actually
 backports compatible changes to the interpreter core seem limited. Heck,
 even creating and maintaining a *list* of the available backports hasn't
 happened (although such a list likely *would* be useful for Python 2.x
-users wishing to access Python 3 standard library features).
+users wishing to access Python 3 standard library features, as well as
+users that initially learned Python 3 and need to start maintaining a
+Python 2 application).
 
 A crash in general Python adoption would also make us change our minds,
 but Python is working its way into more and more niches *despite* the
