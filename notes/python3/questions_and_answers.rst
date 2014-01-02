@@ -15,6 +15,8 @@ to a transition that may not benefit them directly for years to come.
 Since I've seen variants of these questions several times over the years,
 I now keep this as an intermittently updated record of my thoughts on the
 topic (updates are generally prompted by new iterations of the questions).
+You can see the full history of changes in the `source repo
+<https://bitbucket.org/ncoghlan/misc/history-node/default/notes/python3/questions_and_answers.rst?at=default>`__.
 
 The views expressed below are my own. While many of them are shared by
 other core developers, and I use "we" in several places where I believe
@@ -426,9 +428,9 @@ interpreter to do with the right incantations elsewhere in the program).
 
 You can get unexpected encoding errors when attempting to decode values and
 unexpected decoding errors when attempting to encode them, due to the
-presence of encode and decode methods on both ``str`` and ``unicode``
-objects, but more restrictive input type expections for the underlying
-codecs::
+presence of decode and encode methods on both ``str`` and ``unicode``
+objects, but more restrictive input type expectations for the underlying
+codecs that then trigger the implicit *ASCII* based encoding or decoding::
 
     >>> u"\xe9".decode("utf-8")
     Traceback (most recent call last):
@@ -580,8 +582,8 @@ compatible and didn't rely on other Python 3 only changes like the new,
 more Unicode friendly, IO stack).
 
 I'll give several examples below of how the above behaviours have changed in
-Python 3.3 (since that's the currently released version), and then a couple
-more related to codec handling changes in Python 3.4.
+Python 3.3 (since that's the currently released version), as well as
+mentioning other improvements coming up in Python 3.4.
 
 In Python 3, the codec related builtin convenience methods are *strictly*
 reserved for use with text encodings. Accordingly, text objects no longer
@@ -597,8 +599,12 @@ method::
       File "<stdin>", line 1, in <module>
     AttributeError: 'bytes' object has no attribute 'encode'
 
-We've made some additional changes in the codec handling in Python 3.4 -
-more on that later.
+In addition to the above changes, Python 3.4 includes `additional changes
+to the codec system
+<http://docs.python.org/dev/whatsnew/3.4.html#codec-handling-improvements>`__
+to help with more gently easing users into the idea that there are different
+kinds of codecs, and only some of them are text encodings. It also updates
+many of the networking modules to make secure connections much simpler.
 
 Python 3 also has a much improved understanding of character sets beyond
 English::
@@ -723,13 +729,6 @@ over Python 3 when migrating *existing* applications - there are few things
 more irritating when debugging a rare production failure than losing the
 real problem details due to a secondary failure in a rarely invoked error
 path.
-
-In addition to the above changes, Python 3.4 includes `additional changes
-to the codec system
-<http://docs.python.org/dev/whatsnew/3.4.html#codec-handling-improvements>`__
-to help with more gently easing users into the idea that there are different
-kinds of codecs, and only some of them are text encodings. It also updates
-many of the networking modules to make secure connections much simpler.
 
 The above improvements are all changes that *couldn't* be backported to a
 hypothetical Python 2.8 release, since they're backwards incompatible with
@@ -979,7 +978,11 @@ The similarity between the two cases can be seen in the fact that PyPy
 adoption is limited by both the ubiquity of CPython and the need to
 support key extension modules (hence the numpypy project), and Python 3
 adoption is similarly dependent on growing the ecosystem to match that of
-CPython 2.7. Unlike Jython and IronPython, neither Python 3 nor PyPy offer
+CPython 2.7 (although the benefits of making things easier for people that
+aren't full time programmers meant that the scientific Python community were
+amongst the earlier adopters of Python 3).
+
+Unlike Jython and IronPython, neither Python 3 nor PyPy offer
 an integration story with a pre-existing third party runtime (the JVM for
 Jython and the CLR for IronPython) that makes them especially attractive
 to a specific subset of users - this means that both Python 3 and PyPy
@@ -1095,13 +1098,17 @@ potential corporate sponsors.
 So far, we haven't even seen a concerted effort to create a community
 "Python 2.7+" release that bundles all of the available 3.x backport
 libraries with the base 2.7 distribution (which would be a much simpler
-project), so the prospect of a successful Python 2.8 fork that actually
+project), so the prospects for a successful Python 2.8 fork that actually
 backports compatible changes to the interpreter core seem limited. Heck,
-even creating and maintaining a *list* of the available backports hasn't
-happened (although such a list likely *would* be useful for Python 2.x
-users wishing to access Python 3 standard library features, as well as
-users that initially learned Python 3 and need to start maintaining a
-Python 2 application).
+until I added it to the `Python 2 or Python 3`_ page on the Python wiki,
+nobody had even put in the minimal effort needed to create a shared list
+of the standard library additions in 3.x that were also available on PyPI.
+This suggests that users that desire Python 3 features in Python 2 are
+willing and able to do the backports themselves in the cases where it
+matters, and this has the added benefit of potentially decoupling future
+updates of those modules from the CPython upgrade cycle (which is
+critical for software that aims to support multiple versions with a
+minimum of effort).
 
 A crash in general Python adoption would also make us change our minds,
 but Python is working its way into more and more niches *despite* the
