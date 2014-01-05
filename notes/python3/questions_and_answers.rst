@@ -898,6 +898,85 @@ complete package for new users, by bundling the ``pip`` installer (see
 creation utility (Python 3.3 already bundled the Python Launcher for Windows
 with the Windows installers).
 
+Is Python 3 more convenient than Python 2 in every respect?
+-----------------------------------------------------------
+
+At this point in time, not quite. Python 3.4 comes much closer to this
+than Python 3.3 (which in turn was closer than 3.2, etc), but there are
+still some use cases that are more convenient in Python 2 because it handles
+them by default, where Python 3 needs some additional configuration, or even
+separate code paths for things that could be handled by a common algorithm in
+Python 2.
+
+In particular, many binary protocols are designed to be ASCII compatible,
+so it is sometimes convenient to treat them as text strings. Python 2 makes
+this easier, since the 8-bit ``str`` type blurs the boundary between binary
+and text data. By contrast, if you want to treat binary data like text in
+Python 3, you actually need to convert it to text first, and make conscious
+decisions about encoding issues that Python 2 largely lets you ignore. I've
+written a separate essay specifically about this point: :ref:`binary-protocols`.
+
+Python 3 also requires a bit of additional up front design work when
+aiming to handle improperly encoded data. This also has its own essay:
+:ref:`py3k-text-files`.
+
+While Python 3's Unicode support is unambiguously better than Python 2 on
+Windows and Mac OS X, it's slightly more vulnerable to being confused by
+configuration errors on POSIX systems, particularly if the operating system
+claims to be using the C (aka POSIX) locale, when it is in fact using a
+locale with a different encoding (typically UTF-8), and hence may provide
+non-ASCII data through operating system interfaces. This is most clearly
+seen when setting "LC_ALL=C" and attempting to do a directory listing in a
+directory containing files or subdirectories with non-ASCII characters in
+their names. It's also not uncommon for ssh sessions to run in the POSIX
+locale, which can cause problems when running Python 3, while Python 2
+will silently pass the raw bytes through. However, this is likely to be
+handled better in Python 3.5, and once we agree on a solution there, I
+expect Linux distros will apply it as a patch to their versions of Python
+3.4.
+
+Another change that has yet to be fully integrated is the switch to
+producing dynamic views from the ``keys``, ``values`` and ``items``
+methods of dict objects. It currently isn't easy to implement fully
+conformant versions of those in pure Python code, so many alternate
+mapping implementations in Python 3 don't worry about doing so - they
+just produce much simpler iterators, equivalent to the ``iterkeys``,
+``itervalues`` and ``iteritems`` methods from Python 2. There are
+a couple of specific bugs related to this which I hope to get fixed
+for Python 3.4, in which case this should also become much simpler in
+the final 3.3 maintenance release.
+
+Some of the changes in Python 3 designed for the benefit of larger
+applications (like the increased use of iterators), or for improved
+language consistency (like changing print to be a builtin function
+rather than a statement) are also less convenient at the interactive
+prompt. ``map``, for example, needs to be wrapped in a ``list`` call
+to produce useful output in the Python 3 REPL, since by default it
+now just creates an iterator, without actually doing any iteration. In
+Python 2, the fact it combined both defining the iteration and actually
+doing the iteration was convenient at the REPL, even if it may have
+resulted in redundant data copying and increased memory usage in actual
+application code.
+
+Having to type the parentheses when using print is mostly an irritation
+for Python 2 users that need to retrain their fingers. I've personally
+just trained myself to only use the single argument form (with parentheses)
+that behaves the same way in both Python 2 and 3, and use string formatting
+for anything more complex (or else just print the tuple when using the
+Python 2 interactive prompt). However, I also `created a patch
+<http://bugs.python.org/issue18788>`__ that proves it is possible to
+implement a general implicit call syntax within the constraints of
+CPython's parsing rules. Anyone that wishes to do so is free to take that
+patch and turn it into a full PEP that proposes the addition of a
+general implicit call syntax to Python 3.5 (or later). While such a PEP
+would need to address the ambiguity problems noted on the tracker issues
+(likely by restricting the form of the expression used in an implicit
+call to exclude binary operators), it's notable that the popular IPython
+interactive interpreter already provides this kind of implicit "autocall"
+behaviour by default, and many other languages provide a similar "no
+parentheses, parameters as suffix" syntax for statements that consist of
+a single function call.
+
 
 What changes in Python 3 have been made specifically to simplify migration?
 ---------------------------------------------------------------------------
@@ -1651,6 +1730,14 @@ primitives, their incorporation into a fork of CPython, and the extensive
 testing needed to ensure compatibility with the existing CPython ecosystem,
 and then persuading python-dev to accept the additional maintenance burden
 imposed by accepting such changes back into the reference implementation.
+
+One of the key issues with CPython in particular is that it's not only
+the Global Interpreter Lock that is threading unfriendly, but also the
+reference counting GC. An effectively free-threaded interpreter based on
+CPython would likely need to replace the GC as well, which is why other
+interpreter implementations like Jython, IronPython or PyPy are better
+positioned in this regard (since they already use garbage collectors based
+on mechanisms other than reference counting).
 
 I personally expect most potential corporate sponsors with a vested interest
 in Python to spend their money more cost effectively and just tell their
