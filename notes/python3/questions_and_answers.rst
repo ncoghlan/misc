@@ -426,14 +426,21 @@ I've written more extensively on both of these topics in
 :ref:`binary-protocols` and :ref:`py3k-text-files`.
 
 
+..
+   extra label to preserve link for the old question phrasing
+
+.. _why-is-python-3-considered-a-better-language-to-teach-beginning-programmers:
+
 Is Python 3 a better language to teach beginning programmers?
 -------------------------------------------------------------
 
 I believe so, yes. However, I also expect a lot of folks will still
-want to continue and learn Python 2 even if they learn Python 3 first
-- I just think that for people that don't already know C, Python 2 is
-easier to learn in terms of the differences from Python 3 rather than
-learning it directly.
+want to continue on and learn Python 2 even if they learn Python 3 first
+- I just think that for people that don't already know C, it will be
+easier to start with Python 3, and then learn Python 2 (and the relevant
+parts of C) in terms of the differences from Python 3 rather than
+learning Python 2 directly and having to learn all those legacy details
+at the same time as learning to program in the first place.
 
 As noted above, Python 2 has some interesting quirks due to its C heritage
 and the way the language has evolved since Guido first created Python in
