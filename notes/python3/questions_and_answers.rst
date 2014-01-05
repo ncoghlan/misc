@@ -426,8 +426,14 @@ I've written more extensively on both of these topics in
 :ref:`binary-protocols` and :ref:`py3k-text-files`.
 
 
-Why is Python 3 considered a better language to teach beginning programmers?
-----------------------------------------------------------------------------
+Is Python 3 a better language to teach beginning programmers?
+-------------------------------------------------------------
+
+I believe so, yes. However, I also expect a lot of folks will still
+want to continue and learn Python 2 even if they learn Python 3 first
+- I just think that for people that don't already know C, Python 2 is
+easier to learn in terms of the differences from Python 3 rather than
+learning it directly.
 
 As noted above, Python 2 has some interesting quirks due to its C heritage
 and the way the language has evolved since Guido first created Python in
@@ -490,6 +496,12 @@ arithmetic correctly::
 
     >>> 3 / 4
     0
+
+Can be bemused by the fact that Python 2 interprets numbers strangely
+if they have a leading zero::
+
+    >>> 0777
+    511
 
 And may also eventually notice that Python 2 has two different kinds of
 integer::
@@ -649,11 +661,19 @@ And this improved understanding extends to the import system::
     $ python3 -c "import è"
     è
 
-Python 3 has learned how to do basic arithmetic, and only has one kind of
-integer::
+Python 3 has learned how to do basic arithmetic, replaces the surprising C
+notation for octal numbers with the more explicit alternative supported
+since Python 2.6 and only has one kind of integer::
 
     >>> 3 / 4
     0.75
+    >>> 0777
+      File "<stdin>", line 1
+        0777
+           ^
+    SyntaxError: invalid token
+    >>> 0o777
+    511
     >>> type(10) is type(10**100)
     True
     >>> 10
