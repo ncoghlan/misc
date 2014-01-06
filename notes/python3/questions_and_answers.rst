@@ -1007,23 +1007,20 @@ Python 3.5 and later, though. Possible avenues for improvement previously
 discussed on python-dev, python-ideas or the CPython issue tracker include:
 
 * taking the internal "text encoding" marking system added in Python 3.4
-and giving either it or a more general codec type description system a
-public API for use when developing custom codecs.
-
+  and giving either it or a more general codec type description system a
+  public API for use when developing custom codecs.
 * making it easier to register custom codecs (preferably making use of
-the native namespace package support added in Python 3.3).
-
+  the native namespace package support added in Python 3.3).
 * introducing a string tainting mechanism that allows strings containing
-surrogate escaped bytes to be tagged with their encoding assumption and
-information about where the assumption was introduced. Attempting to
-process strings with incompatible encoding assumptions would then report
-both the incompatible assumptions and where they were introduced.
-
+  surrogate escaped bytes to be tagged with their encoding assumption and
+  information about where the assumption was introduced. Attempting to
+  process strings with incompatible encoding assumptions would then report
+  both the incompatible assumptions and where they were introduced.
 * introducing an "encodedstr" type that behaves like the 8-bit str type
-from Python 2, but complains if bytes with incompatible assumptions are
-encountered. Part of making this work would involve fixing a longstanding
-defect in the type interoperability support for builtin sequence objects
-in CPython.
+  from Python 2, but complains if bytes with incompatible assumptions are
+  encountered. Part of making this work would involve fixing a longstanding
+  defect in the type interoperability support for builtin sequence objects
+  in CPython.
 
 
 What changes in Python 3 have been made specifically to simplify migration?
