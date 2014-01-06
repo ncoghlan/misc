@@ -1,7 +1,7 @@
 Python 3 Q & A
 ==============
 
-Last Updated: 31st December, 2013
+Last Updated: 6th January, 2014
 
 With the long transition to "Python 3 by default" still in progress, the
 question is occasionally raised as to whether or not the core Python
@@ -905,6 +905,7 @@ complete package for new users, by bundling the ``pip`` installer (see
 creation utility (Python 3.3 already bundled the Python Launcher for Windows
 with the Windows installers).
 
+.. _room-for-improvement:
 
 Is Python 3 more convenient than Python 2 in every respect?
 -----------------------------------------------------------

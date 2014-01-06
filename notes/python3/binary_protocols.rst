@@ -3,6 +3,8 @@
 Python 3 and ASCII Compatible Binary Protocols
 ==============================================
 
+Last Updated: 6th January, 2014
+
 If you pay any attention to the Twittersphere (and likely several other
 environments), you may have noticed various web framework developers having a
 few choice words regarding the Unicode handling design in Python 3.
@@ -43,9 +45,11 @@ practical:
   slicing syntax if you want a length 1 bytes object.
 * The ``encode()`` and ``decode()`` convenience methods no longer support the
   text->text and binary->binary transforms, instead being limited to the actual
-  text->binary and binary->text encodings. There is a replacement
-  ``transform()`` API in the works for Python 3.3, but that isn't available at
-  this time.
+  text->binary and binary->text encodings. The ``codecs.encode`` and
+  ``codecs.decode`` functions need to be used instead in order to handle these
+  transforms in addition to the regular text encodings (these functions are
+  available as far back as Python 2.4, so they're usable in the common subset
+  of Python 2 and Python 3).
 * In 2.x, the ``unicode`` type supported the buffer API, allowing direct access
   to the raw multi-byte characters (stored as UCS4 in wide builds, and a
   UCS2/UTF-16 hybrid in narrow builds). In 3.x, the only way to access this
@@ -118,6 +122,16 @@ allow binary and text data to implicitly interact, this would have been
 picked up client side as soon as any attempt was made to combine the
 Unicode text value with the already encoded binary data.
 
+The other key reason for changing the text model of the language is that
+the Python 2 model only works properly on POSIX systems. Unlike POSIX,
+Unicode capable interfaces on Windows, the JVM and the CLR (whether .NET
+or mono), use Unicode natively rather than using encoded bytestrings.
+
+The Python 3 model, by contrast, aims to handle Unicode correctly on all
+platforms, with the surrogateescape error handler introduced to handle the
+case of data in operating system interfaces that doesn't match the declared
+encoding on POSIX systems.
+
 
 Why are the web framework developers irritated?
 -----------------------------------------------
@@ -129,16 +143,14 @@ between text data and binary protocols. Web frameworks have to deal with
 these issues both on the network side *and* on the data storage side.
 
 Those developers also have good reason to want to avoid decoding to Unicode -
-until Python 3.3 is available, Unicode strings may consume up to four times
+until Python 3.3 was released, Unicode strings consumed up to four times
 the memory consumed by 8 bit strings (depending on build options).
 
-That means framework developers face an unpalatable choice in their near term
+That means framework developers face an awkward choice in their near term
 Python 3 porting efforts:
 
 * do it "right" (i.e. converting to the text format for text manipulations),
-  knowing that this may lead to performance problems on Python 3.2, but will
-  benefit directly from the more efficient Unicode representation coming in
-  Python 3.3
+  and keep track of the need to convert the result back to bytes
 * split their code into parallel binary and text APIs (potentially duplicating
   a lot of code and making it much harder to maintain)
 * including multiple "binary or text" checks within the algorithm
@@ -150,6 +162,9 @@ Python 3 porting efforts:
 I have a personal preference for the first choice, as reflected in the way I
 implemented the binary input support for the ``urllib.parse`` APIs in
 Python 3.2.
+
+The last option is still one of the options for possible future Python 3
+improvements listed under :ref:`room-for-improvement`.
 
 
 Where to from here?
@@ -168,12 +183,19 @@ The challenge for Python 3.3 and beyond is to start bringing back some of
 the past convenience that resulted from being able to blur the lines between
 binary and text data without unduly compromising on the gains in correctness.
 
-The efficient Unicode representation coming in Python 3.3 (which uses the
+The efficient Unicode representation in Python 3.3 (which uses the
 smallest per-character size out of 1, 2 and 4 that can handle all characters
-in the string) is a solid start down that road. I have no doubt that the
-feedback from the web framework developers currently struggling with the
-vagaries of assorted network protocols and serialisation schemes will lead
-to a number of other improvements.
+in the string) was a solid start down that road, as was the restoration of
+Unicode string literal support in :pep:`414` (as that was a change library
+and framework developers couldn't address on behalf of their users).
+
+Python 3.4 restored full support for the binary transform codecs through
+the existing type neutral codecs module API (along with improved handling
+of codec errors in general).
+
+Some other possible steps towards making Python 3 as convenient a langauge
+as Python 2 for wire protocol handling are discussed in
+:ref:`room-for-improvement`
 
 But for most Python programmers, this issue simply doesn't arise. Binary
 data is binary data, text characters are text characters, and the two only
