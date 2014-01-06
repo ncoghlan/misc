@@ -905,6 +905,7 @@ complete package for new users, by bundling the ``pip`` installer (see
 creation utility (Python 3.3 already bundled the Python Launcher for Windows
 with the Windows installers).
 
+
 Is Python 3 more convenient than Python 2 in every respect?
 -----------------------------------------------------------
 
@@ -917,11 +918,12 @@ Python 2.
 
 In particular, many binary protocols are designed to be ASCII compatible,
 so it is sometimes convenient to treat them as text strings. Python 2 makes
-this easier, since the 8-bit ``str`` type blurs the boundary between binary
-and text data. By contrast, if you want to treat binary data like text in
-Python 3, you actually need to convert it to text first, and make conscious
-decisions about encoding issues that Python 2 largely lets you ignore. I've
-written a separate essay specifically about this point: :ref:`binary-protocols`.
+this easier in many cases, since the 8-bit ``str`` type blurs the boundary
+between binary and text data. By contrast, if you want to treat binary data
+like text in Python 3, you actually need to convert it to text first, and
+make conscious decisions about encoding issues that Python 2 largely lets
+you ignore. I've written a separate essay specifically about this point:
+:ref:`binary-protocols`.
 
 Python 3 also requires a bit of additional up front design work when
 aiming to handle improperly encoded data. This also has its own essay:
@@ -942,6 +944,13 @@ handled better in Python 3.5, and once we agree on a solution there, I
 expect Linux distros will apply it as a patch to their versions of Python
 3.4.
 
+Until Python 3.4, the Python 3 codec system also didn't cleanly handle
+the transform codecs provided as part of the standard library. Python 3.4
+includes several changes to the way these codecs are handled that nudge
+users towards the type neutral APIs in the codecs module when they attempt
+to use them with the text encoding specific convenience methods on the
+builtin types.
+
 Another change that has yet to be fully integrated is the switch to
 producing dynamic views from the ``keys``, ``values`` and ``items``
 methods of dict objects. It currently isn't easy to implement fully
@@ -961,7 +970,7 @@ prompt. ``map``, for example, needs to be wrapped in a ``list`` call
 to produce useful output in the Python 3 REPL, since by default it
 now just creates an iterator, without actually doing any iteration. In
 Python 2, the fact it combined both defining the iteration and actually
-doing the iteration was convenient at the REPL, even if it may have
+doing the iteration was convenient at the REPL, even though it often
 resulted in redundant data copying and increased memory usage in actual
 application code.
 
@@ -983,6 +992,37 @@ interactive interpreter already provides this kind of implicit "autocall"
 behaviour by default, and many other languages provide a similar "no
 parentheses, parameters as suffix" syntax for statements that consist of
 a single function call.
+
+Thanks are due especially to Armin Ronacher for describing several of these
+issues in fine detail when it comes to the difficulties they pose
+specifically when writing wire protocol handling code in Python 3. His
+feedback has been invaluable to me in attempting to make Python 3 more
+convenient for wire protocol development without reverting to the Python
+2 model that favoured wire protocol development over normal application
+development (where binary data should exist only at application boundaries
+and be converted to text or other structured data for internal processing).
+There's still plenty of additional improvements that could be made for
+Python 3.5 and later, though. Possible avenues for improvement previously
+discussed on python-dev, python-ideas or the CPython issue tracker include:
+
+* taking the internal "text encoding" marking system added in Python 3.4
+and giving either it or a more general codec type description system a
+public API for use when developing custom codecs.
+
+* making it easier to register custom codecs (preferably making use of
+the native namespace package support added in Python 3.3).
+
+* introducing a string tainting mechanism that allows strings containing
+surrogate escaped bytes to be tagged with their encoding assumption and
+information about where the assumption was introduced. Attempting to
+process strings with incompatible encoding assumptions would then report
+both the incompatible assumptions and where they were introduced.
+
+* introducing an "encodedstr" type that behaves like the 8-bit str type
+from Python 2, but complains if bytes with incompatible assumptions are
+encountered. Part of making this work would involve fixing a longstanding
+defect in the type interoperability support for builtin sequence objects
+in CPython.
 
 
 What changes in Python 3 have been made specifically to simplify migration?
