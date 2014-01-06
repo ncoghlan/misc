@@ -120,6 +120,13 @@ types and the codecs involved.
 Ned Batchelder's wonderful `Pragmatic Unicode`_ talk/essay could just as
 well be titled "This is why Python 3 exists".
 
+The revised text model in Python 3 is also closer to that used in the
+JVM, .NET CLR and other Unicode capable Windows APIs. The
+``surrogateescape`` error handler added in :pep`383` is designed to bridge
+the gap between the new text model in Python 3 and the possibility of
+receiving data through bytes oriented APIs on POSIX systems where the
+declared encoding doesn't match the encoding of the data itself.
+
 Python 3 also embeds Unicode support more deeply into the language itself.
 With UTF-8 as the default source encoding (instead of ASCII) and all text
 being handled as Unicode, many parts of the language that were previously
