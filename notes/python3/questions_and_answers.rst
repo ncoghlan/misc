@@ -99,7 +99,7 @@ at almost any point where an 8-bit string encounters a Unicode string, along
 with implicit encoding at almost any location where an 8-bit string is
 needed but a Unicode string is provided.
 
-The reason this approach is problematic is that it means the traceback for
+One reason this approach is problematic is that it means the traceback for
 an unexpected :exc:`UnicodeDecodeError` or :exc:`UnicodeEncodeError` in a
 large Python 2.x code base almost *never* points you to the code that is
 broken. Instead, you have to trace the origins of the *data* in the failing
@@ -117,26 +117,48 @@ The implicit nature of the conversions in Python 2 also means that encoding
 operations may raise decoding errors and vice-versa, depending on the input
 types and the codecs involved.
 
+A more pernicious problem arises when Python 2 *doesn't* throw an exception
+at all - this problem occurs when two 8-bit strings with data in different
+text encodings are concatenated or otherwise combined. The result is invalid
+data, but Python will happily pass it on to other applications in its
+corrupted form. Python 3 isn't completely immune to this problem, but it
+should arise in substantially fewer cases.
+
 Ned Batchelder's wonderful `Pragmatic Unicode`_ talk/essay could just as
 well be titled "This is why Python 3 exists".
 
-The revised text model in Python 3 is also closer to that used in the
-JVM, .NET CLR and other Unicode capable Windows APIs. The
-``surrogateescape`` error handler added in :pep`383` is designed to bridge
-the gap between the new text model in Python 3 and the possibility of
-receiving data through bytes oriented APIs on POSIX systems where the
-declared encoding doesn't match the encoding of the data itself.
+The revised text model in Python 3 also means that the *primary* string
+type is now fully Unicode capable. This brings Python closer to the model
+used in the JVM, .NET CLR and other Unicode capable Windows APIs. One
+key consequence of this is that the interpreter core in Python 3 is far
+more tolerant of paths that contain Unicode characters on Windows (so,
+for example, having a non-ASCII character in your username should no
+longer cause any problems with running Python scripts from your home
+directory on Windows). The ``surrogateescape`` error handler added in
+:pep:`383` is designed to bridge the gap between the new text model in
+Python 3 and the possibility of receiving data through bytes oriented APIs
+on POSIX systems where the declared system encoding doesn't match the
+encoding of the data itself. That error handler is also useful in other
+cases where applications need to tolerate mismatches between declared
+encodings and actual data - while it does share some of the problems of the
+Python 2 Unicode model, it at least has the virtue of only causing problems
+in the case of errors either in the input data or the declared encoding,
+where Python 2 had trouble even if all the input was correctly encoded in
+its declared encoding.
 
 Python 3 also embeds Unicode support more deeply into the language itself.
-With UTF-8 as the default source encoding (instead of ASCII) and all text
-being handled as Unicode, many parts of the language that were previously
-restricted to ASCII text (such as identifiers) now permit a much wider range
-of Unicode characters. This permits developers with a native language other
-than English to use names in their own language rather than being forced to
-use names that fit within the ASCII character set.
+With the primary string type handling the full Unicode range, it became
+practical to make UTF-8 the default source encoding (instead of ASCII) and
+adjust many parts of the language that were previously restricted to ASCII
+text (such as identifiers) now permit a much wider range of Unicode
+characters. This permits developers with a native language other than English
+to use names in their own language rather than being forced to use names
+that fit within the ASCII character set. Some areas of the interpreter that
+were previously fragile in the face of Unicode text (such as displaying
+exception tracebacks) are also far more robust in Python 3.
 
-Removing the implicit type conversions also made it more practical to
-implement the new internal Unicode data model for Python 3.3, where
+Removing the implicit type conversions entirely also made it more practical
+to implement the new internal Unicode data model for Python 3.3, where
 the internal representation of Unicode strings is automatically adjusted
 based on the highest value code point that needs to be stored (see
 `PEP 393`_ for details).
@@ -229,7 +251,8 @@ In the past few years, key parts of the ecosystem have successfully added
 Python 3 support. NumPy and the rest of the scientific Python stack supports
 both versions, as do several GUI frameworks (including PyGame). The Pyramid,
 Django and Flask web frameworks support both versions, as does the mod_wsgi
-Python application server, and the py2exe Windows binary creator. The
+Python application server, and the `cx-Freeze
+<http://cx-freeze.sourceforge.net/>`__ binary creator. The
 upgrade of Pillow from a repackaging project to a full development fork also
 brought PIL support to Python 3.
 
@@ -241,6 +264,13 @@ Python 3 support in Twisted may take a while longer to arrive, but *new*
 projects have the option of using Guido van Rossum's ``asyncio`` module
 instead (this is a new addition to the standard library in Python 3.4, also
 `available on PyPI <https://pypi.python.org/pypi/asyncio>`__ for Python 3.3).
+The `Tornado web server <http://www.tornadoweb.org/en/stable/>`__ is another
+option for asynchronous IO support that already runs on both Python 2 and
+Python 3.
+
+If there is any functionality that py2exe or py2app provides that is not
+available in cx-Freeze, then that may also cause problems for affected
+projects.
 
 There is a `Python 2 or Python 3`_ page on the Python wiki which aims to
 provides a reasonably up to date overview of the current state of the
