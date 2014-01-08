@@ -1278,6 +1278,45 @@ discussed on python-dev, python-ideas or the CPython issue tracker include:
   serve as a general purpose text container.
 
 
+What's up with WSGI in Python 3?
+--------------------------------
+
+The process of developing and updating standards can be slow, frustrating
+and often acrimonious. One of the key milestones in enabling Python 3
+adoption was when the web framework developers and web server developers
+were able to agree on an updated WSGI 1.1 specification that at least
+makes it *possible* to write WSGI applications, frameworks and middleware
+that support Python 2 and Python 3 from a single source code base, even
+though it isn't necessarily easy to do so correctly.
+
+In particular, the Python 2 ``str`` type was particular well suited to
+handling the "data in unknown ASCII compatible encoding" that is common
+in web protocols, and included in the data passed through from the web
+server to the application (and vice versa). At this point in time
+(January 2014), nobody has created a type for Python 3 that is similarly
+well suited to manipulating ASCII compatible binary protocol data. There
+certainly wasn't any such type available for consideration when WSGI 1.1
+was standardised in October 2010.
+
+As a result, the "least bad" option chosen for those fields in the Python 3
+version of the WSGI protocol was to publish them to the web application
+as `1atin-1`` decoded strings. This means that applications need to treat
+these fields as wire protocol data (even though they claim to be text
+based on their type), encode them back to bytes as ``latin-1``
+and then decode them again using the *correct* encoding (as indicated
+by other metadata).
+
+The WSGI 1.1 spec is definitely a case of a "good enough" solution winning
+a battle of attrition. I'm actually hugely appreciative of the web
+development folks that put their time and energy both into creating the
+WSGI 1.1 specification *and* into updating their tools to support it. Like
+the Python core developers, most of the web development folks aren't in
+a position to use Python 3 professionally, but *unlike* most of the core
+developers, the kind of code they write falls squarely into the ASCII
+compatible binary protocol space where Python 3 still has some significant
+ground to make up relative to Python 2 in terms of usability.
+
+
 What changes in Python 3 have been made specifically to simplify migration?
 ---------------------------------------------------------------------------
 
