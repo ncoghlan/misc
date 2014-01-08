@@ -332,7 +332,9 @@ and will continue receiving maintenance releases until at least July 2015,
 and security updates for a not yet specified period beyond that.
 
 **August 2010**: The first alpha of Python 3.2 was published. :pep:`392`
-covers the details of the Python 3.2 release cycle.
+covers the details of the Python 3.2 release cycle. Python 3.2 restored
+preliminary support for the binary and text transform codecs that had
+been removed in Python 3.0.
 
 **October 2010**: :pep:`3333` was published to define WSGI 1.1, a Python 3
 compatible version of the Python Web Server Gateway Interface.
@@ -352,6 +354,17 @@ Python 3.
 published to make it crystal clear that the core development has no plans
 to make a third parallel release in the Python 2.x series.
 
+**March 2012**: The first alpha of Python 3.3 was published. :pep:`398`
+covers the details of the Python 3.3 release cycle. Notably, Python
+3.3 restored support for Python 2 style Unicode literals after Armin
+Ronacher and other web framework developers pointed out that this was one
+change that the web frameworks couldn't handle on behalf of their users.
+:pep:`414` covers the detailed rationale for that change.
+
+**September 2012**: Six and half years after the inauguration of the Python
+3000 project, Python 3.3 final was published as the first Python
+3 release without a corresponding Python 2 feature release.
+
 **October 2012**: :pep:`430` was published, and the `online Python
 documentation <http://docs.python.org>`__ updated to present the Python 3
 documentation by default. In order to preserve existing links, deep links
@@ -362,6 +375,12 @@ Python rather than part of the standard library, allowing the addition of
 new features in maintenance releases. Significantly, this allows the
 Python 2.7 IDLE to be brought more into line with the features of the Python
 3.x version.
+
+**August 2013**: The first alpha of Python 3.4 was published. :pep:`429`
+covers the details of the Python 3.4 release cycle. Amongst other changes,
+Python 3.4 restored full support for the binary and text transform codecs
+that were reinstated in Python 3.2, while maintaining the "text encodings
+only" restriction for the convenience methods on the builtin types.
 
 
 When can we expect Python 3 to be the obvious choice for new projects?
