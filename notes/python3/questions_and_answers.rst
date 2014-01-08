@@ -233,6 +233,104 @@ is an excellent alternative to using the low level ``urllib`` interfaces
 directly, even though ``six`` does provide appropriate cross-version
 compatible access through the ``six.moves.urllib`` namespace).
 
+What are (or were) the key dates in the development of Python 3?
+----------------------------------------------------------------
+
+.. note::
+
+   This list is still in the process of being populated.
+
+**March 2006**: Guido van Rossum (the original creator of Python and
+hence Python's Benevolent Dictator for Life), with financial support
+from Google, took the previously hypothetical "Python 3000" project
+and turned it into an active development project, aiming to create
+an updated Python language definition and reference interpreter
+implementation that addressed some fundamental limitations in the
+ability of the Python 2 reference interpreter to correctly handle
+non-ASCII text.
+
+**April 2006**: Guido published :pep:`3000`, laying the ground rules for
+Python 3 development, and detailing the proposed migration strategy
+for Python 2 projects (the recommended porting approach has changed
+substantially since then, see :ref:`other-changes` for more details).
+:pep:`3100` describes several of the overall goals of the project, and
+lists many smaller changes that weren't covered by their own PEPs.
+:pep:`3099` covers a number of proposed changes that were explicitly
+declared out of scope of the Python 3000 project.
+
+At this point in time, Python 2 and Python 3 start being developed in
+parallel by the core development team for the reference interpreter.
+
+**August 2007**: The first alpha release of Python 3.0 was published.
+
+**February 2008**: The first alpha release of Python 2.6 was published
+alongside the third alpha of Python 3.0. The release schedules for both
+Python 2.6 and 3.0 are covered in :pep:`361`.
+
+**October 2008**: Python 2.6 was published, including the backwards
+compatible features defined for Python 3.0, along with a number of
+``__future__`` imports and the ``-3`` switch to help make it practical
+to add Python 3 support to existing Python 2 software (or to migrate
+entirely from Python 2 to Python 3). (Python 2.6 received its final
+security update in October 2013)
+
+**December 2008**: In a fit of misguided optimism, Python 3.0 was published
+with an unusably slow pure Python IO implementation - it worked tolerably
+well for small data sets, but was entirely impractical for handling
+realistic workloads on the CPython reference interpreter. (Python 3.0
+received a single maintenance release, but was otherwise entirely
+superceded by the release of Python 3.1)
+
+**March 2009**: The first alpha release of Python 3.1, with an updated
+C accelerated IO stack, was published. :pep:`375` covers the details of the
+Python 3.1 release cycle.
+
+**June 2009**: Python 3.1 final was published, providing the first version
+of the Python 3 runtime that was genuinely usable for realistic workloads.
+Python 3.1 is currently still receiving security updates, and will continue
+to do so until June 2014.
+
+**December 2009**: The first alpha of Python 2.7 was published. :pep:`373`
+covers the details of the Python 2.7 release cycle.
+
+**July 2010**: Python 2.7 final was published, providing many of the
+backwards compatible features added in the Python 3.1 and 3.2 releases.
+Python 2.7 is currently still fully supported by the core development team
+and will continue receiving maintenance releases until at least July 2015,
+and security updates for a not yet specified period beyond that.
+
+**August 2010**: The first alpha of Python 3.2 was published. :pep:`392`
+covers the details of the Python 3.2 release cycle.
+
+**October 2010**: :pep:`3333` was published to define WSGI 1.1, a Python 3
+compatible version of the Python Web Server Gateway Interface.
+
+**February 2011**: Python 3.2 final was published, providing the first
+version of Python 3 with support for the Web Server Gateway Interface.
+Python 3.2 is currently still receiving security updates, and an end date
+for further updates has not yet been set.
+
+**March 2011**: After Arch Linux updated their Python symlink to
+refer to Python 3 (breaking many scripts that expected it to refer to
+Python 2), :pep:`394` was published to provide guidance to Linux
+distributions on more gracefully handling the transition from Python 2 to
+Python 3.
+
+**November 2011**: :pep:`404` (the Python 2.8 Un-release Schedule) was
+published to make it crystal clear that the core development has no plans
+to make a third parallel release in the Python 2.x series.
+
+**October 2012**: :pep:`430` was published, and the `online Python
+documentation <http://docs.python.org>`__ updated to present the Python 3
+documentation by default. In order to preserve existing links, deep links
+continue to be interpreted as referring to the Python 2.7 documentation.
+
+**March 2013**: :pep:`434` redefined IDLE as an application shipped with
+Python rather than part of the standard library, allowing the addition of
+new features in maintenance releases. Significantly, this allows the
+Python 2.7 IDLE to be brought more into line with the features of the Python
+3.x version.
+
 
 When can we expect Python 3 to be the obvious choice for new projects?
 ----------------------------------------------------------------------
@@ -1096,6 +1194,8 @@ with the implicit encoding and decoding operations in Python 2, these APIs
 are at least unlikely to silently corrupt data streams (even in the presence
 of data encoded using a non-ASCII compatible encoding).
 
+
+.. _other-changes:
 
 What other changes have occurred that simplify migration?
 ---------------------------------------------------------
