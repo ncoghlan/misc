@@ -1267,11 +1267,15 @@ discussed on python-dev, python-ideas or the CPython issue tracker include:
   information about where the assumption was introduced. Attempting to
   process strings with incompatible encoding assumptions would then report
   both the incompatible assumptions and where they were introduced.
-* introducing an "encodedstr" type that behaves like the 8-bit str type
-  from Python 2, but complains if bytes with incompatible assumptions are
-  encountered. Part of making this work would involve fixing a longstanding
-  defect in the type interoperability support for builtin sequence objects
-  in CPython.
+* creating an "asciiview" type that uses memoryview to provide a str-like
+  interface to arbitrary binary buffers containing ASCII compatible
+  protocol data.
+* creating an "asciibytes" type which behaves more like the Python 3
+  bytestring, but rather than promoting itself to Unicode when encountering
+  a Unicode string, instead encodes that string to bytes with the ``ascii``
+  codec. As with ``asciiview``, it would be designed specifically for
+  handling ASCII compatible binary protocols rather than attempting to
+  serve as a general purpose text container.
 
 
 What changes in Python 3 have been made specifically to simplify migration?
