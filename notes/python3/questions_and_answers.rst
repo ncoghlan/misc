@@ -233,12 +233,38 @@ is an excellent alternative to using the low level ``urllib`` interfaces
 directly, even though ``six`` does provide appropriate cross-version
 compatible access through the ``six.moves.urllib`` namespace).
 
-What are (or were) the key dates in the development of Python 3?
-----------------------------------------------------------------
+
+What are (or were) some of the key dates in the Python 3 transition?
+--------------------------------------------------------------------
 
 .. note::
 
-   This list is still in the process of being populated.
+   This list is still in the process of being populated. At least the
+   following events should be noted in this list:
+
+   * NumpPy 1.5.0 and SciPy 0.9.0 (these added Python 3 support)
+   * matplotlib Python 3 support
+   * IPython Python 3 support
+   * Cython Python 3 support
+   * SWIG Python 3 support
+   * inclusion of Python 3 stacks in Linux distributions
+   * availability of commercially supported Python 3 stacks (including
+     Ubuntu 12.04 LTS and Red Hat Software Collections 1.0)
+   * creation of Ubuntu and Fedora "Python 3 as default" migration plans
+   * mod_wsgi Python 3 support (first 3.x WSGI implementation)
+   * Tornado Python 3 support (first 3.x async web server)
+   * Pyramid Python 3 support (first major 3.x compatible web framework)
+   * Django 1.5 and 1.6 (experimental and stable Python 3 support)
+   * Werkzeug and Flask Python 3 support
+   * requests Python 3 support
+   * pyside Python 3 support (first Python 3.x Qt bindings)
+   * pygtk and/or pygobject Python support
+   * wxPython phoenix project
+   * cx-Freeze Python 3 support
+   * setuptools and pip Python 3 support
+   * Pillow (PIL fork) Python 3 support
+   * greenlet Python 3 support
+
 
 **March 2006**: Guido van Rossum (the original creator of Python and
 hence Python's Benevolent Dictator for Life), with financial support
@@ -258,7 +284,7 @@ lists many smaller changes that weren't covered by their own PEPs.
 :pep:`3099` covers a number of proposed changes that were explicitly
 declared out of scope of the Python 3000 project.
 
-At this point in time, Python 2 and Python 3 start being developed in
+At this point in time, Python 2 and Python 3 started being developed in
 parallel by the core development team for the reference interpreter.
 
 **August 2007**: The first alpha release of Python 3.0 was published.
@@ -289,6 +315,12 @@ Python 3.1 release cycle.
 of the Python 3 runtime that was genuinely usable for realistic workloads.
 Python 3.1 is currently still receiving security updates, and will continue
 to do so until June 2014.
+
+**October 2009**: :pep:`3003` was published, declaring a moraratorium on
+language level changes in Python 2.7 and Python 3.2. This was done to
+deliberately slow down the pace of core development for a couple of years,
+with additional effort focused on standard library improvements (as well
+as some improvements to the builtin types).
 
 **December 2009**: The first alpha of Python 2.7 was published. :pep:`373`
 covers the details of the Python 2.7 release cycle.
