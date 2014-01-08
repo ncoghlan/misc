@@ -565,6 +565,10 @@ slightest. Instead, what we currently see is the following:
   was created by Ed Schofield based on that earlier work. Lennart Regebro
   has also done stellar work in creating an `in-depth guide to porting to
   Python 3 <http://python3porting.com/>`__
+* Linux distributions aiming to make Python 2 an optional download and
+  provide only Python 3 by default
+* commercial Python redistributors ensuring that Python 3 is included as
+  one of their supported offerings
 * more constrained plugin ecosystems that use an embedded Python interpreter
   (like Blender, gcc, gdb and the Kate editor either adding Python 3
   support, or else migrating entirely from Python 2 to 3)
@@ -600,6 +604,18 @@ am with those for the products sold by my employer ;)
 If we weren't getting complaints from the early adopter crowd about the pace
 of the migration, *then* I'd be worried (because it would indicate they had
 abandoned Python entirely and moved on to something else).
+
+The other key point to keep in mind is that the available metrics on Python
+3 adoption are quite limited. The two main quantitative options are to
+analyse user agents on the Python Package Index and binary installer downloads
+for Mac OS X and Windows from python.org. The first is heavily dominated by
+*existing* Python 2 users, but the trend in Python 3 usage is still upwards.
+The latter has now reached the point where Python 3 downloads outnumber
+Python 2 downloads (54% vs 46%). The release of Python 3.4 should lead to
+an uptick in both numbers, as the inclusion of pip makes it more likely
+that workshop organisers will recommend the use of Python 3.4 over other
+versions, as well as making it easier for new Python 3 users to discover
+and start taking advantage of the Python package index.
 
 For the inverse question relating to the concern that the existing migration
 plan is too *aggressive*, see :ref:`abandoning-users`.
