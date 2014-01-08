@@ -248,9 +248,9 @@ What are (or were) some of the key dates in the Python 3 transition?
    * Cython Python 3 support
    * SWIG Python 3 support
    * inclusion of Python 3 stacks in Linux distributions
-   * availability of commercially supported Python 3 stacks (including
-     Ubuntu 12.04 LTS and Red Hat Software Collections 1.0)
-   * creation of Ubuntu and Fedora "Python 3 as default" migration plans
+   * links for the availability of commercially supported Python 3 stacks
+     (including Ubuntu 12.04 LTS and Red Hat Software Collections 1.0)
+   * links for the Ubuntu and Fedora "Python 3 as default" migration plans
    * mod_wsgi Python 3 support (first 3.x WSGI implementation)
    * Tornado Python 3 support (first 3.x async web server)
    * Pyramid Python 3 support (first major 3.x compatible web framework)
@@ -298,7 +298,8 @@ compatible features defined for Python 3.0, along with a number of
 ``__future__`` imports and the ``-3`` switch to help make it practical
 to add Python 3 support to existing Python 2 software (or to migrate
 entirely from Python 2 to Python 3). (Python 2.6 received its final
-security update in October 2013)
+security update in October 2013, however, support remains available
+through commercial redistributors)
 
 **December 2008**: In a fit of misguided optimism, Python 3.0 was published
 with an unusably slow pure Python IO implementation - it worked tolerably
@@ -361,6 +362,9 @@ Ronacher and other web framework developers pointed out that this was one
 change that the web frameworks couldn't handle on behalf of their users.
 :pep:`414` covers the detailed rationale for that change.
 
+**April 2012**: Canonical publishes Ubuntu 12.04 LTS, including commercial
+support for both Python 2.7 and Python 3.2.
+
 **September 2012**: Six and half years after the inauguration of the Python
 3000 project, Python 3.3 final was published as the first Python
 3 release without a corresponding Python 2 feature release.
@@ -376,11 +380,35 @@ new features in maintenance releases. Significantly, this allows the
 Python 2.7 IDLE to be brought more into line with the features of the Python
 3.x version.
 
+**September 2013**: Red Hat published "Red Hat Software Collections 1.0",
+providing commercial support for both Python 2.7 and Python 3.3 on Red
+Hat Enterprise Linux systems.
+
 **August 2013**: The first alpha of Python 3.4 was published. :pep:`429`
 covers the details of the Python 3.4 release cycle. Amongst other changes,
 Python 3.4 restored full support for the binary and text transform codecs
 that were reinstated in Python 3.2, while maintaining the "text encodings
 only" restriction for the convenience methods on the builtin types.
+
+**December 2013**: Red Hat published the public beta of Red Hat Enterprise
+Linux 7, with Python 2.7 as the system Python. This is likely to ensure
+that Python 2.7 remains a commercially supported platform until *at least*
+2023.
+
+**February 2014**: Planned release of Python 3.4 final.
+
+**April 2014**: Ubuntu 14.04 LTS, target release for the "Python 3 by
+default" Ubuntu migration plan.
+
+**June 2014**: 5 years after the first production capable Python 3.x
+release
+
+**December 2014**: Fedora 22, target release for the "Python 3 by default"
+Fedora migration plan.
+
+**July 2015**: Anticipated date for Python 2.7 to switch to security
+fix only mode, ending roughly eight years of parallel maintenance of
+Python 2 and 3 by the core development team for the reference interpreter.
 
 
 When can we expect Python 3 to be the obvious choice for new projects?
