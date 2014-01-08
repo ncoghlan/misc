@@ -157,14 +157,77 @@ Python 3 porting efforts:
   implementation (this can get very untidy very quickly)
 * develop a custom extension type for implementing a str-style API on top of
   encoded binary data (this is hard to do without reintroducing all the
-  problems with ASCII incompatible encodings noted above)
+  problems with ASCII incompatible encodings noted above, but a custom
+  type provides more scope to make it clear it is only appropriate in
+  contexts where ASCII compatible encodings can be safely assummed, such
+  as many web protocols)
 
-I have a personal preference for the first choice, as reflected in the way I
-implemented the binary input support for the ``urllib.parse`` APIs in
-Python 3.2.
+I have a personal preference for the first choice as the current path
+of least resistance, as reflected in the way I implemented the binary
+input support for the ``urllib.parse`` APIs in Python 3.2. However, the
+last option (or something along those lines) will likely be needed in
+order to make ASCII compatible binary protocol handling as convenient
+in Python 3 as it is in Python 2.
 
 The last option is still one of the options for possible future Python 3
 improvements listed under :ref:`room-for-improvement`.
+
+
+Couldn't the implicit decoding just be disabled in Python 2?
+------------------------------------------------------------
+
+While Python 2 *does* provide a mechanism that allows the implicit
+decoding mechanism to be disabled, actually trying to use it breaks the
+world::
+
+    >>> import urlparse
+    >>> urlparse.urlsplit("http://example.com")
+    SplitResult(scheme='http', netloc='example.com', path='', query='', fragment='')
+    >>> urlparse.urlsplit(u"http://example.com")
+    SplitResult(scheme=u'http', netloc=u'example.com', path=u'', query='', fragment='')
+    >>> import sys
+    >>> reload(sys).setdefaultencoding("undefined")
+    >>> urlparse.clear_cache()
+    >>> urlparse.urlsplit("http://example.com")
+    SplitResult(scheme='http', netloc='example.com', path='', query='', fragment='')
+    >>> urlparse.urlsplit(u"http://example.com")
+    Traceback (most recent call last):
+      File "<stdin>", line 1, in <module>
+      File "/usr/lib64/python2.7/urlparse.py", line 181, in urlsplit
+        i = url.find(':')
+      File "/usr/lib64/python2.7/encodings/undefined.py", line 22, in decode
+        raise UnicodeError("undefined encoding")
+    UnicodeError: undefined encoding
+
+(If you don't clear the parsing cache after disabling the default encoding
+and retest with the same URLs, that second call may appear to be work,
+but that's only because it gets a hit in the cache from the earlier
+successful call. Using a different URL or clearing the caches as shown
+will reveal the error).
+
+This is why turning off the implicit decoding is such a big deal that it
+required a major version bump for the language definition: there is
+a *lot* of Python 2 code that only handles Unicode because 8-bit strings
+(including literals) are implicitly promoted to Unicode as needed. Since
+Python 3 removes all the implicit conversions, code that previously relied
+on it in order to accept both binary and text inputs (like the Python 2 URL
+parsing code shown above) instead needs to be updated to explicitly handle
+both binary and text inputs.
+
+So, in contrast to Python 2 code above, the Python 3 version not only
+changes the types of the components in the result, but also changes the
+type of the result itself::
+
+    >>> from urllib import parse
+    >>> parse.urlsplit("http://example.com")
+    SplitResult(scheme='http', netloc='example.com', path='', query='', fragment='')
+    >>> parse.urlsplit(b"http://example.com")
+    SplitResultBytes(scheme=b'http', netloc=b'example.com', path=b'', query=b'', fragment=b'')
+
+However, it's also no longer dependent on a global configuration setting that
+controls how 8-bit string literals are converted to Unicode text - instead,
+the decision on how to convert from bytes to text is handled entirely
+within the function call.
 
 
 Where to from here?
