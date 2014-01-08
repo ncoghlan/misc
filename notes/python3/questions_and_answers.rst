@@ -839,7 +839,16 @@ from a subclass method::
             Example.explicit_non_cooperative(self)
 
         def explicit_cooperative(self):
-            super(Example, self).explicit_cooperative()
+            super(MySubclass, self).explicit_cooperative()
+
+List comprehensions are one of Python's most popular features, yet they
+can have surprising side effects on the local namespace::
+
+    >>> i = 10
+    >>> squares = [i*i for i in range(5)]
+    >>> i
+    4
+
 
 Python 2 is still a good language despite these flaws, but users that are
 happy with Python 2 shouldn't labour under the misapprehension that the
@@ -1025,6 +1034,14 @@ of a method::
         def implicit_cooperative(self):
             super().implicit_cooperative()
 
+And, like generator expressions in both Python 2 and Python 3, list
+comprehensions in Python 3 no longer have any side effects on the
+local namespace::
+
+    >>> i = 10
+    >>> squares = [i*i for i in range(5)]
+    >>> i
+    10
 
 The above improvements are all changes that *couldn't* be backported to a
 hypothetical Python 2.8 release, since they're backwards incompatible with
@@ -1037,7 +1054,11 @@ of the variable named in an "as" clause of an exception handler (to break
 the cycle, those names are automatically deleted at the end of the relevant
 exception handler in Python 3 - you now need to bind the exception to a
 different local variable name in order to keep a valid reference after
-the handler has finished running).
+the handler has finished running). The list comprehension changes are also
+backwards incompatible in non-obvious ways (since not only do they no
+longer leak the variable, but the way the expressions access the containing
+scope changes - they're now full closures rather than running directly
+in the containing scope).
 
 The networking security changes are intermixed with the IO stack changes
 for Unicode support, so backporting those, while technically possible, would
