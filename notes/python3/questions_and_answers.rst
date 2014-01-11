@@ -307,6 +307,7 @@ development lists - I believe this answer is the first attempt at summarising
 the core design ethos behind them for the benefit of those that haven't been
 paying close attention to the Python 3 development process).
 
+
 OK, that explains Unicode, but what about all the other incompatible changes?
 -----------------------------------------------------------------------------
 
