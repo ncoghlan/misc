@@ -428,8 +428,7 @@ In the past few years, key parts of the ecosystem have successfully added
 Python 3 support. NumPy and the rest of the scientific Python stack supports
 both versions, as do several GUI frameworks (including PyGame). The Pyramid,
 Django and Flask web frameworks support both versions, as does the mod_wsgi
-Python application server, and the `cx-Freeze
-<http://cx-freeze.sourceforge.net/>`__ binary creator. The
+Python application server, and the py2app and cx-Freeze binary creators. The
 upgrade of Pillow from a repackaging project to a full development fork also
 brought PIL support to Python 3.
 
@@ -445,9 +444,8 @@ The `Tornado web server <http://www.tornadoweb.org/en/stable/>`__ is another
 option for asynchronous IO support that already runs on both Python 2 and
 Python 3.
 
-If there is any functionality that py2exe or py2app provides that is not
-available in cx-Freeze, then that may also cause problems for affected
-projects.
+If there is any functionality that py2exe provides that is not available
+in cx-Freeze, then that may also cause problems for affected projects.
 
 There is a `Python 2 or Python 3`_ page on the Python wiki which aims to
 provides a reasonably up to date overview of the current state of the
