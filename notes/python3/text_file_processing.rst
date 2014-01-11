@@ -70,15 +70,18 @@ tiny amount about Unicode and text encodings:
    to a sequence of code points (i.e. text data) is *decoding*, while the
    reverse process is *encoding*.
 4. For historical reasons, the most widely used encoding is ``ascii``, which
-   can only handle Unicode code points in the range 0-0x7F (i.e. ASCII is a 7-bit
-   encoding).
+   can only handle Unicode code points in the range 0-0x7F (i.e. ASCII is a
+   7-bit encoding).
 5. There are a wide variety of ASCII *compatible* encodings, which ensure that
    any appearance of a valid ASCII value in the binary data refers to the
    corresponding ASCII character.
 6. "utf-8" is becoming the preferred encoding for many applications, as it is
    an ASCII-compatible encoding that can encode any valid Unicode code point.
 7. "latin-1" is another significant ASCII-compatible encoding, as it maps byte
-   values directly to the first 256 Unicode code points.
+   values directly to the first 256 Unicode code points. (Note that Windows
+   has it's own "latin-1" variant called cp1252, but, unlike the ISO
+   "latin-1" implemented by the Python codec with that name, the Windows
+   specific variant doesn't map all 256 possible byte values)
 8. There are also many ASCII *incompatible* encodings in widespread use,
    particularly in Asian countries (which had to devise their own solutions before
    the rise of Unicode) and on platforms such as Windows, Java and the .NET CLR,
@@ -181,6 +184,16 @@ first 256 Unicode code points. This is the closest equivalent Python 3
 offers to the permissive Python 2 text handling model.
 
 **Example:** ``f = open(fname, encoding="latin-1")``
+
+.. note::
+
+   While the Windows ``cp1252`` encoding is also sometimes referred to as
+   "latin-1", it doesn't map all possible byte values, and thus needs
+   to be used in combination with the ``surrogateescape`` error handler to
+   ensure it never throws ``UnicodeDecodeError``. The ``latin-1`` encoding
+   in Python implements ISO_8859-1:1987 which maps all possible byte values
+   to the first 256 Unicode code points, and thus ensures decoding errors
+   will never occur regardless of the configured error handler.
 
 **Consequences:**
 
