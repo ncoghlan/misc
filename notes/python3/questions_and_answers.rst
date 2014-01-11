@@ -283,7 +283,7 @@ certainly an approach worth exploring. At linux.conf.au 2014 I *finally*
 found a volunteer willing to put in some time to actually experiment with
 the idea, so anyone else interested in the concept may want to take a look
 at Benno Rice's (highly experimental, not actually working yet)
-`prototype <benno-asciicompat>`_.
+`prototype <https://github.com/jeamland/asciicompat>`__.
 
 After making the initial switch in Python 3.0, we *have* made lots of
 changes to improve the interoperability of the new text model with POSIX
@@ -299,8 +299,6 @@ implications of those changes evolved over a period of years on the core
 development lists - I believe this answer is the first attempt at summarising
 the core design ethos behind them for the benefit of those that haven't been
 paying close attention to the Python 3 development process).
-
-.. _benno-asciicompat: https://github.com/jeamland/asciicompat
 
 OK, that explains Unicode, but what about all the other incompatible changes?
 -----------------------------------------------------------------------------
@@ -1450,7 +1448,8 @@ discussed on python-dev, python-ideas or the CPython issue tracker include:
   of the input. As with ``strview``, it would be designed specifically for
   handling ASCII compatible binary protocols rather than attempting to
   serve as a general purpose text container. A very early experimental
-  prototype of such a type is `available <benno-asciicompat>`_.
+  prototype of such a type is `available
+  <https://github.com/jeamland/asciicompat>`__.
 * :pep:`460` proposed adding explicit support for *binary* interpolation,
   as a distinct feature from the string interpolation supported by the
   8-bit ``str`` type in Python 2, but one that is be source and semantically
