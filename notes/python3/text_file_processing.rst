@@ -70,7 +70,7 @@ tiny amount about Unicode and text encodings:
    to a sequence of code points (i.e. text data) is *decoding*, while the
    reverse process is *encoding*.
 4. For historical reasons, the most widely used encoding is ``ascii``, which
-   can only handle Unicode code points in the range 0-0xEF (i.e. ASCII is a 7-bit
+   can only handle Unicode code points in the range 0-0x7F (i.e. ASCII is a 7-bit
    encoding).
 5. There are a wide variety of ASCII *compatible* encodings, which ensure that
    any appearance of a valid ASCII value in the binary data refers to the
