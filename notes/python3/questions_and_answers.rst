@@ -171,8 +171,9 @@ cases where applications need to tolerate mismatches between declared
 encodings and actual data - while it does share some of the problems of the
 Python 2 Unicode model, it at least has the virtue of only causing problems
 in the case of errors either in the input data or the declared encoding,
-where Python 2 had trouble even if all the input was correctly encoded in
-its declared encoding.
+where Python 2 could get into trouble in the presence of multiple data
+sources with *different* encodings, even if all the input was correctly
+encoded in its declared encoding.
 
 Python 3 also embeds Unicode support more deeply into the language itself.
 With the primary string type handling the full Unicode range, it became
