@@ -89,7 +89,7 @@ If it had just been about minor cleanups, the transition would likely have
 been more straightforward, but also less beneficial. However, the changes
 to the text model in Python 3 are one of those ideas that has profoundly
 changed the way I think about software, and we receive similar feedback from
-many other users that never really grokked how Unicode worked in Python 2,
+many other users that never really understood how Unicode worked in Python 2,
 but were able to grasp it far more easily in Python 3. Redesigning the way
 the Python builtin types model binary and text data has the ultimate aim of
 helping *all* Python applications (including the standard library itself) to
