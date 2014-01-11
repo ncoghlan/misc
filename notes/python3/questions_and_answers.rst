@@ -245,7 +245,7 @@ The hybrid "might be encoded text, might be arbitrary binary data" type was
 *deliberately* removed from the core text model because using the same type
 for multiple distinct purposes makes it incredibly difficult to reason about
 correctly. The core model in Python 3 opts to handle the "arbitrary binary
-data" case, leaving the direct manipulating of encoded text to a (currently
+data" case, leaving the direct manipulation of encoded text to a (currently
 still hypothetical) third party type.
 
 The purpose of boundary code is then to hammer whatever comes in over the
@@ -258,7 +258,7 @@ comes to Python 3. I've said `for some time
 <https://mail.python.org/pipermail/python-ideas/2011-December/012993.html>`__
 that Python 3 might need a new type to better handle some of the use cases
 that could be handled by the Python 2 ``str`` type, but have been deemed
-out of scape for the Python 3 ``bytes`` type. Unfortunately, it has proven
+out of scope for the Python 3 ``bytes`` type. Unfortunately, it has proven
 close to impossible to get people to start thinking in terms of a *new
 extension type* (preferably one starting life outside the standard library)
 rather than repeating the mantra "please make the Python 3 ``bytes`` type a
