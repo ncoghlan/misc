@@ -254,12 +254,18 @@ application code.
 
 This change is the key source of friction between the Python core developers
 and folks like Armin Ronacher (the developer of Flask and Jinja2) when it
-comes to Python 3. I've said `for some time
+comes to Python 3. I've said `for
+<https://mail.python.org/pipermail/python-dev/2010-June/101134.html>`__
+`some
+<https://mail.python.org/pipermail/python-ideas/2011-May/010381.html>`__
+`time
 <https://mail.python.org/pipermail/python-ideas/2011-December/012993.html>`__
 that Python 3 might need a new type to better handle some of the use cases
 that could be handled by the Python 2 ``str`` type, but have been deemed
 out of scope for the Python 3 ``bytes`` type. Unfortunately, it has proven
-close to impossible to get people to start thinking in terms of a *new
+`close to impossible
+<https://mail.python.org/pipermail/python-ideas/2011-May/010389.html>`__
+to get people to start thinking in terms of a *new
 extension type* (preferably one starting life outside the standard library)
 rather than repeating the mantra "please make the Python 3 ``bytes`` type a
 hybrid type like the Python 2 ``str`` type" (not always in so many words, but
@@ -409,7 +415,10 @@ and turned it into an active development project, aiming to create
 an updated Python language definition and reference interpreter
 implementation that addressed some fundamental limitations in the
 ability of the Python 2 reference interpreter to correctly handle
-non-ASCII text.
+non-ASCII text. (The project actually started earlier than this - March
+2006 was when the python-3000 list was created to separate out the longer
+term Python 3 discussions from the active preparation for the Python 2.5
+final release)
 
 **April 2006**: Guido published :pep:`3000`, laying the ground rules for
 Python 3 development, and detailing the proposed migration strategy
@@ -1562,8 +1571,9 @@ proposing a change needs to properly account for the rationale behind the
 current decision (which may unfortunately involve some digging through the
 python-3000, python-dev and python-ideas mailing list archives and the
 CPython issue tracker, as it turns out some of the rationale was apparently
-considered common knowledge when PEPs like :pep:`3116` and :pep:`383` were
-written, and hence not recorded as a specific part of the rationale).
+considered common knowledge when PEPs like :pep:`3138`, :pep:`3116` and
+:pep:`383` were written, and hence not recorded as a specific part of the
+PEPs themselves).
 
 
 What changes in Python 3 have been made specifically to simplify migration?
