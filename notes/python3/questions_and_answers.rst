@@ -1,7 +1,7 @@
 Python 3 Q & A
 ==============
 
-Last Updated: 6th January, 2014
+Last Updated: 11th January, 2014
 
 With the long transition to "Python 3 by default" still in progress, the
 question is occasionally raised as to whether or not the core Python
@@ -21,7 +21,11 @@ You can see the full history of changes in the `source repo
 The views expressed below are my own. While many of them are shared by
 other core developers, and I use "we" in several places where I believe
 that to be the case, I don't claim to be writing on the behalf of every
-core developer on every point.
+core developer on every point. Several core developers (including Guido)
+*have* reviewed and offered comments on this document, and aside from Guido
+noting that I was incorrect about his initial motivation in creating Python
+3, none of them has raised any objections to specific points or the document
+in general.
 
 I am also not writing on behalf of the Python Software Foundation (of which
 I am a nominated member) nor on behalf of Red Hat (my current employer).
@@ -71,13 +75,28 @@ into the core design of the language.
 Why was Python 3 made incompatible with Python 2?
 -------------------------------------------------
 
-To the best of my knowledge, the initial decision to make Python 3
-incompatible with the Python 2 series arose from Guido's desire to solve
-one core problem: helping *all* Python applications (including the
-standard library itself) to handle Unicode text in a more consistent and
-reliable fashion without needing to rely on third party libraries and
-frameworks. Even if that wasn't Guido's original motivation, it's the
-rationale that *I* find most persuasive.
+According to Guido, he initiated the Python 3 project to clean up a variety
+of issues with Python 2 where he didn't feel comfortable with fixing them
+through the normal deprecation process. This included the removal of classic
+classes, changing integer division to automatically promote to a floating
+point result (retaining the separate floor division operation) and changing
+the core string type to be based on Unicode by default. With a compatibility
+break taking place anyway, the case was made to just include some other
+changes in that process (like converting print to a function), rather than
+going through the full deprecation process within the Python 2 series.
+
+If it had just been about minor cleanups, the transition would likely have
+been more straightforward, but also less beneficial. However, the changes
+to the text model in Python 3 are one of those ideas that has profoundly
+changed the way I think about software, and we receive similar feedback from
+many other users that never really grokked how Unicode worked in Python 2,
+but were able to grasp it far more easily in Python 3. Redesigning the way
+the Python builtin types model binary and text data has the ultimate aim of
+helping *all* Python applications (including the standard library itself) to
+handle Unicode text in a more consistent and reliable fashion (I originally had
+"without needing to rely on third party libraries and frameworks" here,
+but those are still generally needed to handle system boundaries correctly,
+even in Python 3).
 
 The core Unicode support in the Python 2 series has the honour of being
 documented in PEP 100.
@@ -94,10 +113,11 @@ of the `python-3000 mailing list`_ in March 2006.
 One of the most important guidelines for good Unicode handling is to ensure
 that all encoding and decoding occurs at system boundaries, with all
 internal text processing operating solely on Unicode data. The Python 2
-Unicode model doesn't follow that guideline: it allows implicit decoding
-at almost any point where an 8-bit string encounters a Unicode string, along
-with implicit encoding at almost any location where an 8-bit string is
-needed but a Unicode string is provided.
+Unicode model is essentially the POSIX text model with Unicode support
+bolted on to the side, so it doesn't follow that guideline: it allows
+implicit decoding at almost any point where an 8-bit string encounters a
+Unicode string, along with implicit encoding at almost any location where
+an 8-bit string is needed but a Unicode string is provided.
 
 One reason this approach is problematic is that it means the traceback for
 an unexpected :exc:`UnicodeDecodeError` or :exc:`UnicodeEncodeError` in a
@@ -123,6 +143,14 @@ text encodings are concatenated or otherwise combined. The result is invalid
 data, but Python will happily pass it on to other applications in its
 corrupted form. Python 3 isn't completely immune to this problem, but it
 should arise in substantially fewer cases.
+
+The general guiding philosophy of the text model in Python 3 is essentially:
+
+* try to do the right thing by default
+* if we can't figure out the right thing to do, throw an exception
+* as far as is practical, always require users to opt in to behaviours
+  that pose a significant risk of silently corrupting data in non-ASCII
+  compatible encodings
 
 Ned Batchelder's wonderful `Pragmatic Unicode`_ talk/essay could just as
 well be titled "This is why Python 3 exists".
@@ -168,6 +196,111 @@ based on the highest value code point that needs to be stored (see
 .. _PEP 393: http://www.python.org/dev/peps/pep-0393/
 .. _Pragmatic Unicode: http://nedbatchelder.com/text/unipain.html
 
+
+What actually changed in the text model between Python 2 and Python 3?
+----------------------------------------------------------------------
+
+The Python 2 core text model looks like this:
+
+* ``str``: 8-bit type containing binary data, or encoded text data in an
+  unknown (hopefully ASCII compatible) encoding, represented as length 1
+  8-bit strings
+* ``unicode``: 16-bit or 32-bit type (depending on build options) containing
+  Unicode code points, represented as length 1 Unicode strings
+
+That first type is essentially the way POSIX systems model text data, so it
+is incredibly convenient for interfacing with POSIX environments, since it
+lets you just copy bits around without worrying about their encoding. It is
+also useful for dealing with many ASCII compatible binary protocols.
+
+The conceptual problem with this model is that it is an appropriate model for
+*boundary* code - the kind of code that handles the transformation between
+wire protocols and file formats (which are always a series of bytes), and the
+more structured data types actually manipulated by applications (which may
+include opaque binary blobs, but are more typically things like text, numbers
+and containers).
+
+Actual *applications* shouldn't be manipulating values that "might be
+text, might be arbitrary binary data". Instead, they should be keeping a
+clear distinction between them in order to avoid a problem the Japanese named
+"mojibake": concatenating multiple byte sequences together in different
+encodings, with no inherent structure that allows the receiving application
+to tell when the encoding changes, and thus rendering the data stream
+impossible to decode coherently.
+
+Unfortunately, Python 2 uses a type with exactly those semantics as its core
+string type, permits silent promotion from the "might be binary data" type
+to the "is definitely text" type and provides little support for accounting
+for encoding differences.
+
+So Python 3 changes the core text model to be one that is more appropriate
+for *application* code rather than boundary code:
+
+* ``str``: a sequence of Unicode code points, represented as length 1
+  strings (always contains text data)
+* ``bytes``: a sequence of integers between 0 and 255 inclusive (always
+  contains arbitrary binary data)
+
+The hybrid "might be encoded text, might be arbitrary binary data" type was
+*deliberately* removed from the core text model because using the same type
+for multiple distinct purposes makes it incredibly difficult to reason about
+correctly. The core model in Python 3 opts to handle the "arbitrary binary
+data" case, leaving the direct manipulating of encoded text to a (currently
+still hypothetical) third party type.
+
+The purpose of boundary code is then to hammer whatever comes in over the
+wire or is available on disk into a format suitable for passing on to
+application code.
+
+This change is the key source of friction between the Python core developers
+and folks like Armin Ronacher (the developer of Flask and Jinja2) when it
+comes to Python 3. I've said `for some time
+<https://mail.python.org/pipermail/python-ideas/2011-December/012993.html>`__
+that Python 3 might need a new type to better handle some of the use cases
+that could be handled by the Python 2 ``str`` type, but have been deemed
+out of scape for the Python 3 ``bytes`` type. Unfortunately, it has proven
+close to impossible to get people to start thinking in terms of a *new
+extension type* (preferably one starting life outside the standard library)
+rather than repeating the mantra "please make the Python 3 ``bytes`` type a
+hybrid type like the Python 2 ``str`` type" (not always in so many words, but
+that's generally the underlying theme of pieces like `this one from Armin
+<http://lucumr.pocoo.org/2014/1/5/unicode-in-2-and-3/>`__ lamenting the lost
+type from the Python 2 model).
+
+Making bytes such a hybrid type is simply *not* going to happen, as it would
+involve reverting to the Python 2 text model that favoured boundary code over
+normal application code. However, having such a hybrid type *available* as
+a power tool that boundary code developers can reach for when they need it
+isn't an unreasonable idea.
+
+While converting the standard library code, we haven't encountered any
+situations where creating such a hybrid type seemed easier than just making
+the previously implicit encoding and decoding operations explicit (especially
+since we *really* don't want beginners to reach for such a type - it's an
+advanced tool for developers of boundary code, which is the kind of problem
+that beginners should be using pre-existing libraries to handle), but it's
+certainly an approach worth exploring. At linux.conf.au 2014 I *finally*
+found a volunteer willing to put in some time to actually experiment with
+the idea, so anyone else interested in the concept may want to take a look
+at Benno Rice's (highly experimental, not actually working yet)
+`prototype <benno-asciicompat>`_.
+
+After making the initial switch in Python 3.0, we *have* made lots of
+changes to improve the interoperability of the new text model with POSIX
+systems and to make the new bytes type easier to work with. We've also
+updated many APIs that could be used as binary or text APIs in Python 2 to
+also be usable as binary or text APIs in Python 3. The only thing we flatly
+refuse to do is to make changes to the core ``bytes`` type that we believe
+take it back towards being usable as a hybrid binary/text type. I generally
+interpret such proposals as indicating a fundamental misunderstanding of the
+nature of the changes made to the text model in moving from Python 2 to
+Python 3 (which is fair enough really, since the understanding of the full
+implications of those changes evolved over a period of years on the core
+development lists - I believe this answer is the first attempt at summarising
+the core design ethos behind them for the benefit of those that haven't been
+paying close attention to the Python 3 development process).
+
+.. _benno-asciicompat: https://github.com/jeamland/asciicompat
 
 OK, that explains Unicode, but what about all the other incompatible changes?
 -----------------------------------------------------------------------------
@@ -249,7 +382,8 @@ What are (or were) some of the key dates in the Python 3 transition?
    * SWIG Python 3 support
    * inclusion of Python 3 stacks in Linux distributions
    * links for the availability of commercially supported Python 3 stacks
-     (including Ubuntu 12.04 LTS and Red Hat Software Collections 1.0)
+     (Canonical and Red Hat already listed, need to add ActiveState &
+     Continuum Analytics)
    * links for the Ubuntu and Fedora "Python 3 as default" migration plans
    * mod_wsgi Python 3 support (first 3.x WSGI implementation)
    * Tornado Python 3 support (first 3.x async web server)
@@ -264,6 +398,10 @@ What are (or were) some of the key dates in the Python 3 transition?
    * setuptools and pip Python 3 support
    * Pillow (PIL fork) Python 3 support
    * greenlet Python 3 support
+   * Editor/IDE support for Python 3 in: PyDev,
+     Python Tools for Visual Studio, PyCharm, WingIDE, Komodo (others?)
+   * Embedded Python 3 support in: Blender, Kate, vim, gdb, gcc, LibreOffice
+     (others?)
 
 
 **March 2006**: Guido van Rossum (the original creator of Python and
@@ -406,6 +544,13 @@ release
 **December 2014**: Fedora 22, target release for the "Python 3 by default"
 Fedora migration plan.
 
+**Before July 2015 (tentative)**: This is still subject to discussion
+amongst the core development team, but we're currently considering a
+development cycle for 3.5 that is slightly shorter than usual (12-17
+months rather than 18-24) in order to get some additional features that
+further lower the barrier to migration from Python 2 incorporated prior
+to the final full maintenance release of Python 2.7.
+
 **July 2015**: Anticipated date for Python 2.7 to switch to security
 fix only mode, ending roughly eight years of parallel maintenance of
 Python 2 and 3 by the core development team for the reference interpreter.
@@ -421,7 +566,7 @@ it to be recommended unreservedly for all *new* Python projects.
 
 Since 3.0 turned out to be a false start due to its IO stack being unusably
 slow, I start that counter from the release of 3.1: June 27, 2009.
-In the latest update of this Q&A (December 31, 2013), that puts us only
+In the latest update of this Q&A (January 11, 2014), that puts us only
 6 months away from that original goal.
 
 In the past few years, key parts of the ecosystem have successfully added
@@ -509,6 +654,16 @@ minimum supported version of Python on the system Python in RHEL (especially
 since that also becomes the system Python in downstream rebuilds like CentOS
 and Scientific Linux).
 
+Aside from Blender, it appears most publishing and animation tools with
+Python support (specifically Scribus, InkScape and AutoDesk tools like
+Maya and MotionBuilder) are happy enough with Python 2.6 or 2.7 (AutoDesk
+appear to be updating to 2.7 in 2014, Scribus and Inkspace already use 2.7).
+This actually makes a fair bit of sense, especially for the commercial tools
+from AutoDesk, since the Python support in these tools is there primarily to
+manipulate the application data model and there aren't any major
+improvements in Python 3 for that kind of use case, but still some risk of
+breaking existing scripts if the application updates to Python 3.
+
 
 .. _slow-uptake:
 
@@ -525,7 +680,7 @@ aiming to change the answers. These are the three key questions:
   use Python 2 or Python 3?"
 
 At the start of the migration, the answer to all of those questions was
-*obviously* "Python 2". Right now (December 2013), the answer is "either is
+*obviously* "Python 2". Right now (January 2013), the answer is "either is
 a reasonable choice, although context may favour Python 2". With the release
 of Python 3.4 next year, the obvious answer *should* become "Python 3.4,
 unless you have a compelling reason to choose Python 2 instead". Possible
@@ -538,7 +693,7 @@ side - Red Hat now supports Python 3.3 through both Red Hat Software
 Collections and as part of OpenShift Enterprise, and Canonical have
 supported Python 3.2 since 12.04 LTS).
 
-Note the question that *isn't* on the list: "I have a large Python 2
+Note the questions that *isn't* on the list: "I have a large Python 2
 application which is working well for me. Should I migrate it to Python 3?".
 
 We're happy enough for the answer to *that* question to remain "No"
@@ -548,6 +703,14 @@ nicer exit strategy to a newer language than COBOL ever did), the time
 frame for *that* change is a lot longer than the five years that was
 projected for changing the default choice of Python version for green field
 projects.
+
+We're also happy enough if an application that *embeds* Python continues to
+embed Python 2.7 rather than switching to embedding Python 3 - many embedding
+use cases are primarily about using Python's basic procedural programming
+support to manipulate the application data model, and those kinds of
+operation haven't seen substantial changes in the Python 3 upgrade (in these
+cases, the most significant change would likely be the one to make true
+division on integers return a floating point result).
 
 Several of the actions taken by the core development team have actually been
 deliberately designed to keep conservative users *away* from Python 3 as a
@@ -604,16 +767,37 @@ of the migration, *then* I'd be worried (because it would indicate they had
 abandoned Python entirely and moved on to something else).
 
 The other key point to keep in mind is that the available metrics on Python
-3 adoption are quite limited. The two main quantitative options are to
-analyse user agents on the Python Package Index and binary installer downloads
-for Mac OS X and Windows from python.org. The first is heavily dominated by
-*existing* Python 2 users, but the trend in Python 3 usage is still upwards.
-The latter has now reached the point where Python 3 downloads outnumber
+3 adoption are quite limited. The three main quantitative options are to
+analyse user agents on the Python Package Index, declarations of Python 3
+support on PyPI and binary installer downloads for Mac OS X and Windows
+from python.org.
+
+The first of those is heavily dominated by *existing* Python 2 users, but
+the trend in Python 3 usage is still upwards.
+
+The second is based on manually recorded metadata rather than automated
+version compatibility checking, but the current stats (January 2014) show
+38.8k packages total, 26.5k claiming compatibility with *any* version of
+Python and 3.5k claiming compatibility with Python 3. Of the top 200 most
+downloaded packages, ~70% offer Python 3 support, with several of those
+that are Python 2 only (such as sentry, graphite-web and supervisord)
+typically being run as standalone services rather than as imported modules
+that necessarily need to be using the same version of Python.
+
+The last metric has now reached the point where Python 3 downloads outnumber
 Python 2 downloads (54% vs 46%). The release of Python 3.4 should lead to
-an uptick in both numbers, as the inclusion of pip makes it more likely
+an uptick in all metrics, as the inclusion of pip makes it more likely
 that workshop organisers will recommend the use of Python 3.4 over other
 versions, as well as making it easier for new Python 3 users to discover
 and start taking advantage of the Python package index.
+
+The Python 3 ecosystem is definitely the smaller of the two at this point
+in time (by a significant margin), but users that start with Python 3 should
+be able to move to Python 2 easily enough if the need arises, and hopefully
+with a clear idea of which parts of Python 2 are the modern recommended parts
+that survived the transition to Python 3, and which parts are the legacy
+cruft that only survives in the latest Python 2.x releases due to backwards
+compatibility concerns.
 
 For the inverse question relating to the concern that the existing migration
 plan is too *aggressive*, see :ref:`abandoning-users`.
@@ -653,6 +837,10 @@ issues may need to account for them properly when migrating to Python 3.
 I've written more extensively on both of these topics in
 :ref:`binary-protocols` and :ref:`py3k-text-files`.
 
+The Python 3.5 release is currently looking like it will include some "make
+ASCII compatible binary data as easy to work with as it is in Python 2"
+changes, as well as further improvements to the handling of the impedance
+mismatch with the POSIX "text" model.
 
 ..
    extra label to preserve link for the old question phrasing
@@ -1179,20 +1367,8 @@ Python 3 also requires a bit of additional up front design work when
 aiming to handle improperly encoded data. This also has its own essay:
 :ref:`py3k-text-files`.
 
-While Python 3's Unicode support is unambiguously better than Python 2 on
-Windows and Mac OS X, it's slightly more vulnerable to being confused by
-configuration errors on POSIX systems, particularly if the operating system
-claims to be using the C (aka POSIX) locale, when it is in fact using a
-locale with a different encoding (typically UTF-8), and hence may provide
-non-ASCII data through operating system interfaces. This is most clearly
-seen when setting "LC_ALL=C" and attempting to do a directory listing in a
-directory containing files or subdirectories with non-ASCII characters in
-their names. It's also not uncommon for ssh sessions to run in the POSIX
-locale, which can cause problems when running Python 3, while Python 2
-will silently pass the raw bytes through. However, this is likely to be
-handled better in Python 3.5, and once we agree on a solution there, I
-expect Linux distros will apply it as a patch to their versions of Python
-3.4.
+The Python 3 model also required more complex impedance matching on POSIX
+platforms, which is covered by a separate question: :ref:`posix-systems`.
 
 Until Python 3.4, the Python 3 codec system also didn't cleanly handle
 the transform codecs provided as part of the standard library. Python 3.4
@@ -1265,15 +1441,21 @@ discussed on python-dev, python-ideas or the CPython issue tracker include:
   information about where the assumption was introduced. Attempting to
   process strings with incompatible encoding assumptions would then report
   both the incompatible assumptions and where they were introduced.
-* creating an "asciiview" type that uses memoryview to provide a str-like
+* creating an "strview" type that uses memoryview to provide a str-like
   interface to arbitrary binary buffers containing ASCII compatible
   protocol data.
-* creating an "asciibytes" type which behaves more like the Python 3
+* creating a hybrid type which behaves more like the Python 3
   bytestring, but rather than promoting itself to Unicode when encountering
-  a Unicode string, instead encodes that string to bytes with the ``ascii``
-  codec. As with ``asciiview``, it would be designed specifically for
+  a Unicode string, instead ensure the result type matches the concrete type
+  of the input. As with ``strview``, it would be designed specifically for
   handling ASCII compatible binary protocols rather than attempting to
-  serve as a general purpose text container.
+  serve as a general purpose text container. A very early experimental
+  prototype of such a type is `available <benno-asciicompat>`_.
+* :pep:`460` proposed adding explicit support for *binary* interpolation,
+  as a distinct feature from the string interpolation supported by the
+  8-bit ``str`` type in Python 2, but one that is be source and semantically
+  compatible for the use cases we actually want to support in Python 3 (the
+  ones that don't involve making the ``bytes`` type a hybrid type again).
 
 
 What's up with WSGI in Python 3?
@@ -1313,6 +1495,76 @@ a position to use Python 3 professionally, but *unlike* most of the core
 developers, the kind of code they write falls squarely into the ASCII
 compatible binary protocol space where Python 3 still has some significant
 ground to make up relative to Python 2 in terms of usability.
+
+.. _posix-systems:
+
+What's up with POSIX systems in Python 3?
+-----------------------------------------
+
+The fact that the Python 2 text model was essentially the POSIX text model
+with Unicode support bolted on to the side meant that interoperability
+between Python 2 and even misconfigured POSIX systems was generally quite
+straightforward - if the implicit decoding as ASCII never triggered (which
+was likely for code that only included 8-bit strings and never explicitly
+decoded anything as Unicode), non-ASCII data would silently pass through
+unmodified.
+
+One option we considered was to just assume everything was UTF-8 by default,
+similar to the choice made by the Windows .NET platform, the GNOME GUI
+toolkit and other systems. However, we decided that posed an unacceptable
+risk of silently corrupting user's data on systems that *were* properly
+configured to use an encoding other than UTF-8 (this concern was raised
+primarily by contributors based in Europe and Asia).
+
+This was a deliberate choice of attempting to be compatible with other
+software on the end user's system at the cost of increased sensitivity to
+configuration errors in the environment and differences in default
+behaviour between environments with different configurations.
+
+:pep:`383` added the surrogateescape error handler to cope with the fact that
+the configuration settings on POSIX systems aren't always a reliable guide to
+the *actual* encoding of the data you encounter. One of the most common
+causes of problems is the seriously broken default encoding for the default
+locale in POSIX (due to the age of the POSIX spec, that default is ASCII
+rather than UTF-8). Bad default environments and environment forwarding in
+ssh sessions are another source of problems, since an environment forwarded
+from a client is not a reliable guide to the server configuration, and
+if the ssh environment defaults to the C/POSIX locale, it will tell Python 3
+to use ASCII as the default encoding rather than something more appropriate.
+
+When surrogateescape was added, we considered enabling it for *every*
+operating system interface by default (including file I/O), but the point
+was once again made that this idea posed serious risks for silent data
+corruption on Asian systems configured to use Shift-JIS, ISO-2022, or
+other ASCII-incompatible encodings (European users were generally in a
+safer position on this one, since Europe has substantially lower usage of
+ASCII incompatible codecs than Asia does).
+
+This means we've been judiciously adding surrogateescape to interfaces as
+we decide the increase in convenience justifies any increased risk of
+data corruption. The next likely `candidate for change
+<http://bugs.python.org/issue19977>`__ is ``sys.stdin`` and ``sys.stdout`` on
+POSIX systems that claim that we should be using ``ascii`` as the default
+encoding. Such a result almost certainly indicates a configuration error
+in the environment, but using ascii+surrogateescape in such cases should
+make for a more usable result than the current approach of ascii+strict.
+There's still some risk of silent data corruption in the face of ASCII
+incompatible encodings, but the assumption is that systems that are
+configured with a non-ASCII compatible encoding should already have
+relatively robust configurations that avoid ever relying on the default POSIX
+locale.
+
+This is an area where we're genuinely open to the case being made for
+different defaults, or additional command line or environment variable
+configuration options. POSIX is just seriously broken in this space, and
+we're having to trade-off user convenience against the risk of silent data
+corruption - that means the "right answer" is *not* obvious, and any PEP
+proposing a change needs to properly account for the rationale behind the
+current decision (which may unfortunately involve some digging through the
+python-3000, python-dev and python-ideas mailing list archives and the
+CPython issue tracker, as it turns out some of the rationale was apparently
+considered common knowledge when PEPs like :pep:`3116` and :pep:`383` were
+written, and hence not recorded as a specific part of the rationale).
 
 
 What changes in Python 3 have been made specifically to simplify migration?
@@ -1699,6 +1951,7 @@ a PyPI backport.
 The latter two choices are unfortunate, but we've done what we can to make
 the first three alternatives more attractive.
 
+
 .. _quite emphatic: http://www.python.org/dev/peps/pep-0404/
 
 
@@ -1710,7 +1963,7 @@ have been taking active steps to ensure that even the most risk averse
 enterprise users can feel comfortable in adopting Python for their
 development stack, despite the current transition.
 
-Obviously, much of the content in the previous two questions regarding the
+Obviously, much of the content in the answers above regarding the
 viability of Python 2 as a development platform, with a clear future
 migration path to Python 3, is aimed at enterprise users. Government agencies
 and large companies are the environments where risk management tends to come
