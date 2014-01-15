@@ -1,7 +1,8 @@
 Python 3 Q & A
 ==============
 
-Last Updated: 11th January, 2014
+First Published: 29th June, 2012
+Last Updated: 15th January, 2014
 
 With the long transition to "Python 3 by default" still in progress, the
 question is occasionally raised as to whether or not the core Python
@@ -15,8 +16,7 @@ to a transition that may not benefit them directly for years to come.
 Since I've seen variants of these questions several times over the years,
 I now keep this as an intermittently updated record of my thoughts on the
 topic (updates are generally prompted by new iterations of the questions).
-You can see the full history of changes in the `source repo
-<https://bitbucket.org/ncoghlan/misc/history-node/default/notes/python3/questions_and_answers.rst?at=default>`__.
+You can see the full history of changes in the `source repo`_.
 
 The views expressed below are my own. While many of them are shared by
 other core developers, and I use "we" in several places where I believe
@@ -2059,7 +2059,9 @@ But, but, surely fixing the GIL is more important than fixing Unicode...
 
 While this complaint isn't really Python 3 specific, it comes up often
 enough that I wanted to put in writing why most of the core development
-team simply don't see the GIL as a particularly big problem in practice.
+team simply don't see the GIL as a significant problem for the typical
+workloads faced by Python applications (yes, this is a circular argument
+- more on that below).
 
 Earlier versions of this section were needlessly dismissive of the
 concerns of those that wish to combine their preference for programming
@@ -2069,7 +2071,8 @@ clear communication, the text has been rewritten in a more constructive
 tone. If you wish to see the snarkier early versions, they're
 available in the `source repo`_ for this site.
 
-.. _source repo: https://bitbucket.org/ncoghlan/misc
+.. _source repo: https://bitbucket.org/ncoghlan/misc/history-node/default/notes/python3/questions_and_answers.rst?at=default
+
 
 Why is using a Global Interpreter Lock (GIL) a problem?
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -2146,6 +2149,55 @@ reacquire it when returning control to the Python interpreter.
 .. _Cython: http://www.cython.org/
 .. _release the GIL: http://docs.cython.org/src/userguide/external_C_code.html#acquiring-and-releasing-the-gil
 .. _Numba: http://numba.pydata.org/
+
+
+Why doesn't this limitation really bother the core development team?
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+In my case, I came to Python by way of the unittest module: I needed to
+write a better test suite for a C++ library that communicated with a
+custom DSP application, and by using SWIG and the Python unittest module
+I was able to do so easily. Using Python for the test suite also let me
+easily play audio files out of the test hardware into the DSP unit being
+tested. Still in the test domain, I later used Python to communicate with
+serial hardware (and push data through serial circuits and analyse what
+came back), write prototype clients to ensure new hardware systems were full
+functional replacements for old ones and write hardware simulators to allow
+more integration errors could be caught during software development rather
+than only after new releases were deployed to the test lab that had real
+hardware available.
+
+Other current Python users are often in a similar boat - we're using Python
+as an orchestration language, getting other pieces of hardware and software
+to play nice, so the Python components just need to be "fast enough", and
+allow multiple *external* operations to occur in parallel, rather than
+necessarily needing to run Python bytecode operations concurrently.
+
+This is certainly true of the scientific community, where the heavy numeric
+lifting is all done in C or FORTRAN, and the Python components are there to
+make everything hang together in a way humans can read relatively easily.
+
+In the case of web development, while the speed of the application server
+may become a determining factor at truly massive scale, smaller applications
+are likely to gain more by adding a Varnish caching server in front of the
+application, and a memory cache between the application and its
+database before the application server itself is likely to become the
+bottleneck.
+
+This means for the kind of use case where Python is primarily playing an
+orchestration role, as well as those where the application is IO bound
+rather than CPU bound, free threading doesn't really provide a lot of
+benefit - the Python code was never the bottleneck in the first place, so
+focusing optimisation efforts on the Python runtime doesn't make sense.
+
+Instead, people drop out of pure Python code into an environment that is
+vastly easier to optimise and already supports free threading. This may be
+hand written C or C++ code, it may be something with Pythonic syntax but
+reduced dynamism like Cython or Numba, or it may be another more static
+language on a preexisting runtime like the JVM or the CLR, but however it
+is achieve, the level shift allows optimisations and parallelism to be
+applied at the places where they will do the most good for the overall
+speed of the application.
 
 
 Why isn't "just remove the GIL" the obvious answer?
@@ -2229,6 +2281,20 @@ As soon as a second machine enters the picture, threading based concurrency
 can't help you: you need to use a concurrency model (such as message passing
 or a shared datastore) that allows information to be passed between
 processes, either on a single machine or on multiple machines.
+
+CPython also has another problem that limits the effectiveness of removing
+the GIL: we use a reference counting garbage collector with cycle detection.
+This hurts free-threading in two major ways: firstly, any free-threaded
+solution that retains the reference counting GC will still need a global
+lock that protects the integrity of the reference counts; secondly, switching
+threads in the CPython runtime will mean updating the reference counts on a
+whole new working set of objects, almost certainly blowing the CPU cache
+and losing a bunch of the speed benefits gained from making more effective
+use of multiple cores.
+
+So the reference counting GC would likely have to go as well, or be replaced
+with an allocation model that uses a separate heap per thread by default,
+creating yet *another* compatibility problem for C extensions.
 
 These various factors all combine to explain why there's no strong motivation
 to implement fine-grained locking in CPython in the near term:
@@ -2324,7 +2390,19 @@ Alex Gaynor also pointed out `some interesting research (PDF)
 into replacing Ruby's Giant VM Lock (the equivalent to CPython's GIL in
 CRuby, aka the Matz Ruby Interpreter) with appropriate use of Hardware
 Transactional Memory, which may also prove relevant to CPython as HTM
-capable hardware becomes more common.
+capable hardware becomes more common. (However, note the difficulties that
+the refcounting in MRI caused the researchers - CPython is likely to have
+exactly the same problem, with a well established history of attempting to
+eliminate and then emulate the refcounting causing major compatibility
+problems with extension modules).
+
+I was also reminded in early 2014 of some speculative ideas I had regarding
+the possibility of `refining CPython's subinterpreter
+<http://www.curiousefficiency.org/posts/2012/07/volunteer-supported-free-threaded-cross.html>`__
+concept to make it a first class language feature that offered true
+in-process concurrency in a way that didn't break compatibility with
+C extension modules (well, any more than actually using subinterpreters
+already breaks it).
 
 As far as a free-threaded CPython implementation goes, that seems unlikely
 in the absence of a corporate sponsor willing to pay for the development and
@@ -2351,3 +2429,86 @@ contribute to sponsoring Armin's work on `Software Transactional Memory`_.
 .. _further tweaks: http://bugs.python.org/issue7946
 .. _pickle protocol: http://www.python.org/dev/peps/pep-3154/
 .. _Trent Nelson's work: http://vimeo.com/79539317
+
+
+Well, why not just add JIT compilation, then?
+---------------------------------------------
+
+This is another one of those changes which is significantly easier said
+than done - the problem is with the "just, not the "add JIT compilation".
+Armin Rigo (one of the smartest people I've had the pleasure of meeting)
+tried to provide one as an extension module (the ``psyco`` project) but
+eventually grew frustrated with working within CPython's limitations and
+even the limitations of existing compiler technology, so he went off and
+invented an entirely new way of building language interpreters instead -
+that's what the ``PyPy`` project is, a way of writing language interpreters
+that gives you a tracing JIT compiler for (almost) free.
+
+However, while PyPy is an amazing platform for running Python *applications*,
+the extension module compatibility problems introduced by using a different
+reference counting mechanism mean it isn't yet quite as good as CPython as
+an *orchestration* system, so those users in situations where their Python
+code isn't the performance bottleneck stick with the simpler platform. That
+currently includes scientists, Linux vendors, Apple, cloud providers and so
+on and so forth. As noted above when discussing the possible future of
+concurrency in Python, it seems entirely plausible to me that PyPy will
+eventually become the default *application* runtime for Python software,
+with CPython being used primarily as a tool for handling orchestration tasks
+and embedding in other applications, and only being used to run full
+applications if PyPy isn't available for some reason. That's going to take
+a while though, as vendors are currently still wary of offering commercial
+support for PyPy, not through lack of technical merit, but simply because
+it represents an entirely new way of creating software and they're not sure
+if they trust it yet (they'll likely get over those reservations eventually,
+but it's going to take time - as the CPython core development team have
+good reason to know, adoption of new platforms is a slow, complex business,
+especially when many users of the existing platform don't experience the
+problem that the alternative version is aiming to solve).
+
+While PyPy is a successful example of creating a *new* Python implementation
+with JIT compilation support (Jython and IronPython benefit from the JIT
+compilation support in the JVM and CLR respectively), the Unladen Swallow
+project came about when some engineers at Google made a second attempt to
+add a JIT compiler directly to the CPython code base.
+
+The Unladen Swallow team did have a couple of successes: they made several
+improvements to LLVM to make it more usable as a JIT compiler, and they put
+together an excellent set of Python macro benchmarks that are used by both
+PyPy and CPython for relative performance comparisons to this day. However,
+even though Guido gave in principle approval for the idea, one thing they
+*didn't* succeed at doing is adding implicit JIT compilation support
+directly to CPython.
+
+The most recent attempt at adding JIT compilation to CPython is a project
+called `Numba`_, and similar to ``psyco``, Numba doesn't attempt to provide
+*implicit* JIT compilation of arbitrary Python code. Instead, you have to
+decorate the methods you would like accelerated. The advantage of this is
+that it means that Numba *doesn't* need to cope with the full dynamism of
+Python the way PyPy does - instead, it can tweak the semantics within the
+decorated functions to reduce the dynamic nature of the language a bit,
+allowing for simpler optimisation.
+
+Anyone that is genuinely interested in getting implicit JIT support into the
+default CPython implementation would do well to look into resurrecting the
+`speed.python.org <http://speed.python.org/>`__ project. Modelled after
+the `speed.pypy.org <http://speed.pypy.org/>`__ project (and using the same
+software), this project has foundered for lack of interested volunteers and
+leadership. It comes back to the problem noted above - if you're using Python
+for orchestration, the Python code becoming a bottleneck is usually taken as
+indicating an architectural issue rather than the Python runtime being too
+slow.
+
+The availability of PyPy limits the appeal of working on adding JIT
+compilation to CPython as a volunteer or sponsoring it as a commercial user
+even further - if all of the extensions an application needs are also
+available on PyPy, then it's possible to just use that instead, and if
+they *aren't* available, then porting them or creating alternatives with
+`cffi` or a pure Python implementation is likely to be seen as a more
+interesting and cost effective solution than attempting to add JIT
+compilation support to CPython.
+
+I actually find it quite interesting - the same psychological and commercial
+factors that work against creating Python 2.8 and towards increasing
+adoption of Python 3 *also* work against adding JIT compilation support
+to CPython and towards increasing adoption of PyPy for application style
+workloads.
