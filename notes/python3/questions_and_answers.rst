@@ -1839,7 +1839,7 @@ effort to address any other remaining significant barriers to migration
 from Python 2.
 
 One such barrier is the fact that Python 3 (up to and including Python 3.4)
-Python 3 doesn't provide an interpolation mechanism for binary formats that
+doesn't provide an interpolation mechanism for binary formats that
 include ASCII compatible segments. Instead, binary data must be collated as
 a list and merged using bytes.join, formatted using the ``struct`` module,
 or interpolated as text and then encoded using a consistent encoding. While
