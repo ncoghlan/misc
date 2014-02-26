@@ -138,10 +138,6 @@ any way:
 * Vinay Sajip and others are working on ``distlib``, a new approach to
   providing better stdlib infrastructure for packaging and distribution for
   3.4 (after the failed attempt based on ``distutils2`` for 3.3)
-* Antoine Pitrou is working on :pep:`428`, a possible higher level API for
-  access to various aspects of file and filesystem manipulation
-* Antoine is also working on :pep:`3154`, a new version of the pickle
-  protocol (which should have some flow-on benefits for multi-processing)
 * Lennart Regebro is working on :pep:`431`, bringing political timezone
   support directly into the standard library
 * Guido van Rossum is working on :pep:`3156`, a standardised API for
