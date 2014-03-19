@@ -2273,7 +2273,15 @@ restoration of binary interpolation support. I went through and made the
 binary transform codecs that had been restored in Python 3.2 easier to
 discover and use effectively in Python 3.4. R. David Murray put in a lot
 of time and effort to actually handle Unicode sensibly in the ``email``
-module.
+module, Brett Cannon has been updating the official migration guide based
+on community feedback, etc, etc (I'm sure I'm missing a bunch of other
+relevant changes).
+
+Outside of CPython and its documentation, Benjamin Peterson published the
+``six``, Lennart Regebro put together his excellent guide for porting,
+Armin Ronacher created ``python-modernize`` and Ed Schofield created
+``python-future``. Multiple folks have contributed patches to a wide
+variety of projects to allow them to add Python 3 support.
 
 
 Aren't the Stackless developers talking about creating a Stackless 2.8?
