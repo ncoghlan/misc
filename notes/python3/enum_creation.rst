@@ -153,7 +153,7 @@ binding two different names to the same value, that turned out to be
 we're sticking with Guido's original decision.
 
 However, it may still be possible `add a simple class decorator
-<http://bugs.python.org/issue18042>` that makes it
+<http://bugs.python.org/issue18042>`_ that makes it
 easy to ensure there a no accidental aliases when they are not desired.
 
 
