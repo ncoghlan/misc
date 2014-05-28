@@ -1722,7 +1722,7 @@ was standardised in October 2010.
 
 As a result, the "least bad" option chosen for those fields in the Python 3
 version of the WSGI protocol was to publish them to the web application
-as ``1atin-1`` decoded strings. This means that applications need to treat
+as ``latin-1`` decoded strings. This means that applications need to treat
 these fields as wire protocol data (even though they claim to be text
 based on their type), encode them back to bytes as ``latin-1``
 and then decode them again using the *correct* encoding (as indicated
