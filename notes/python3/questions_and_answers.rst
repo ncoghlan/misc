@@ -2,7 +2,7 @@ Python 3 Q & A
 ==============
 
 :Published:    29th June, 2012
-:Last Updated: 15th March, 2014
+:Last Updated: 28th May, 2014
 
 With the long transition to "Python 3 by default" still in progress, the
 question is occasionally raised as to whether or not the core Python
@@ -26,6 +26,12 @@ core developer on every point. Several core developers (including Guido)
 time, and aside from Guido noting that I was incorrect about his initial
 motivation in creating Python 3, none of them has raised any objections
 to specific points or the document in general.
+
+There were several extensive discussions of the state of the Python 3
+transition at PyCon US 2014 in Montreal, starting at the language summit,
+and continuing throughout the conference. These helped clarify many of the
+remaining points of contention, and resulted in an extensive update to this
+document.
 
 I am also not writing on behalf of the Python Software Foundation (of which
 I am a nominated member) nor on behalf of Red Hat (my current employer).
@@ -281,85 +287,99 @@ The purpose of boundary code is then to hammer whatever comes in over the
 wire or is available on disk into a format suitable for passing on to
 application code.
 
-This change is the key source of friction when it comes to Python 3 between
+Unfortunately, there have turned out to be some key challenges in making
+this model pervasive in Python 3:
+
+* the same design changes that improve Python 3's Windows integration by
+  changing several OS interfaces to operate on text rather than binary data
+  also make it more sensitive to locale misconfiguration issues on
+  POSIX operating systems other than Mac OS X. In Python 2, text is always
+  sent and received from POSIX operating system interfaces as *binary* data,
+  and the associated decoding and encoding operations are fully under the
+  control of the application. In Python 3, the interpreter aims to handle
+  these operations automatically, but in releases up to and including
+  Python 3.4 it needs to rely on the default settings in the OS provided
+  locale module to handle the conversion, making it potentially sensitive to
+  configuration issues that many Python 2 applications could ignore. Most
+  notably, if the OS erroneously claims that "ascii" is a suitable encoding
+  to use for operating system interfaces (as happens by default in a number
+  of cases, due to the formal definition of the ANSI C locale predating the
+  invention of UTF-8 by a few years), the Python 3 interpreter will believe
+  it, and will complain if asked to handle non-ASCII data. A future version
+  of Python 3 may be able to address this limitation, but it isn't a trivial
+  fix due to the phase of the interpreter startup sequence where the problem
+  occurs. (Thanks go to Armin Ronacher for clearly articulating many of
+  these details - see his write-up in the
+  `click <http://click.pocoo.org/python3/>`__ documentation)
+* when migrating libraries and frameworks from Python 2 to Python 3 that
+  handle boundary API problems, the lack of the hybrid "might be text, might
+  be arbitrary bytes" type can be keenly felt, as the implicitly
+  interoperable type was essential to being able to cleanly share code
+  between the two modes of operation. This usually isn't a major problem
+  for *new* Python 3 code - such code is typically designed to operate in
+  the binary domain (perhaps relying on the methods for working with ASCII
+  compatible segments), the text domain, or to handle a transition between
+  them. However, code being ported from Python 2 may need to continue to
+  implement hybrid APIs in order to accommodate users that make different
+  decisions regarding whether to operate in the binary domain or the text
+  domain in Python 3 - because Python 2 blurred the distinction, different
+  users will make different choices, and third party libraries and
+  frameworks may need to account for that rather than forcing a particular
+  answer for all users.
+* in the initial Python 3 design, interpolation of variables into a format
+  string was treated solely as a text domain operation. While :pep:`461` has
+  partially reversed that decision for Python 3.5 (by adopting printf-style
+  formatting as a binary interpolation format as well), the lack of this
+  feature can sometimes be an irritation when working extensively in Python
+  3 with wire protocols and file formats that include ASCII compatible
+  segments.
+* while the API design of the ``str`` type in Python 3 was based directly on
+  the ``unicode`` type in Python 2, the ``bytes`` type doesn't have such a
+  clean heritage. Instead, it evolved over the course of the initial Python 3
+  pre-release design period, starting from a model where the *only* type for
+  binary data handling was the type now called ``bytearray``. That type was
+  modelled directly on the ``array.array('B')`` type, and hence produced
+  integers when iterating over it or indexing into it. During the pre-release
+  design period, the lack of an immutable binary data type was identified as
+  a problem, and the (then mutable) ``bytes`` type was renamed to
+  ``bytearray`` and a new immutable ``bytes`` type added. The now familiar
+  "bytes literal" syntax was introduced (prepending a "b" prefix to the
+  string literal syntax) and the representations of the two types were also
+  adjusted to be based on the new bytes literal syntax. With the benefit of
+  hindsight, it has become clear another change should have been made at the
+  same time: with so many affordances switched back to matching those of the
+  Python 2 ``str`` type (including the use of the new bytes literal syntax to
+  refer to that type in Python 2.6 and 2.7), ``bytes`` and ``bytearray``
+  should have been been switched away from behaving like a tuple of integers
+  and list of integers (respectively) and instead modified to be containers
+  of length 1 ``bytes`` objects, just as the ``str`` type is a container of length 1
+  ``str`` objects. Unfortunately, that change was not made at the time, and
+  now backwards compatibility constraints within the Python 3 series itself
+  makes it highly unlikely the behaviour will be changed in the future
+  either. :pep:`467` covers a number of other still visible remnants of
+  this convoluted design history that are more amenable to being addressed
+  within the constraints of Python's normal Python deprecation processes.
+
+These changes are a key source of friction when it comes to Python 3 between
 the Python core developers and other experts that have fully mastered the
-Python 2 Unicode system. I've said `for
-<https://mail.python.org/pipermail/python-dev/2010-June/101134.html>`__
-`some
-<https://mail.python.org/pipermail/python-ideas/2011-May/010381.html>`__
-`time
-<https://mail.python.org/pipermail/python-ideas/2011-December/012993.html>`__
-that Python 3 *might* need a new third party type to better handle some of
-the use cases that could be handled by the Python 2 ``str`` type, but have
-been deemed out of scope for the Python 3 ``bytes`` type. Unfortunately, it
-has proven `close to impossible
-<https://mail.python.org/pipermail/python-ideas/2011-May/010389.html>`__
-to get people to start thinking in terms of a *new
-extension type* (preferably one starting life outside the standard library)
-rather than repeating the mantra "please make the Python 3 ``bytes`` type a
-hybrid type like the Python 2 ``str`` type". It's not always stated
-explicitly, but that's generally the underlying theme of pieces like
-`this one from Armin Ronacher
-<http://lucumr.pocoo.org/2014/1/5/unicode-in-2-and-3/>`__ lamenting the
-lost type from the Python 2 model. While Armin is entirely correct that
-the removed type made that kind of hybrid API easier to write, it did so
-at the cost of making it significantly harder to use the Python 2 text model
-to learn how Unicode worked, as well as making it significantly harder to
-avoid introducing inadvertent assumptions of ASCII compatibility in code
-that should be able to handle arbitrary binary data. One of the key Python
-3 design decisions was the one where Guido decided that wasn't a good
-trade-off to make in the core language design, so Python 3 brings the text
-model more into line with the designs used in languages like Java and C#.
+Python 2 text model, especially those that focus on targeting POSIX
+platforms rather than Windows or the JVM, as well as those that focus on
+writing boundary code, such as networking libraries, web frameworks and
+file format parsers and generators. These developers bear a lot of the
+burden of adjusting to these changes on behalf of their users, while
+gaining few or none of the benefits.
 
-This usually isn't a major problem for *new* Python 3 code - such code is
-typically designed to operate in the binary domain (perhaps relying on the
-methods for working with ASCII compatible segments), the text domain, or to
-handle a transition between them. However, code being ported from Python 3
-may need to continue to implement hybrid APIs in order to accommodate users
-that make different decisions regarding whether to operate in the binary
-domain or the text domain in Python 3 - because Python 2 blurred the
-distinction, different users will make different choices, and forward party
-libraries and frameworks may need to account for that rather than forcing
-a particular answer for all users.
-
-Accordingly, making bytes such a hybrid type is simply *not* going to happen,
-as it would involve reverting to the Python 2 text model that favoured
-boundary code over normal application code. However, having such a hybrid
-type *available* as a power tool that boundary code developers can reach
-for when they need it isn't an obviously unreasonable idea (although
-actually *implementing* that type may turn out to instead provide a
-clear demonstration for why we moved away from that approach when
-designing the Python 3 text model).
-
-While converting the standard library code, we haven't encountered any
-situations where creating such a hybrid type seemed easier than just making
-the previously implicit encoding and decoding operations explicit (especially
-since we *really* don't want beginners to reach for such a type - it's at
-most an advanced tool for developers of boundary code, which is the kind of
-problem that beginners should be using pre-existing libraries to handle), but
-it's certainly an approach worth exploring. At linux.conf.au 2014 (with some
-nudging from Russell Keith-Magee of the Django project) I found a volunteer
-willing to put in some time to actually experimenting with the idea, so
-anyone else interested in the concept may want to take a look at Benno
-Rice's (highly experimental, not actually working yet)
-`prototype <https://github.com/jeamland/asciicompat>`__.
-
-After making the initial switch in Python 3.0, we *have* made lots of
-changes to improve the interoperability of the new text model with POSIX
-systems and to make the new bytes type easier to work with. We've also
-updated many APIs that could be used as binary or text APIs in Python 2 to
-also be usable as binary or text APIs in Python 3. The only thing we flatly
-refuse to do is to make changes to the core ``bytes`` type that we believe
-take it back towards being usable as a hybrid binary/text type, rather than
-just providing some optional facilities that make it easier to work with
-ASCII compatible segments in binary data formats. I generally interpret
-such proposals as indicating a fundamental misunderstanding of the
-nature of the changes made to the text model in moving from Python 2 to
-Python 3 (which is fair enough really, since the understanding of the full
-implications of those changes evolved over a period of years on the core
-development lists - I believe this answer is the first attempt at summarising
-the core design ethos behind them for the benefit of those that haven't been
-paying close attention to the Python 3 development process).
+That said, while these issues certainly aren't ideal, they also won't impact
+many users that are relying on libraries and frameworks to deal with boundary
+issues, and can afford to ignore possible misbehaviour in misconfigured POSIX
+environments. As Python 3 continues maturing as a platform, most of those
+areas where it has regressed in suitability relative to Python 2 are being
+addressed. In particular, the ongoing migrations of Linux distribution
+utilities from Python 2 to Python 3 will likely see many of the platform
+integration issues on POSIX systems dealt with in a cleaner fashion. The
+tuple-of-ints and list-of-ints behaviour of ``bytes`` and ``bytearray`` is
+unlikely to change, but proposals like :pep:`467` may bring better tools
+for dealing with them.
 
 
 OK, that explains Unicode, but what about all the other incompatible changes?
@@ -659,24 +679,24 @@ features designed to provide a better starting experience for newcomers
 to Python, such as bundling the "pip" installer by default, and including
 a rich asynchronous IO library.
 
-**April 2014**: Ubuntu 14.04 LTS, target release for the "Python 3 by
-default" Ubuntu migration plan.
+**April 2014**: Ubuntu 14.04 LTS, initial target release for the "Only
+Python 3 on the install media" Ubuntu migration plan. (They didn't quite
+`make it <https://wiki.ubuntu.com/Python/3>`__ - a few test packages short on
+Ubuntu Touch, further away on the server and desktop images)
+
+**May 2014**: Python 2.7.7, the first Python 2.7 maintenance release to
+incorporate additional security enhancement features as described in
+:pep:`466`. Also the first release where Microsoft contributed developer
+time to the creation of the Windows installers.
 
 **June 2014**: 5 years after the first production capable Python 3.x
 release
 
-**December 2014**: Fedora 22, target release for the "Python 3 by default"
+**April 2015**: Fedora 22, target release for the "Python 3 by default"
 Fedora migration plan.
 
-**Before July 2015 (tentative)**: This is still subject to discussion
-amongst the core development team, but we're currently considering a
-development cycle for 3.5 that is slightly shorter than usual (12-17
-months rather than 18-24) in order to get some additional features that
-further lower the barrier to migration from Python 2 incorporated prior
-to the final full maintenance release of Python 2.7.
-
-**July 2015**: Anticipated date for Python 2.7 to switch to security
-fix only mode, ending roughly eight years of parallel maintenance of
+**July? 2020**: Anticipated date for Python 2.7 to switch to security
+fix only mode, ending roughly thirteen years of parallel maintenance of
 Python 2 and 3 by the core development team for the reference interpreter.
 
 
@@ -690,8 +710,8 @@ it to be recommended unreservedly for all *new* Python projects.
 
 Since 3.0 turned out to be a false start due to its IO stack being unusably
 slow, I start that counter from the release of 3.1: June 27, 2009.
-In the latest update of this Q&A (March 19, 2014), that puts us only
-3 months away from that original goal.
+In the latest update of this Q&A (May 28, 2014), that puts us only
+1 month away from that original goal.
 
 In the past few years, key parts of the ecosystem have successfully added
 Python 3 support. NumPy and the rest of the scientific Python stack supports
@@ -773,6 +793,16 @@ also in the process of migrating from Python 2 to Python 3, and maintains
 a detailed `status tracking <https://wiki.openstack.org/wiki/Python3>`__
 page for the migration.
 
+However, it's become clear that my original timeline was overly optimistic.
+On Linux, sticking with the system provided Python helps ensure ready
+availability of a wide variety of packages already built for your platform
+(as well as ducking some of the POSIX integration challenges), and even on
+Windows and Mac OS X, Python 2 tutorials and courses are still more readily
+available than Python 3 ones. Guido also acknowledged this longer than
+expected timeline when he added another five years to the upstream support
+timeline for Python 2.7.
+
+
 .. _Python 2 or Python 3: http://wiki.python.org/moin/Python2orPython3
 .. _stated goal: https://wiki.ubuntu.com/Python
 .. _end of 2014: https://fedoraproject.org/wiki/Changes/Python_3_as_Default
@@ -825,9 +855,10 @@ aiming to change the answers. These are the three key questions:
   use Python 2 or Python 3?"
 
 At the start of the migration, the answer to all of those questions was
-*obviously* "Python 2". Right now (March 2014), I believe the answer is
+*obviously* "Python 2". Right now (May 2014), I believe the answer is
 "Python 3.4, unless you have a compelling reason to choose Python 2 instead".
-Possible compelling reasons include "I am teaching the course to maintainers
+Possible compelling reasons include "I am using existing course material
+that was written for Python 2", "I am teaching the course to maintainers
 of an existing Python 2 code base", "We have a large in-house collection of
 existing Python 2 only support libraries we want to reuse" and "I only use
 the version of Python provided by my Linux distro vendor and they currently
@@ -850,7 +881,7 @@ five years that was projected for changing the default choice of Python
 version for green field projects. That said, reducing or eliminating any
 major remaining barriers to migration is an explicit design goal for
 Python 3.5, in those cases where the change is also judged to be an
-internal improvement within Python 3 (for example, the likely restoration
+internal improvement within Python 3 (for example, the planned restoration
 of binary interpolation support is motivated not just by making it easier
 to migrate from Python 2, but also to make certain kinds of network
 programming and other stream processing code easier to write in Python 3).
@@ -878,9 +909,11 @@ slightest. Instead, what we currently see is the following:
   has also done stellar work in creating an `in-depth guide to porting to
   Python 3 <http://python3porting.com/>`__
 * Linux distributions aiming to make Python 2 an optional download and
-  provide only Python 3 by default
+  have only Python 3 installed by default
 * commercial Python redistributors ensuring that Python 3 is included as
   one of their supported offerings
+* customers approaching operating system vendors and asking for assistance
+  in migrating large proprietary code bases from Python 2 to Python 3
 * more constrained plugin ecosystems that use an embedded Python interpreter
   (like Blender, gcc, gdb and the Kate editor either adding Python 3
   support, or else migrating entirely from Python 2 to 3)
@@ -1002,7 +1035,12 @@ amongst organisers of Python community workshops. Given that several of the
 changes in 3.4 (such as including pip and adding the Scripts directory to
 the PATH on Windows along with the main Python directory) were based
 directly on concerns reported by those organisers, that outcome seems
-likely, but can't be taken for granted at this point.
+likely, but can't be taken for granted at this point. (We may also end up
+disrupting that change by backporting those usability enhancements to a
+Python 2.7 maintenance release - with the evolution of the Python 2
+platform moving out of the standard library and into the broader ecosystem,
+making that system more accessible is a logical exception to the usual
+maintenance guidelines).
 
 As far as the scientific community goes, they were amongst the earliest
 adopters of Python 3 - I assume the reduced barriers to learnability were
@@ -1013,21 +1051,18 @@ I think the web development community has certainly had the roughest time of
 it. Not only were the WSGI update discussions long and drawn out (and as
 draining as any standards setting exercise), resulting in a compromise
 solution that at least works but isn't simple to deal with, but they're also
-the most directly affected by the core development team's wariness of
-inadvertently reintroducing the Python 2 text model into Python 3,
-since so many web related protocols are deliberately designed to be ASCII
-compatible. However, even in the face of these issues, the major modern
-Python web frameworks, libraries and database interfaces *do* support
-Python 3, and the anticipated binary interpolation support in Python 3.5
-will be aimed at carving out a subset of the binary interpolation
-functionality in Python 2 that is considered consistent with the Python 3
-text model. The adoption of ``asyncio`` as *the* standard framework for
-asynchronous IO may also help the web development community resolve a
-long standing issue with a lack of a standard way for web servers and web
-frameworks to communicate regarding long lived client connections (such as
-those needed for WebSockets support) - Victor Stinner's backport to Python
-2 of the core callback based APIs may help with that, even though the
-coroutine interface is different.
+the most directly affected by the additional challenges faced when working
+directly with binary data in Python 3. However, even in the face of these
+issues, the major modern Python web frameworks, libraries and database
+interfaces *do* support Python 3, and the planned binary interpolation
+support in Python 3.5 addressed some of the key concerns raised by the
+developers of the Twisted networking library. The adoption of ``asyncio``
+as *the* standard framework for asynchronous IO may also help the web
+development community resolve a long standing issue with a lack of a
+standard way for web servers and web frameworks to communicate regarding
+long lived client connections (such as those needed for WebSockets support)
+- Victor Stinner's backport to Python 2 of the core callback based APIs may
+help with that, even though the coroutine interface is different.
 
 In the web space, I believe the main thing to watch is the availability of
 Python 3 support for hosted application development. To take the three PaaS
@@ -1042,8 +1077,8 @@ Python 3 is meant to make Unicode easier, so why is <X> harder?
 
 At this point, the Python community as a whole has had more than 13 years
 to get used to the Python 2 way of handling Unicode. For Python 3,
-we've only had a production ready release available for around 4 and a
-half years, and since some of the heaviest users of Unicode are the web
+we've only had a production ready release available for just under 5 years,
+and since some of the heaviest users of Unicode are the web
 framework developers, and they've only had a stable WSGI target since the
 release of 3.2, you can drop that down to just over 3 years of intensive
 use by a wide range of developers with extensive practical experiencing
@@ -1064,7 +1099,7 @@ may be using ASCII incompatible encodings while using a text model with
 strict binary/text separation hasn't really been done before at Python's
 scale (the JVM is UTF-16 based, but bypasses most OS provided services,
 while other tools often choose the approach of just assuming that all bytes
-are UTF-8 encoded, regardless of what they underlying OS claims).
+are UTF-8 encoded, regardless of what the underlying OS claims).
 
 In addition to the cases where blurring the binary/text distinction really
 did make things simpler in Python 2, we're also forcing even developers in
@@ -1089,7 +1124,8 @@ mismatch with the POSIX "text" model.
 Is Python 3 a better language to teach beginning programmers?
 -------------------------------------------------------------
 
-I believe so, yes. However, I also expect a lot of folks will still
+I believe so, yes, especially if teaching folks that aren't native English
+speakers. However, I also expect a lot of folks will still
 want to continue on and learn Python 2 even if they learn Python 3 first
 - I just think that for people that don't already know C, it will be
 easier to start with Python 3, and then learn Python 2 (and the relevant
@@ -1486,9 +1522,12 @@ in the containing scope).
 
 The networking security changes are intermixed with the IO stack changes
 for Unicode support, so backporting those, while technically possible, would
-be a non-trivial task. Similarly, it's perhaps *possible* to backport the
+be a non-trivial task (however, as documented in :pep:`466`, one we have
+decided is worth tackling). Similarly, it's perhaps *possible* to backport the
 implicit super change, but it would need to be separated from the other
-backwards incompatible changes to the type system machinery.
+backwards incompatible changes to the type system machinery (and in that
+case, there's no "help improve the overall security of the internet" argument
+to be made in favour of doing the work).
 
 There are some other notable changes in Python 3 that are of substantial
 benefit when teaching new users (as well as for old hands), that technically
@@ -1570,15 +1609,23 @@ module. That is fixed in Python 3::
       File "<string>", line 1, in <module>
     ImportError: No module named 'nspkg.b'
 
+That said: Eric Snow *has* now backported the Python 3.4 import system
+to Python 2.7 as `importlib2 <https://pypi.python.org/pypi/importlib2>`__.
+I'd advise against experimenting with it at this point in time unless you're
+very familiar with the import system internals :)
+
 Python 3.3 also included some `minor <http://bugs.python.org/issue12265>`__
 `improvements <http://bugs.python.org/issue12356>`__ to the error messages
 produced when functions and methods are called with incorrect arguments.
 
-The upcoming Python 3.4 release also aims to provide a significantly more
+The Python 3.4 release also aims to provide a significantly more
 complete package for new users, by bundling the ``pip`` installer (see
 :pep:`453`) and integrating it into the ``pyvenv`` virtual environment
 creation utility (Python 3.3 already bundled the Python Launcher for Windows
-with the Windows installers).
+with the Windows installers). While there is no current proposal to include
+these changes in a Python 2.7 maintenance release, I expect we will see
+such a proposal at some point in the future.
+
 
 .. _room-for-improvement:
 
@@ -1624,8 +1671,9 @@ mapping implementations in Python 3 don't worry about doing so - they
 just produce much simpler iterators, equivalent to the ``iterkeys``,
 ``itervalues`` and ``iteritems`` methods from Python 2. There's also
 a `current limitation <http://bugs.python.org/issue8743>`__ where builtin
-sets don't interoperate properly with other instances of the Set ABCs
-which I hope to get resolved for Python 3.5.
+sets don't interoperate properly with other instances of the Set ABCs,
+although that has now been resolved and the fix will be included in the
+Python 2.7.8 and 3.4.2 maintenance releases.
 
 Some of the changes in Python 3 designed for the benefit of larger
 applications (like the increased use of iterators), or for improved
@@ -1652,7 +1700,7 @@ patch and turn it into a full PEP that proposes the addition of a
 general implicit call syntax to Python 3.5 (or later). While such a PEP
 would need to address the ambiguity problems noted on the tracker issues
 (likely by restricting the form of the expression used in an implicit
-call to exclude binary operators), it's notable that the popular IPython
+call to only permit unqualified names), it's notable that the popular IPython
 interactive interpreter already provides this kind of implicit "autocall"
 behaviour by default, and many other languages provide a similar "no
 parentheses, parameters as suffix" syntax for statements that consist of
@@ -1671,6 +1719,13 @@ made for Python 3.5 and later, though. Possible avenues for improvement
 previously discussed on python-dev, python-ideas or the CPython issu
 tracker include:
 
+* :pep:`461` is an accepted proposal to restore support for *binary*
+  interpolation that is to be source and semantically compatible for the use
+  cases we actually want to support in Python 3.
+* :pep:`467` is a draft proposal to clean up some of the legacy of the
+  original Python 3 mutable ``bytes`` design. A related change is to better
+  document the tuple-of-ints and list-of-ints behaviour of ``bytes`` and
+  ``bytearray``.
 * taking the internal "text encoding" marking system added in Python 3.4
   and giving either it or a more general codec type description system a
   public API for use when developing custom codecs.
@@ -1692,12 +1747,6 @@ tracker include:
   serve as a general purpose text container. A very early experimental
   prototype of such a type is `available
   <https://github.com/jeamland/asciicompat>`__.
-* :pep:`460` and :pep:`461` are two different approaches to restoring
-  support for *binary* interpolation that is to be source and semantically
-  compatible for the use cases we actually want to support in Python 3 (
-  neither proposal involves making the ``bytes`` type a hybrid type again,
-  but instead proposes an interpolation mechanism that is suitable for
-  working with binary formats that contain ASCII compatible segments).
 
 
 What's up with WSGI in Python 3?
@@ -1764,18 +1813,22 @@ primarily by contributors based in Europe and Asia).
 This was a deliberate choice of attempting to be compatible with other
 software on the end user's system at the cost of increased sensitivity to
 configuration errors in the environment and differences in default
-behaviour between environments with different configurations.
+behaviour between environments with different configurations. There are also
+current technical limitations in the reference interpreter's startup code
+that force us to rely on the locale encoding claimed by the operating system
+on POSIX systems.
 
 :pep:`383` added the surrogateescape error handler to cope with the fact that
 the configuration settings on POSIX systems aren't always a reliable guide to
 the *actual* encoding of the data you encounter. One of the most common
 causes of problems is the seriously broken default encoding for the default
-locale in POSIX (due to the age of the POSIX spec, that default is ASCII
-rather than UTF-8). Bad default environments and environment forwarding in
-ssh sessions are another source of problems, since an environment forwarded
-from a client is not a reliable guide to the server configuration, and
-if the ssh environment defaults to the C/POSIX locale, it will tell Python 3
-to use ASCII as the default encoding rather than something more appropriate.
+locale in POSIX (due to the age of the ANSI C spec where that default is
+defined, that default is ASCII rather than UTF-8). Bad default environments
+and environment forwarding in ssh sessions are another source of problems,
+since an environment forwarded from a client is not a reliable guide to the
+server configuration, and if the ssh environment defaults to the C/POSIX
+locale, it will tell Python 3 to use ASCII as the default encoding rather
+than something more appropriate.
 
 When surrogateescape was added, we considered enabling it for *every*
 operating system interface by default (including file I/O), but the point
@@ -1787,18 +1840,18 @@ ASCII incompatible codecs than Asia does).
 
 This means we've been judiciously adding surrogateescape to interfaces as
 we decide the increase in convenience justifies any increased risk of
-data corruption. The next likely `candidate for change
-<http://bugs.python.org/issue19977>`__ is ``sys.stdin`` and ``sys.stdout`` on
+data corruption. For Python 3.5, this is `also being applied to
+<http://bugs.python.org/issue19977>`__ ``sys.stdin`` and ``sys.stdout`` on
 POSIX systems that claim that we should be using ``ascii`` as the default
-encoding. Such a result almost certainly indicates a configuration error
-in the environment, but using ascii+surrogateescape in such cases should
+encoding (unless a more comprehensive fix is implemented prior to the release
+of Python 3.5). Such a result almost certainly indicates a configuration
+error in the environment, but using ascii+surrogateescape in such cases should
 make for a more usable result than the current approach of ascii+strict.
 There's still some risk of silent data corruption in the face of ASCII
 incompatible encodings, but the assumption is that systems that are
 configured with a non-ASCII compatible encoding should already have
 relatively robust configurations that avoid ever relying on the default POSIX
-locale. This change has already been merged for Python 3.5, and is still
-under consideration for inclusion in the Python 3.4.1 maintenance release.
+locale.
 
 This is an area where we're genuinely open to the case being made for
 different defaults, or additional command line or environment variable
@@ -1806,12 +1859,10 @@ configuration options. POSIX is just seriously broken in this space, and
 we're having to trade-off user convenience against the risk of silent data
 corruption - that means the "right answer" is *not* obvious, and any PEP
 proposing a change needs to properly account for the rationale behind the
-current decision (which may unfortunately involve some digging through the
-python-3000, python-dev and python-ideas mailing list archives and the
-CPython issue tracker, as it turns out some of the rationale was apparently
-considered common knowledge when PEPs like :pep:`3138`, :pep:`3116` and
-:pep:`383` were written, and hence not recorded as a specific part of the
-PEPs themselves).
+current decision (in particular, it has to account for the technical
+limitations in the startup code that create the coupling to the default
+locale encoding reported by the operating system, which may require a
+change on the scale of :pep:`432` to actually fix properly).
 
 
 What changes in Python 3 have been made specifically to simplify migration?
@@ -1937,15 +1988,9 @@ significant concern in the early days of Python 3, when even the core
 development team was still getting used to the full implications of the
 stricter separation between binary and text data in Python 3).
 
-While Guido has yet to make a pronouncement, the general tenor of the
-discussions so far suggests to me that something in the general vein of
-:pep:`461` is likely to be approved for inclusion in Python 3.5, even
-though the specific details haven't been finalized.
-
-It is also likely (although not yet certain) that the relative release
-dates of the final regular maintenance release of Python 2.7 and the
-initial release of Python 3.5 in 2015 will be adjusted so that Python 3.5
-is released prior to Python 2.7 entering security fix only mode.
+As a result of this, Guido has now approved :pep:`461` for inclusion in
+Python 3.5 (although the implementation of that change is still a work in
+progress).
 
 
 Didn't you strand the major alternative implementations on Python 2?
@@ -2069,12 +2114,13 @@ Python 2.7 release. We knew it would take some time before the Python 3
 ecosystem caught up to the Python 2 ecosystem in terms of real world
 usability. Thus, the extended maintenance period on 2.7 to ensure it
 continues to build and run on new platforms. While python-dev maintenance
-of 2.7 is slated to revert to security-fix only mode in July 2015, even
-after python-dev upstream maintenance ends, Python 2.6 will still be
+of 2.7 was originally slated to revert to security-fix only mode in July
+2015, Guido extended that out to 2020 at PyCon 2014. We're now working
+with commercial redistributors to help ensure the appropriate resources
+are put in place to actually meet that commitment. In addition to the
+ongoing support from the core development team, 2.6 will still be
 supported by enterprise Linux vendors until at least 2020, while Python 2.7
-will be supported until at least 2024. On Windows and Mac OS X, commercial
-Python redistributors are also likely to fill the support gap once upstream
-maintenance ends.
+will be supported until at least 2024.
 
 We have also implemented various mechanisms which are designed to ease the
 transition from Python 2 to Python 3. The ``-3`` command line switch in
@@ -2091,6 +2137,13 @@ while `python-future` does something similar with its ``futurize`` utility.
 Unicode literals primarily to reduce the number of purely mechanical code
 changes being imposed on users that are doing the right thing in Python 2
 and using Unicode for their text handling.
+
+A likely outcome of some of the discussions at PyCon 2014 is a new migration
+assistance tool that aims to allow users to migrate files to the common
+subset of Python 2 and 3 on a file-by-file basis. This will make it easier
+to migrate software incrementally and opportunistically, first switching to
+the common subset running on Python 2.7, before migrating to the common
+subset on Python 3.
 
 So far we've managed to walk the line by persuading our Python 2 users that
 we aren't going to leave them in the lurch when it comes to appropriate
@@ -2138,7 +2191,10 @@ majority of currently happy Python 2 users to stick with Python 2.7, and
 perhaps some of the PyPI modules that are backports from the Python standard
 library. Most of the genuinely interesting changes between Python 2 and even
 Python 3.4 are either backwards incompatible themselves, or else dependent
-on a backwards incompatible change.
+on a backwards incompatible change. For those rare changes which have a
+truly compelling justification for being made available in Python 2, we
+also have some (very limited) scope to add features in Python 2 maintenance
+releases.
 
 Migrating to a new Python version even within the Python 2.x series is
 generally treated as a major change requiring substantial compatibility
@@ -2182,6 +2238,9 @@ the significant carrots of ``pip`` being provided by default on Windows and
 Mac OS X and integrated into ``pyvenv`` on all platforms, the inclusion
 of :mod:`pathlib`, :mod:`statistics`, :mod:`asyncio`, more secure default
 settings for SSL/TLS, `etc <http://docs.python.org/3.4/whatsnew/3.4.html>`__.
+However, the likely reaction to that particular concern would be to create
+a new PEP proposing to backport the relevant ``ensurepip`` changes from
+:pep:`453`, and there's a reasonable chance of that happening regardless.
 
 
 Wouldn't a Python 2.8 release help ease the transition?
@@ -2253,7 +2312,7 @@ general pattern of only dropping support for an older release 6-7 years
 after it was first made available. That's also why I consider the Twisted
 developers a key audience for any increases in the scope of single source
 support in Python 3.5 (and their support for the idea is certainly one of
-the factors behind the likely return of binary interpolation support).
+the factors behind the planned return of binary interpolation support).
 
 That's the way the path to Python 3 will be smoothed at this point: by
 identifying blockers to migration and knocking them down, one by one. The
@@ -2268,7 +2327,7 @@ have actually had very little to do with Red Hat's efforts to support Python
 Software Collections and OpenShift Online happened because other folks at
 Red Hat made sure they happened). Guido approved the restoration of Unicode
 literal support after web framework developers realised they couldn't mask
-that particular change for their users, and is likely to approve the
+that particular change for their users, and he has also approved the
 restoration of binary interpolation support. I went through and made the
 binary transform codecs that had been restored in Python 3.2 easier to
 discover and use effectively in Python 3.4. R. David Murray put in a lot
@@ -2357,8 +2416,9 @@ features to the Python 2 series, and have been `quite emphatic`_ that attempts
 to backport features (other than via PyPI modules like ``unittest2``,
 ``contextlib2`` and ``configparser``) are unlikely to receive significant
 support from python-dev.  We're not *opposed* to such efforts - it's merely the
-case that we aren't interested in doing them ourselves, and are unlikely to
-devote significant amounts of time to assisting those that *are* interested.
+case that (outside a few specific exceptions like :pep:`466`) we aren't
+interested in doing them ourselves, and are unlikely to devote significant
+amounts of time to assisting those that *are* interested.
 
 A third category of user negatively affected by the change are those users
 that deal regularly with binary data formats and had mastered the
@@ -2374,10 +2434,9 @@ their *users* to effectively port to Python 3.
 
 However, we have done everything we can to make migrating to Python 3 the
 easiest exit strategy for Python 2, and provided a fairly leisurely time
-frame (at least by open source volunteer supported project standards)
-for the user community to make the transition. Even after full
-maintenance of Python 2.7 ends in 2015, source only security
-releases will continue for some time, and, as noted above, I expect
+frame for the user community to make the transition. Full maintenance of
+Python 2.7 has now been extended to 2020, source only security releases
+may continue for some time after that, and, as noted above, I expect
 enterprise Linux vendors and other commercial Python redistributors to
 continue to provide paid support for some time after community support ends.
 
@@ -2403,8 +2462,9 @@ thus remain available to Python 2 users. For other cases, such as ``unittest``
 or ``configparser``, the respective standard library maintainer also maintains
 a PyPI backport.
 
-The fourth choice seems rather unlikely, but could be an interesting
-conversation to have.
+The fourth choice seems rather unlikely (since it wouldn't actually solve
+most of the problems where "Release Python 2.8" is suggested as a possible
+solution), but could still be an interesting conversation to have.
 
 As noted above, it currently seems likely that CCP and the Stackless
 community will be pursuing the fifth option. That's the power of open
@@ -2461,7 +2521,10 @@ prone.
 Secondly, code level deprecation warnings are now silenced by default. The
 expectation is that test frameworks and test suites will enable them (so
 developers can fix them), while they won't be readily visible to end users
-of applications that happen to be written in Python.
+of applications that happen to be written in Python. (This change can
+actually cause problems with ad hoc user scripts breaking when upgrading to
+a newer version of Python, but the longevity of Python 2.7 actually works in
+our favour on that front)
 
 Finally, and somewhat paradoxically, the introduction of `provisional APIs`
 in Python 3 is a feature largely for the benefit of enterprise users. This
@@ -2505,11 +2568,11 @@ text model) and :pep:`414` (which restored support for explicit Unicode
 literals) have been driven primarily by the expressed needs of the web
 development community in order to make Python 3 better meet their needs.
 
-The anticipated restoration of some form of binary interpolation support in
-Python 3.5 is similar intended to increase the size of the common subset of
-Python 2 and Python 3 in a way that makes it easier for developers to migrate
-to the new version of the language (as well as being a useful new feature
-for Python 3 in its own right).
+The restoration of binary interpolation support in Python 3.5 is similarly
+intended to increase the size of the common subset of Python 2 and Python 3
+in a way that makes it easier for developers to migrate to the new version
+of the language (as well as being a useful new feature for Python 3 in its
+own right).
 
 If you want to keep track of Python's development and get some idea of
 what's coming down the pipe in the future, it's all
