@@ -59,7 +59,7 @@ TL;DR Version
 * Yes, we know that some sections of the community have never personally
   experienced the problems with the Python 2 Unicode model that this
   migration is designed to eliminate, or otherwise prefer the closer
-  alignment between the Python 2 text model and the POSIX test model.
+  alignment between the Python 2 text model and the POSIX text model.
 * Yes, we know that many of those problems had already been solved by
   some sections of the community to their own satisfaction.
 * Yes, we know that by attempting to fix these problems in the core Unicode
