@@ -748,7 +748,7 @@ If there is any functionality that py2exe provides that is not available
 in cx-Freeze, then that may also cause problems for affected projects.
 
 There is a `Python 2 or Python 3`_ page on the Python wiki which aims to
-provides a reasonably up to date overview of the current state of the
+provide a reasonably up to date overview of the current state of the
 transition.
 
 I think Python 3.4 is a superior language to 2.7 in almost every way (with
@@ -773,15 +773,16 @@ of the backports and other support modules on PyPI to bring their Python 2.x
 usage as close to writing Python 3 code as is practical.
 
 Support in enterprise Linux distributions is also a key point for uptake
-of Python 3. Canonical have already shipped a supported version (Python 3.2
-in Ubuntu 12.04 LTS) with a `stated goal`_ of eliminating Python 2 from the
-live install CD for 14.04 LTS. A Python 3 stack has existed in Fedora since
-Fedora 13 and has been growing over time, and there is now a stated goal
-to remove Python 2 from the live install CDs by the `end of 2014`_
-(Fedora 22). Red Hat also now ship a fully supported Python 3.3 runtime as
-part of our `Red Hat Software Collections`_ product and the OpenShift
-Enterprise self-hosted Platform-as-a-Service offering (and I assume we'll
-see 3.4 added to that mix some time in 2014).
+of Python 3. Canonical have already shipped long term support for two
+versions of Python 3 (Python 3.2 in Ubuntu 12.04 LTS and 3.4 in 14.04 LTS)
+and are `in the process of eliminating`_ Python 2 from the installation
+images. A Python 3 stack has existed in Fedora since Fedora 13 and has been
+growing over time, and there is now a stated goal to remove Python 2 from
+the live install CDs by `mid 2015`_ (Fedora 22). Red Hat also now ship a
+fully supported Python 3.3 runtime as part of our
+`Red Hat Software Collections`_ product and the OpenShift Enterprise
+self-hosted Platform-as-a-Service offering (and I assume we'll see 3.4
+added to that mix some time in 2014).
 
 The Arch Linux team have gone even further, making Python 3 the
 `default Python`_ on Arch installations. I am `dubious`_ as to the wisdom
@@ -792,6 +793,9 @@ The OpenStack project, likely the largest open source Python project, is
 also in the process of migrating from Python 2 to Python 3, and maintains
 a detailed `status tracking <https://wiki.openstack.org/wiki/Python3>`__
 page for the migration.
+
+Outside the Linux ecosystem, other Python redistributors like ActiveState
+and Continuum Analytics provide both Python 2 and Python 3 releases.
 
 However, it's become clear that my original timeline was overly optimistic.
 On Linux, sticking with the system provided Python helps ensure ready
@@ -804,8 +808,8 @@ timeline for Python 2.7.
 
 
 .. _Python 2 or Python 3: http://wiki.python.org/moin/Python2orPython3
-.. _stated goal: https://wiki.ubuntu.com/Python
-.. _end of 2014: https://fedoraproject.org/wiki/Changes/Python_3_as_Default
+.. _in the process of eliminating: https://wiki.ubuntu.com/Python/3
+.. _mid 2015: https://fedoraproject.org/wiki/Changes/Python_3_as_Default
 .. _Red Hat Software Collections: http://developerblog.redhat.com/2013/09/12/rhscl1-ga/
 .. _default Python: https://www.archlinux.org/news/python-is-now-python-3/
 .. _dubious: http://www.python.org/dev/peps/pep-0394/
