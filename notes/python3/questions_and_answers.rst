@@ -1029,7 +1029,7 @@ I also see the `ongoing migration
 being Python 2 only applications to being Python 3 compatible as highly
 significant, as OpenStack is arguably one of the most notable Python
 projects currently in existence in terms of spreading awareness outside
-the traditional open stack and academic environs. In particular, if
+the traditional open source and academic environs. In particular, if
 OpenStack becomes a Python 3 application, then the plethora of cloud
 provider developers and hardware vendor plugin developers employed
 to work on it will all be learning Python 3 rather than Python 2.
