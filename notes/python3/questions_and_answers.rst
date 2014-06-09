@@ -461,9 +461,9 @@ useless for proper Unicode handling - it's necessary to switch to the
 Windows specific UTF-16 based APIs to make things work properly).
 
 The Python 3 text model also trades additional memory usage for encoding
-and decoding speed in some cases, including caching the UTF-8 and UTF-16
-representations of a string when appropriate. In addition to UTF-8 and
-UTF-16, other key codecs like ASCII, latin-1 and UTF-32 are closely
+and decoding speed in some cases, including caching the UTF-8
+representation of a string when appropriate. In addition to UTF-8, other key
+codecs like ASCII, latin-1, UTF-16 and UTF-32 are closely
 integrated with the core text implementation in order to make them as
 efficient as is practical.
 
