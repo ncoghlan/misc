@@ -382,6 +382,106 @@ unlikely to change, but proposals like :pep:`467` may bring better tools
 for dealing with them.
 
 
+Why not just assume UTF-8 and avoid having to decode at system boundaries?
+--------------------------------------------------------------------------
+
+The design decision to go with a fixed width Unicode representation both
+externally and internally has a long history in Python, going all the way
+back to the addition of Python's original Unicode support in Python 2.0.
+Using a fixed width type at that point meant that many of the algorithms
+could be shared between the original 8-bit ``str`` type and the new
+16-or-32-bit ``unicode`` type. (Note that adoption of this particular
+approach predates my own involvement in CPython core development - as with
+many other aspects of CPython's text handling support, it's something I've
+learned about while helping with the transition to pervasive Unicode support
+in the standard library for Python 3).
+
+That design meant that, historically, CPython builds had to choose what size
+to use for the internal representation of Unicode text. We always chose to
+use "narrow" builds for the Windows binary installers published on
+python.org, as the UTF-16 internal representation was the best fit for the
+Windows text handling APIs.
+
+Linux distributions, by contrast, almost all chose the memory hungry "wide"
+builds that allocated 32 bits per Unicode code point, even for pure ASCII
+text. There's a reason they went for that option, though: it was better at
+handling Unicode code points outside the basic multilingual plane. In narrow
+builds the UTF-16 code points were exposed directly in both the C API and
+the Python API of the ``unicode`` type, and hence were prone to bugs related
+to incorrect handling of code points greater than 65,535 in code that assumed
+a one-to-one correspondence between Python code points and Unicode code
+points. This wasn't generally a big deal when code points in common use
+all tended to fit in the BMP, but started to become more problematic as
+things like mathematical and musical notation, ancient langages, emoticons
+and additional CJK ideographs were added. Given the choice between greater
+memory efficiency and correctness, the Linux distributions chose correctness,
+imposing a non-trivial memory usage penalty on Unicode heavy applications
+written in Python 2 (those larger strings in Python 2 also come at a cost in
+speed, since they not only mean having more data to move around relative
+to Python 3.3+, but the larger memory footprint also makes CPU caches less
+effective).
+
+When it came to the design of the C level text representation for Python
+3, the existing Python 2 design wasn't up for reconsideration - the
+Python 2 ``unicode`` type was mapped directly to the Python 3 ``str`` type.
+This is most obvious in the Python 3 C API, which still uses the same
+``PyUnicode_*`` prefix for text manipulation APIs, as that was the easiest
+way to preserve compatibility with C extensions that were originally written
+against Python 2.
+
+However, removing the intertwining of the 8-bit str type and the unicode
+type that existed in Python 2 paved the way for eliminating the narrow
+vs wide build distinction in Python 3.3, and eliminating much of the memory
+cost associated with getting correct Unicode handling in Python. As a result
+of :pep:`393`, strings that consist solely of latin-1 or UCS2 code points in
+Python 3.3+ are able to use 8 or 16 bits per code point (as appropriate),
+while still being able to use string manipulation algorithms that rely on
+the assumption of consistent code point sizes within a given string. As
+with the original Python 3 implementation, there were also a large number of
+constraints imposed on this redesign of the internal representation based on
+the public C API, and that is reflected in some of the more complicated
+aspects of the PEP.
+
+While it's theoretically possible to write string manipulation algorithms
+that work correctly with variable width encodings (potentially saving even
+more memory), it isn't *easy* to do so, and for cross-platform runtimes that
+interoperate closely with the underlying operating system the way CPython
+does, there isn't an obvious universally correct choice even today, let alone
+back in 2006 when Guido started the Python 3 project in earnest. UTF-8 comes
+closest (hence the wording of this question), but it still poses risks of
+silent data corruption on Linux if you don't explicitly transcode date at
+system boundaries (particularly if the actual encoding of metadata provided
+by the system is ASCII incompatible, as can happen in East Asian countries
+using encodings like Shift-JIS and ISO-2022) and still requires transcoding
+between UTF-16 and UTF-8 on Windows (the bytes-oriented APIs on Windows are
+generally restricted to the ``mbcs`` encoding, making them effectively
+useless for proper Unicode handling - it's necessary to switch to the
+Windows specific UTF-16 based APIs to make things work properly).
+
+The current Python 3 text model certainly has its challenges, especially
+around Linux compatibility (see :pep:`383` for an example of the complexity
+associated with that problem), but those are considered the lesser evil when
+compared to the alternative of breaking C extension compatibility and having
+to rewrite all the string manipulation algorithms to handle a variable width
+internal encoding. Instead of anyone pursuing such a drastic change, I
+expect the remaining Linux integration issues for Python 3 to be resolved as
+we help Linux distributions like Ubuntu and Fedora migrate their system
+services to Python 3 (in the specific case of Fedora, that migration
+encompasses both the operating system installer *and* the package manager).
+
+Still, for new runtimes invented today, particularly ones aimed primarily at
+new server applications running on Linux that can afford to ignore the
+interoperability challenges on Windows and older Linux systems using
+encodings other than UTF-8, using UTF-8 for their internal string
+representation makes a lot of sense. Just don't expose the raw binary
+representation of text data for direct manipulation in user code: present a
+code point based abstraction, even if it means opting out of providing O(1)
+indexing for arbitrary code points in a string (for runtimes that do use
+a variable width internal encoding, a file-like opaque token based seek/tell
+style API is likely to be more appropriate for random access to strings than
+a Python style integer based indexing API).
+
+
 OK, that explains Unicode, but what about all the other incompatible changes?
 -----------------------------------------------------------------------------
 
