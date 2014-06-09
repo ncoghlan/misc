@@ -449,7 +449,7 @@ interoperate closely with the underlying operating system the way CPython
 does, there isn't an obvious universally correct choice even today, let alone
 back in 2006 when Guido started the Python 3 project in earnest. UTF-8 comes
 closest (hence the wording of this question), but it still poses risks of
-silent data corruption on Linux if you don't explicitly transcode date at
+silent data corruption on Linux if you don't explicitly transcode data at
 system boundaries (particularly if the actual encoding of metadata provided
 by the system is ASCII incompatible, as can happen in East Asian countries
 using encodings like Shift-JIS and ISO-2022) and still requires transcoding
@@ -464,22 +464,23 @@ associated with that problem), but those are considered the lesser evil when
 compared to the alternative of breaking C extension compatibility and having
 to rewrite all the string manipulation algorithms to handle a variable width
 internal encoding. Instead of anyone pursuing such a drastic change, I
-expect the remaining Linux integration issues for Python 3 to be resolved as
-we help Linux distributions like Ubuntu and Fedora migrate their system
-services to Python 3 (in the specific case of Fedora, that migration
+expect the remaining Linux integration issues for the existing module to be
+resolved as we help Linux distributions like Ubuntu and Fedora migrate their
+system services to Python 3 (in the specific case of Fedora, that migration
 encompasses both the operating system installer *and* the package manager).
 
 Still, for new runtimes invented today, particularly ones aimed primarily at
-new server applications running on Linux that can afford to ignore the
+modern server applications running on Linux that can afford to ignore the
 interoperability challenges on Windows and older Linux systems using
 encodings other than UTF-8, using UTF-8 for their internal string
-representation makes a lot of sense. Just don't expose the raw binary
-representation of text data for direct manipulation in user code: present a
-code point based abstraction, even if it means opting out of providing O(1)
-indexing for arbitrary code points in a string (for runtimes that do use
-a variable width internal encoding, a file-like opaque token based seek/tell
-style API is likely to be more appropriate for random access to strings than
-a Python style integer based indexing API).
+representation makes a lot of sense. It's just best to avoid exposing the raw
+binary representation of text data for direct manipulation in user code: a
+Unicode code point based abstraction is much easier to work with, even if it
+means opting out of providing O(1) indexing for arbitrary code points in a
+string. For new languages that are specifically designed to accommodate a
+variable width internal encoding for text, a file-like opaque token based
+seek/tell style API is likely to be more appropriate for random access to
+strings than a Python style integer based indexing API.
 
 
 OK, that explains Unicode, but what about all the other incompatible changes?
