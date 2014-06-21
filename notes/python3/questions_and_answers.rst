@@ -2,7 +2,7 @@ Python 3 Q & A
 ==============
 
 :Published:    29th June, 2012
-:Last Updated: 28th May, 2014
+:Last Updated: 21st June, 2014
 
 With the long transition to "Python 3 by default" still in progress, the
 question is occasionally raised as to whether or not the core Python
@@ -809,6 +809,11 @@ time to the creation of the Windows installers.
 **June 2014**: 5 years after the first production capable Python 3.x
 release
 
+**July 2014**: The first stable release of PyPy3, providing a version of
+the PyPy runtime that is compatible with Python 3.2.5 (together with
+:pep:`414`'s restoration of the ``u''`` string literal prefix that first
+appeared in Python 3.3 for CPython)
+
 **April 2015**: Fedora 22, target release for the "Python 3 by default"
 Fedora migration plan.
 
@@ -1236,6 +1241,33 @@ The Python 3.5 release is currently looking like it will include some "make
 ASCII compatible binary data as easy to work with as it is in Python 2"
 changes, as well as further improvements to the handling of the impedance
 mismatch with the POSIX "text" model.
+
+
+Python 3 is meant to fix Unicode, so why is <X> still broken?
+-------------------------------------------------------------
+
+The long march from the early assumptions of Anglocentric ASCII based
+computing to a more global Unicode based future is still ongoing, both for
+the Python community, and the computing world at large. Computers are still
+generally much better at dealing with English and other languages with
+similarly limited character sets than they are with the full flexibility of
+human languages, even the subset that has been pinned down to a particular
+binary representation thanks to the efforts of the Unicode Consortium.
+
+While the changes to the core text model in Python 3 *did* implicitly address
+many of the Unicode issues affecting Python 2, there are still plenty of
+Unicode handling issues that require their own independent updates. For
+example, the interactive console on Windows poses some particular challenges
+that have `yet to be satisfactorily resolved
+<http://bugs.python.org/issue1602>`__. One recurring problem is that many
+of these are relatively easy to work around (such as by using a graphical
+environment rather than the default interactive interpreter to avoid the
+command line limitations on Windows), but comparatively hard to fix properly
+(and then get agreement that the proposed fix is a suitable one).
+
+The are also more specific questions covering the state of the :ref:`WSGI
+middleware interface <wsgi-status>` for web services, and the issues that
+can arise when dealing with :ref:`posix-systems`.
 
 ..
    extra label to preserve link for the old question phrasing
@@ -1870,6 +1902,8 @@ tracker include:
   <https://github.com/jeamland/asciicompat>`__.
 
 
+.. _wsgi-status:
+
 What's up with WSGI in Python 3?
 --------------------------------
 
@@ -2160,55 +2194,28 @@ all future import changes should be supported with minimal additional effort.
 
 All that said, there's often a stark difference in the near term *goals* of
 the core development team and the developers for other implementations.
-Criticism of the Python 3 project has been most vocal from a number of
+Criticism of the Python 3 project has been somewhat vocal from a number of
 PyPy core developers, and that makes sense when you consider that one of
 the core aims of PyPy is to provide a better runtime for *existing* Python
-applications. That means their focus is likely to remain on Python 2.7 and
-providing compatibility with the scientific Python stack for some time to
-come.
+applications. However, despite those reservations, PyPy was still the first
+of the major alternative implementations to support Python 3 (with the
+initial release of their PyPy3 runtime in June 2014). The initial PyPy3
+release targeted Python 3.2 compatibility, but the changes needed to catch
+up on subsequent Python 3 releases are relatively minor compared to the
+changes between Python 2 and Python 3. Work also continues on another major
+compatibility project for PyPy, numpypy, which aims to integrate PyPy with
+the various components of the scientific Python stack.
 
-However, the reasons Armin Rigo originally abandoned psyco to instead
-initiate the PyPy project are *very* similar to the reasons Guido and the
-rest of the core development team put the Python 2 runtime into maintenance
-mode and started focusing feature development efforts on the Python 3
-runtime instead: there were things we wanted to do that were at best
-impractical, and in some cases impossible, within the backwards
-compatibility constraints of Python 2. The key difference is that where
-Armin was constrained solely by the design of the CPython runtime
-implementation, Guido was also constrained by the language definition.
-
-The similarity between the two cases can be seen in the fact that PyPy
-adoption is limited by both the ubiquity of CPython and the need to
-support key extension modules (hence the numpypy project), and Python 3
-adoption is similarly dependent on growing the ecosystem to match that of
-CPython 2.7 (although the benefits of making things easier for people that
-aren't full time programmers meant that the scientific Python community were
-amongst the earlier adopters of Python 3).
-
-Unlike Jython and IronPython, neither Python 3 nor PyPy offer
-an integration story with a pre-existing third party runtime (the JVM for
-Jython and the CLR for IronPython) that makes them especially attractive
-to a specific subset of users - this means that both Python 3 and PyPy
-need to leverage the existing Python 2 ecosystem rather than trying to
-create a new ecosystem from scratch. (The Python 2 ecosystem is
-significant enough in the scientific space that the designers of the new
-scientific language Julia chose to include native integration with Python
-in addition to C and FORTRAN).
-
-It's also notable that the Python 3 compatible branch of PyPy is both
-well funded and well advanced, *despite* the PyPy team's documented
-reservations.
-
-Jython is in a similar situation to PyPy, but a bit further behind -
-their development efforts are currently focused on getting their
+Jython's development efforts are currently still focused on getting their
 currently-in-beta Python 2.7 support to a full release, and there is also
-some significant work happening on JyNI (which, like PyPy's numpypy project,
-aims to allow the use of the scientific Python stack from the JVM).
+some significant work happening on JyNI (which, along the same lines as
+PyPy's numpypy project, aims to allow the use of the scientific Python stack
+from the JVM).
 
-The IronPython folks are `looking to have
-<http://blog.jdhardy.ca/2013/06/ironpython-3-todo.html>`__ a Python 3
-compatible version available by mid 2014. IronClad already supports the
-use of `scientific libraries from IronPython
+The IronPython folks have `started working on
+<http://blog.ironpython.net/2014/03/ironpython-3-update.html>`__ a Python 3
+compatible version, but there currently isn't a target date for a release.
+IronClad already supports the use of `scientific libraries from IronPython
 <https://www.enthought.com/repo/.iron/>`__.
 
 One interesting point to note for Jython and IronPython is that the changes
