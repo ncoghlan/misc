@@ -806,13 +806,15 @@ incorporate additional security enhancement features as described in
 :pep:`466`. Also the first release where Microsoft contributed developer
 time to the creation of the Windows installers.
 
-**June 2014**: 5 years after the first production capable Python 3.x
-release
-
-**July 2014**: The first stable release of PyPy3, providing a version of
+**June 2014**: The first stable release of PyPy3, providing a version of
 the PyPy runtime that is compatible with Python 3.2.5 (together with
 :pep:`414`'s restoration of the ``u''`` string literal prefix that first
-appeared in Python 3.3 for CPython)
+appeared in Python 3.3 for CPython).
+
+.. note::
+
+   June also marks 5 years after the first production capable
+   Python 3.x release, Python 3.1.
 
 **April 2015**: Fedora 22, target release for the "Python 3 by default"
 Fedora migration plan.
