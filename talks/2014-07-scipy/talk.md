@@ -17,7 +17,7 @@
 
 ---
 
-# C<br/>Java<br/>Javascript<br/>Shell syntax<br/>
+# C++<br/>Java<br/>Javascript<br/>Shell syntax<br/>
 
 # Presenter Notes
 
