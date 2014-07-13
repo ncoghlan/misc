@@ -2710,6 +2710,160 @@ what's coming down the pipe in the future, it's all
 
 .. _available on the internet: http://docs.python.org/devguide/communication.html
 
+But <name> says Python 3 was a waste of time/didn't help/made things worse!
+---------------------------------------------------------------------------
+
+One popular approach to saying why Python 2 should be used over Python 3
+even for *new* projects is to appeal to the authority of someone like Armin
+Ronacher (creator of Jinja2, Flask, Click, etc) or Greg Wilson (creator
+of Software Carpentry).
+
+The piece missing from that puzzle is the fact that Guido van Rossum, the
+creator of Python, *and* every core developer of CPython, have not only been
+persuaded that the disruption posed by the Python 3 transition is worth the
+effort, but have been busily adding the features we notice missing from both
+Python 2 and 3 solely to the Python 3 series since the feature freeze for
+Python 2.7 back in 2010.
+
+Where's the disconnect? Well, it arises in a couple of ways. Firstly, when
+creating Python 3, we *deliberately made it worse than Python 2* in
+particular areas. That sounds like a ridiculous thing for a language design
+team to do, but programming language design is a matter of making trade-offs
+and if you try to optimise for everything at once, you'll end up with an
+unreadable mess that isn't optimised for anything. In many of those cases,
+we were trading problems we considered unfixable for ones that could at least
+be solved in theory, even if they haven't been solved *yet*.
+
+In Armin's case, the disconnect is that his primary interest is in writing
+server components for POSIX systems, and cross-platform command clients for
+those applications. This runs into issues, because Python 3's operating
+system integration can currently get confused in a few situations:
+
+* on POSIX systems, in the default C locale
+* on POSIX systems, when ssh environment forwarding configures a server
+  session with the client locale
+* at the Windows command line
+
+This change is due to the fact that where Python 2 decodes from 8-bit data
+to Unicode text *lazily* at operating system boundaries, Python 3 does so
+*eagerly*. This change was made to better accommodate Windows systems (where
+the 8-bit APIs use the mbcs codec, rendering them effectively useless), but
+came at the cost of being more reliant on receiving correct encoding and
+decoding advice from the operating system. Operating systems are normally
+pretty good about providing that info, but they fail hard in the above
+scenarios.
+
+In almost purely English environments, none of this causes any problems, just
+as the Unicode handling defects in Python 2 tend not to cause problems in
+such environments. In the presence of non-English text however, we had to
+decide between cross-platform consistency (i.e. assuming UTF-8 everywhere),
+and attempting to integrate correctly with the encoding assumptions of other
+applications on the same system. We opted for the latter approach, primarily
+due to the dominance of ASCII incompatible encodings in East Asian countries
+(ShiftJIS, ISO-2022, various CJK codecs, etc). For ordinary user space
+applications, including the IPython Notebook, this works fine. For other
+code, we're discussing our options with platform developers to help improve
+the integration experience (and that may include switching our assumptions
+to "UTF-8 everywhere" in the 3.6 time frame - that will be a far more viable
+assumption in 2016 than it was in 2008).
+
+For anyone that would like to use Python 3, but is concerned by Armin
+Ronacher's comments, the best advice I can offer is to *use his libraries*
+to avoid those problems. Seriously, the guy's brilliant - you're unlikely to
+go seriously wrong in deciding to use his stuff when it applies to your
+problems. It offers a fine developer experience, regardless of which version
+of Python you're using. His complaints are about the fact that *writing those
+libraries* became more difficult in Python 3 in some respects, but he gained
+the insight needed to comprehensively document those concerns the hard way:
+by porting his code. Making that kind of code easier to write again is
+certainly on the todo list for the core dev team, but most users don't need
+to wait for that: the libraries needed to deal with it already exist today,
+just as many libraries provide tools for dealing with the Unicode issues that
+exist in Python 2.
+
+The complaints from the Software Carpentry folks (specifically Greg Wilson)
+are different. Those are more about the fact that we haven't done a very
+good job of explaining the problems that the Python 3 transition was
+designed to fix. This is an example of something Greg himself calls "the
+curse of knowledge": experts don't necessarily know what other people
+*don't know*. In our case, we thought we were fixing bugs that tripped
+up everyone. In reality, what we were doing was fixing things that *we*
+thought were still too hard, even with years (or decades in some cases) of
+Python experience. We'd waste memory creating lists that we then just
+iterated over and threw away, we'd get our Unicode handling wrong so our
+applications broke on Windows narrow builds (or just plain broke the first
+time they encountered a non-ASCII character or text in multiple encodings),
+we'd lose rare exception details because we had a latent defect in an
+error handler. We baked fixes for all of those problems (and more) *directly
+into the design* of Python 3, and then became confused when other Python
+users tried to tell us Python 2 wasn't broken and they didn't see what
+Python 3 had to offer them. So we're now in a position where we're having to
+unpack years (or decades) of experience with Python 2 to explain why we
+decided to put that into long term maintenance mode and switch our feature
+development efforts to Python 3 instead.
+
+After hearing Greg speak on this, I'm actually really excited when I hear
+Greg say that Python 3 is no harder to learn than Python 2 for English
+speakers, as we took some of the more advanced concepts from Python 2 and
+made them *no longer optional* when designing Python 3. The Python 3
+"Hello World!" now introduces users to string literals, builtins, function
+calls and expression statements, rather than just to string literas and a
+single dedicated print statement. Iterators arrive much earlier in the
+curriculum than they used to, as does Unicode. The chained exceptions that
+are essential for improving the experience of debugging obscure production
+failures can present some readability challenges for new users. If we've
+managed to front load all of that hard earned experience into the base
+design of the language and the end result is "just as easy to learn as
+Python 2", then I'm *happy* with that. It means we were wrong when we thought
+we were making those changes for the benefit of beginners - it turns out
+English speaking beginners aren't at a point where the issues we addressed
+are even on their radar as possible problems. But Greg's feedback now
+suggests to me that we have actually succeeded in doing is to remove some of
+the barriers between competence and mastery, without *harming* the beginner
+experience. There are also other changes in Python 3, like the removal of
+the "__init__.py" requirement for package directories, the improvements to
+error messages when functions are called incorrectly, the inclusion of
+additional standard library modules like statistics, asyncio and ipaddress,
+the bundling of pip, and more automated configuration of Windows systems in
+the installer that should genuinely improve the learning experience for new
+users.
+
+Greg's also correct that any *renaming* of existing standard library
+functionality should be driven by objective user studies - we learned that
+the hard way by discovering that the name changes and rearrangements we did
+in the Python 3 transition based on our own intuition were largely an
+annoying waste of time that modules like ``six`` and ``future`` now have to
+help folks moving from Python 2 to Python 3 handle. However, we're not
+exactly drowned in offers to do that research, so unless someone can figure
+out how to get it funded and executed, it isn't going to happen any time
+soon. As soon as someone does figure that out, though, I look forward to
+seeing Python Enhancement Proposals backed specifically by research done to
+make the case for particular name changes, including assessments of the
+additional cognitive load imposed by students having to learn both the new
+names suggested by the usability research and the old names that will still
+have to be kept around for backwards compatibility reasons. In the meantime,
+we'll continue with the much lower cost "use expert intuition and arguing on
+the internet to name new things, leave the names of existing things alone"
+approach. That low cost option almost certainly doesn't find *optimal*
+names for features, but it does tend to find names that are *good enough*.
+
+The other piece that we're really missing is feedback from folks teaching
+Python to users in languages *other than English*. Much of the design of
+Python 3 is aimed at working better with East Asian and African languages
+where there are no suitable 8-bit encodings - you really need the full power
+of Unicode to handle them correctly. With suitable library support, Python 2
+can be made to handle those languages at the application level, but
+Python 3 aims to handle them at the language and interpreter level - Python
+shouldn't fail just because a user is attempting to run it from their home
+directory and their name can't be represented using the latin-1 alphabet
+(or koi8-r, or some other 8-bit encoding). Similarly, naming a module in
+your native language shouldn't mean that Python can't import it, but in
+Python 2, module names (like all identifiers) are limited to the ASCII
+character set. Python 3 lifts the limitations on non-ASCII module names
+and identifiers in general, meaning that imposing such restrictions enters
+the domain of project-specific conventions that can be enforced with tools
+like pylint, rather than being an inherent limitation of the language itself.
+
 
 But, but, surely fixing the GIL is more important than fixing Unicode...
 ------------------------------------------------------------------------
