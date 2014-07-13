@@ -2739,9 +2739,10 @@ server components for POSIX systems, and cross-platform command clients for
 those applications. This runs into issues, because Python 3's operating
 system integration can currently get confused in a few situations:
 
-* on POSIX systems, in the default C locale
-* on POSIX systems, when ssh environment forwarding configures a server
-  session with the client locale
+* on POSIX systems (other than Mac OS X), in the default C locale
+* on POSIX systems (other than Mac OS X), when ssh environment forwarding
+  configures a server session with the client locale and the client and
+  server have differing locale settings
 * at the Windows command line
 
 This change is due to the fact that where Python 2 decodes from 8-bit data
@@ -3182,6 +3183,12 @@ faster and span multiple cores without requiring any modifications to the
 Python code. Splitting the role of the two VMs in that fashion would allow
 each to be optimised appropriately rather than having to make trade-offs that
 attempt to balance the starkly different needs of the various use cases.
+
+.. note::
+
+   A `preliminary release
+   <http://morepypy.blogspot.com/2014/07/pypy-stm-first-interesting-release.html>`__
+   of the PyPy STM release is available for those interested in this.
 
 I also expect we'll continue to add APIs and features designed to make it
 easier to farm work out to other processes (for example, the new iteration
