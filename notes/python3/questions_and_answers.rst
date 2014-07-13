@@ -2819,7 +2819,7 @@ Python 2", then I'm *happy* with that. It means we were wrong when we thought
 we were making those changes for the benefit of beginners - it turns out
 English speaking beginners aren't at a point where the issues we addressed
 are even on their radar as possible problems. But Greg's feedback now
-suggests to me that we have actually succeeded in doing is to remove some of
+suggests to me that we have actually succeeded in removing some of
 the barriers between competence and mastery, without *harming* the beginner
 experience. There are also other changes in Python 3, like the removal of
 the "__init__.py" requirement for package directories, the improvements to
