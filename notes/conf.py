@@ -206,4 +206,4 @@ latex_documents = [
 #latex_domain_indices = True
 
 # Example configuration for intersphinx: refer to the Python standard library.
-intersphinx_mapping = {'http://docs.python.org/': None}
+intersphinx_mapping = {'http://docs.python.org/3/': None}

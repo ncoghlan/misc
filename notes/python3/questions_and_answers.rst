@@ -2,7 +2,7 @@ Python 3 Q & A
 ==============
 
 :Published:    29th June, 2012
-:Last Updated: 21st June, 2014
+:Last Updated: 20th July, 2014
 
 With the long transition to "Python 3 by default" still in progress, the
 question is occasionally raised as to whether or not the core Python
@@ -1796,6 +1796,256 @@ these changes in a Python 2.7 maintenance release, I expect we will see
 such a proposal at some point in the future.
 
 
+Out of the box, why is Python 3 better than Python 2?
+-----------------------------------------------------
+
+The feature set for Python 2.7 was essentially locked in April 2010 with the
+first beta release. Since then, with a very limited number of exceptions
+related to network security, the Python core development team have only been
+adding new features directly to the Python 3 series. These new features are
+informed both by our experience with Python 3 itself, as well as with our
+ongoing experience working with Python 2 (as they're still very similar
+languages).
+
+As Python 2 is a mature, capable language, with a rich library of support
+modules available from the Python Package Index (including many backports
+from the Python 3 standard library), there's no one universally important
+feature that will provide a compelling argument to switch for *existing*
+Python 2 users. Of necessity, existing Python 2 users are those who
+didn't find the limitations of Python 2 that lead to the creation of Python
+3 particularly problematic. It is for the benefit of these users that Python
+2 continues to be maintained.
+
+For *new* users of Python however, Python 3 represents years of additional
+work above and beyond what was included in the Python 2.7 release. Features
+that may require third party modules, or simply not be possible at all in
+Python 2, are provided by default in Python 3. This answer doesn't attempt
+to provide an exhaustive list of such features, but does aim to provide an
+illustrative overview of the kinds of improvements that have been made.
+The `What's New <http://docs.python.org/3/whatsnew/>`__ guides for the
+Python 3 series (especially the 3.3+ releases that occurred after the
+Python 2 series was placed in long term maintenance) provide more
+comprehensive coverage.
+
+While I've tried to just hit some highlights in this list, it's still rather
+long. The full What's New documents are substantially longer.
+
+Some changes that are likely to affect most projects are error handling
+related:
+
+* the exception hierarchy for operating system errors is now based on what
+  went wrong, rather than which module detected the failure (see :pep:`3151`
+  for details).
+* bugs in error handling code no longer hide the original exception (which
+  can be a huge time saver when it happens to hard to reproduce bugs)
+* the codec system endeavours to ensure the codec name always appears in the
+  reported error message when the underlying call fails
+* the error messages from failed argument binding now do a much better job
+  of describing the expected signature of the function
+* the socket module takes advantage of the new enum support to include
+  constant names (rather than just numeric values) in the error message
+  output
+
+A few new debugging tools are also provided out of the box:
+
+* :mod:`faulthandler` allows the generation of Python tracebacks for
+  segmentation faults and threading deadlocks (including a
+  ``-X faulthandler`` command line option to debug arbitrary scripts)
+* :mod:`tracemalloc` makes it possible to track where objects were
+  allocated and obtain a traceback summary for those locations (this relies
+  on the dynamic memory allocator switching feature added in Python 3.4 and
+  hence cannot be backported to Python 2 without patching the interpreter
+  and building from source
+* :mod:`gc` now provides additional introspection and hook APIs
+
+The concurrency support has been improved in a number of ways:
+
+* :mod:`asyncio` (and the supporting :mod:`selectors`) provides greatly
+  enhanced native support for asynchronous IO
+* :mod:`concurrent.futures` provides straightforward support for dispatching
+  work to separate working processes or threads
+* :mod:`multiprocessing` is far more configurable (including the option to
+  avoid relying on ``os.fork`` on POSIX systems, making it possible to avoid
+  the poor interactions with between threads and ``os.fork``, while still
+  using both multiple processes and threads
+* the Global Interpreter Lock has been updated to switch contexts based on
+  absolute time intervals, rather than by counting bytecode execution steps
+  (context switches will still occur between bytecode boundaries)
+
+Notable additions to the standard library's native testing capabilities
+include:
+
+* the :mod:`unittest.mock` module, previously only available as a third party
+  library
+* a "subtest" feature that allows arbitrary sections of a test to be reported
+  as independent results (including details on what specific values were
+  tested), without having to completely rewrite the test to fit into a
+  parameterised testing framework
+* a new ``FAIL_FAST`` option for :mod:`doctest` that requests stopping the
+  doctest at the first failing test, rather than continuing on to run the
+  remaining tests
+
+Performance improvements include:
+
+* significant optimisation work on various text encodings, especially UTF-8,
+  UTF-16 and UTF-32
+* a significantly more memory efficient Unicode representation, especially
+  compared to the unconditional 4 bytes per code point used in Linux distro
+  builds of Python 2
+* a C accelerator module for the :mod:`decimal` module
+* transparent use of other C accelerator modules where feasible (including
+  for :mod:`pickle` and :mod:`io`)
+* the :class:`range` builtin is now a memory efficient calculated sequence
+* the use of iterators or other memory efficient representations for various
+  other builtin APIs that previously returned lists
+* dictionary instances share their key storage when possible, reducing the
+  amount of memory consumed by large numbers of class instances
+* the rewritten implementation of the import system now caches directory
+  listings for a brief time rather than blindly performing ``stat``
+  operations for all possible file names, drastically improving startup
+  performance when network filesystems are present on ``sys.path``
+
+Security improvements include:
+
+* switching the default hashing algorithm for key data types to SIPHash
+* providing an "isolated mode" command line switch to help ensure user
+  settings don't impact execution of particular commands
+* disabling inheritance of file descriptors and Windows handles by child
+  processes by default
+* new multiprocessing options that avoid sharing memory with child process
+  by avoiding the ``os.fork`` system call
+* significant improvements to the SSL module, such as TLS v1.1 and v1.2
+  support, Server Name Indication support, access to platform certificate
+  stores, and improved support for certificate verification (while these
+  are in the process of being backported to Python 2.7 as part of :pep:`466`,
+  it is not yet clear when that process will be completed, and those
+  enhancements are already available in Python 3 today)
+* other networking modules now take advantage of many of the SSL module
+  improvements, including making it easier to use the new
+  ``ssl.create_default_context()`` to choose settings that default to
+  providing reasonable security for use over the public internet, rather
+  maximising interoperability (but potentially allowing operation in no
+  longer secure modes)
+
+Object lifecycle and resource management has also improved significantly:
+
+* the cyclic garbage collector is now more aggressive in attempting to
+  collect cycles, even those containing ``__del__`` methods. This eliminated
+  some cases where generators could be flagged as uncollectable (and hence
+  effectively leaking memory
+* this means most objects will now have already been cleaned up before the
+  last resort "set module globals to None" step triggers
+* the new :func:`weakref.finalize` API makes it easier to register weakref
+  callbacks without having to worry about managing the lifecycle of the
+  reference itself
+* many more objects in the standard library now support the context
+  management protocol for explicit lifecycle and resource management
+
+Other quality of life improvements include:
+
+* ``__init__.py`` files are no longer needed to declare packages - if no
+  ``foo/__init__.py`` file is present, then all directories named ``foo`` on
+  ``sys.path`` will be automatically scanned for ``foo`` submodules
+* the new ``super`` builtin makes calling up to base class method
+  implementations in a way that supports multiple inheritance relatively
+  straightforward
+* keyword only arguments make it much easier to add optional parameters to
+  functions in a way that isn't error prone or hard to read
+* the ``yield from`` syntax for delegating to subgenerators and iterators
+  (this is a key part of the :mod:`asyncio` coroutine support)
+* :mod:`enum` for creating enumeration types
+* :mod:`ipaddress` for working with both IPv4 and IPv6 addresses
+* :mod:`pathlib` for a higher level filesystem abstraction than the low
+  level interface provided by
+* :mod:`statistics` for a simple high school level statistics library
+  (mean, median, mode, variance, standard deviation, etc)
+* :mod:`venv` provides virtual environment support out of the box, in a way
+  that is better integrated with the core interpreter than is possible in
+  Python 2 with only ``virtualenv`` available
+* :mod:`ensurepip` ensures ``pip`` is available by default in Python 3
+  installations
+* :class:`memoryview`` is significantly more capable and reliable
+* the caching mechanism for pyc files has been redesigned to better
+  accommodate sharing of Python files between multiple Python interpreters
+  (whether different versions of CPython, or other implementation like PyPy
+  and Jython)
+* :class:`types.SimpleNamespace` and :class:`types.MappingProxyType` are
+  made available at the Python layer
+* improved introspection support, based on the :func:`inspect.signature` API,
+  and its integration into :mod:`pydoc`, allowing accurate signature
+  information to be reported for a much wider array of callables than just
+  actual Python function objects
+
+Some more advanced higher order function manipulation and metaprogramming
+capabilities are also readily available in Python 3:
+
+* the :func:`functools.partialmethod` function makes it straightforward to
+  do partial function application in a way that still allows the instance
+  object to be supplied later as a positional argument
+* the :func:`functools.singledispatch` decorator makes it easy to create
+  generic functions that interoperate cleanly with Python's type system,
+  including abstract base classes
+* the :class:`contextlib.ExitStack` class makes it easy to manipulate
+  context managers dynamically, rather than having to rely on explicit
+  use of with statements
+* The new ``__prepare__`` method, and associated functions in the ``types``
+  module makes it possible for metaclasses to better monitor what happens
+  during class body execution (for example, by using an ordered dictionary
+  to record the order of assignments)
+* the updated import system permits easier creation of custom import hooks.
+  In particular, the `"source to code"
+  <https://docs.python.org/3/library/importlib.html#importlib.abc.InspectLoader.source_to_code>`__
+  translation step can be overridden, while reusing the rest of the import
+  machinery (including bytecode caching) in a custom import hook
+
+Various improvements in Python 3 also permitted some significant
+documentation improvements relative to Python 2:
+
+* as the Python 3 builtin sequences are more compliant with their
+  corresponding abstract base classes, it has proved easier to flesh out
+  their documentation to cover all the additional details that have been
+  introduced since those docs were originally written
+* the final removal of the remnants of the legacy import system in Python
+  3.3 made it feasible to finally document the import system mechanics
+  in the `language reference
+  <https://docs.python.org/3/reference/import.html>`__
+
+While many of these features *are* available in Python 2 with appropriate
+downloads from the Python Package Index, not all of them are, especially
+the various changes to the core interpreter and related systems.
+
+While Python 2 does still have a longer tail of esoteric modules available
+on PyPI, most popular third party modules and frameworks either support both,
+have alternatives that support Python 3. or can be relatively easily ported
+using tools like ``futurize``  (part of
+`python-future <http://python-future.org>`__). The ``3to2`` project, and the
+``pasteurize`` tool (also part of `python-future <http://python-future.org>`__)
+offer options for migrating a pure Python 3 application to the large common
+subset of Python 2 and Python 3 if a critical Python 2 only dependency is
+identified, and it can't be invoked in a separate Python 2 process, or cost
+effectively ported to also run on Python 3.
+
+With Python 3 software collections available for both Red Hat Enterprise
+Linux and CentOS, Ubuntu including a fully supported Python 3 stack in its
+latest LTS release, and Continuum Analytics releasing Anaconda3 (a Python 3
+based version of their scientific software release), the number of cases
+where using Python 2 is preferable to using Python 3 is dwindling to those
+where:
+
+* for some reason, an application absolutely needs to run in the system
+  Python on Red Hat Enterprise Linux or CentOS (for example, depending on an
+  OS level package that isn't available from PyPI, or needing a complex
+  binary dependency that isn't available for the Python 3 software collection
+  and not being permitted to add additional dependencies from outside the
+  distro)
+* the particular application can't tolerate the current integration issues
+  with the POSIX C locale or the Windows command line in environments that
+  actually need full Unicode support
+* there's a critical Python 2 only dependency that is known before the
+  project even starts, and separating that specific component out to its own
+  Python 2 process while writing the bulk of the application in Python 3
+  isn't considered an acceptable architecture
+
 .. _room-for-improvement:
 
 Is Python 3 more convenient than Python 2 in every respect?
@@ -1885,7 +2135,7 @@ application development (where binary data should exist only at application
 boundaries and be converted to text or other structured data for internal
 processing). There's still plenty of additional improvements that could be
 made for Python 3.5 and later, though. Possible avenues for improvement
-previously discussed on python-dev, python-ideas or the CPython issu
+previously discussed on python-dev, python-ideas or the CPython issue
 tracker include:
 
 * :pep:`461` is an accepted proposal to restore support for *binary*
@@ -1900,6 +2150,8 @@ tracker include:
   public API for use when developing custom codecs.
 * making it easier to register custom codecs (preferably making use of
   the native namespace package support added in Python 3.3).
+* adding a new `error handler <http://bugs.python.org/issue22016>`__ that
+  replaces surrogate escaped bytes with ``?`` characters in encoded output
 * introducing a string tainting mechanism that allows strings containing
   surrogate escaped bytes to be tagged with their encoding assumption and
   information about where the assumption was introduced. Attempting to
