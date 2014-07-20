@@ -785,11 +785,6 @@ Python 3.4 restored full support for the binary and text transform codecs
 that were reinstated in Python 3.2, while maintaining the "text encodings
 only" restriction for the convenience methods on the builtin types.
 
-**December 2013**: Red Hat published the public beta of Red Hat Enterprise
-Linux 7, with Python 2.7 as the system Python. This is likely to ensure
-that Python 2.7 remains a commercially supported platform until *at least*
-2024.
-
 **March 2014**: Python 3.4 final was published as the second Python 3
 release without a corresponding Python 2 release. It includes several
 features designed to provide a better starting experience for newcomers
@@ -801,6 +796,14 @@ Python 3 on the install media" Ubuntu migration plan. (They didn't quite
 `make it <https://wiki.ubuntu.com/Python/3>`__ - a few test packages short on
 Ubuntu Touch, further away on the server and desktop images)
 
+Red Hat also announced the creation of `softwarecollections.org
+<http://developerblog.redhat.com/2014/04/08/announcing-softwarecollections-org/>`__
+as the upstream project powering the Red Hat Software Collections product.
+The whole idea of both the project and the product is to make it easy to run
+applications using newer (or older!) language, database and web server
+runtimes, without interfering with the versions of those runtimes integrated
+directly into the operating system.
+
 **May 2014**: Python 2.7.7, the first Python 2.7 maintenance release to
 incorporate additional security enhancement features as described in
 :pep:`466`. Also the first release where Microsoft contributed developer
@@ -811,10 +814,21 @@ the PyPy runtime that is compatible with Python 3.2.5 (together with
 :pep:`414`'s restoration of the ``u''`` string literal prefix that first
 appeared in Python 3.3 for CPython).
 
+Red Hat published Red Hat Enterprise Linux 7, with Python 2.7 as the system
+Python. This release ensures that Python 2.7 will remain a commercially
+supported platform until *at least* 2024 (based on Red Hat's 10 year support
+lifecycle).
+
 .. note::
 
    June also marks 5 years after the first production capable
    Python 3.x release, Python 3.1.
+
+**July 2014**: CentOS 7 released, providing a community distro based on
+Red Hat Enterprise Linux 7, and marking the beginning of the end of the Python
+2.7 rollout (the CentOS system Python is a key dependency for many Python
+users).
+
 
 **April 2015**: Fedora 22, target release for the "Python 3 by default"
 Fedora migration plan.
