@@ -1838,6 +1838,8 @@ related:
   for details).
 * bugs in error handling code no longer hide the original exception (which
   can be a huge time saver when it happens to hard to reproduce bugs)
+* by default, if the logging system is left unconfigured, warnings and
+  above are written to sys.stderr, while other events are ignored
 * the codec system endeavours to ensure the codec name always appears in the
   reported error message when the underlying call fails
 * the error messages from failed argument binding now do a much better job
@@ -1845,6 +1847,38 @@ related:
 * the socket module takes advantage of the new enum support to include
   constant names (rather than just numeric values) in the error message
   output
+
+Unicode is more deeply integrated into the language design, along with a
+clearer separation between binary and text data:
+
+* the :func:`open` builtin natively supports decoding of text files (rather
+  than having to use :func:`codecs.open` instead)
+* the ``bytes`` type provides locale independent manipulation of binary data
+  that may contain ASCII segments (the Python 2 ``str`` type has locale
+  dependent behaviour for some operations)
+* the codec system has been separated into two tiers. The :meth:`str.encode`,
+  :meth:`bytes.decode` and :meth:`bytearray.decode` methods provide direct
+  access to Unicode text encodings, while the :mod:`codecs` module provides
+  general access to all available codecs, including binary->binary and
+  text->text transforms (in Python 2, all three kinds can be accessed through
+  the convenience methods on the builtin types, creating ambiguity as to the
+  expected return types of the affected methods)
+* data received from the operating system is automatically decoded to text
+  whenever possible (this does cause integration issues in some cases when
+  the OS provides incorrect configuration data, but otherwise allows
+  applications to ignore more cross-platform differences in whether OS APIs
+  natively use bytes or UTF-16)
+* identifiers and the import system are no longer limited to ASCII text
+  (allowing non-English speakers to use names in their native languages
+  when appropriate)
+* Python 3 deliberately has no equivalent to the implicit ASCII based
+  decoding that takes place in Python 2 when an 8-bit ``str`` encoding
+  encounters a ``unicode`` object (note that disabling this implicit
+  conversion in Python 2, while technically possible, is not typically
+  feasible, as turning it off breaks various parts of the standard library)
+* Python 3.3+ now correctly handles code points outside the basic
+  multilingual plane without needing to use 4 bytes per code point for all
+  Unicode data (as Python 2 does)
 
 A few new debugging tools are also provided out of the box:
 
@@ -1856,21 +1890,22 @@ A few new debugging tools are also provided out of the box:
   on the dynamic memory allocator switching feature added in Python 3.4 and
   hence cannot be backported to Python 2 without patching the interpreter
   and building from source
-* :mod:`gc` now provides additional introspection and hook APIs
+* the :mod:`gc` module now provides additional introspection and hook APIs
 
 The concurrency support has been improved in a number of ways:
 
-* :mod:`asyncio` (and the supporting :mod:`selectors`) provides greatly
-  enhanced native support for asynchronous IO
+* :mod:`asyncio` (and the supporting :mod:`selectors` module) provides
+  greatly enhanced native support for asynchronous IO
 * :mod:`concurrent.futures` provides straightforward support for dispatching
   work to separate working processes or threads
 * :mod:`multiprocessing` is far more configurable (including the option to
   avoid relying on ``os.fork`` on POSIX systems, making it possible to avoid
   the poor interactions with between threads and ``os.fork``, while still
-  using both multiple processes and threads
-* the Global Interpreter Lock has been updated to switch contexts based on
-  absolute time intervals, rather than by counting bytecode execution steps
-  (context switches will still occur between bytecode boundaries)
+  using both multiple processes and threads)
+* the CPython Global Interpreter Lock has been updated to switch contexts
+  based on absolute time intervals, rather than by counting bytecode
+  execution steps (context switches will still occur between bytecode
+  boundaries)
 
 Notable additions to the standard library's native testing capabilities
 include:
@@ -1907,6 +1942,9 @@ Performance improvements include:
 
 Security improvements include:
 
+* support for "exclusive mode" when opening files
+* support for the directory file descriptor APIs that avoid various symlink
+  based attacks
 * switching the default hashing algorithm for key data types to SIPHash
 * providing an "isolated mode" command line switch to help ensure user
   settings don't impact execution of particular commands
@@ -1932,9 +1970,10 @@ Object lifecycle and resource management has also improved significantly:
 * the cyclic garbage collector is now more aggressive in attempting to
   collect cycles, even those containing ``__del__`` methods. This eliminated
   some cases where generators could be flagged as uncollectable (and hence
-  effectively leaking memory
+  effectively leak memory)
 * this means most objects will now have already been cleaned up before the
-  last resort "set module globals to None" step triggers
+  last resort "set module globals to None" step triggers during shutdown,
+  reducing spurious tracebacks when cleanup code runs
 * the new :func:`weakref.finalize` API makes it easier to register weakref
   callbacks without having to worry about managing the lifecycle of the
   reference itself
@@ -1962,19 +2001,30 @@ Other quality of life improvements include:
 * :mod:`venv` provides virtual environment support out of the box, in a way
   that is better integrated with the core interpreter than is possible in
   Python 2 with only ``virtualenv`` available
-* :mod:`ensurepip` ensures ``pip`` is available by default in Python 3
+* :mod:`ensurepip` ensures ``pip`` is available by default in Python 3.4+
   installations
 * :class:`memoryview`` is significantly more capable and reliable
 * the caching mechanism for pyc files has been redesigned to better
   accommodate sharing of Python files between multiple Python interpreters
   (whether different versions of CPython, or other implementation like PyPy
   and Jython)
+* as part of that change, implicitly compiled bytecode cache files are
+  written to __pycache__ directories (reducing directory clutter) and are
+  ignored if the corresponding source file has been removed (avoiding obscure
+  errors due to stale cached bytecode files)
 * :class:`types.SimpleNamespace` and :class:`types.MappingProxyType` are
   made available at the Python layer
 * improved introspection support, based on the :func:`inspect.signature` API,
   and its integration into :mod:`pydoc`, allowing accurate signature
   information to be reported for a much wider array of callables than just
   actual Python function objects
+* defining ``__eq__`` without also defining ``__hash__`` implicitly disables
+  hashing of instances, avoiding obscure errors when such types were added
+  to dictionaries (you now get an error about an unhashable type when first
+  adding an instance, rather than obscure data driven lookup bugs later)
+* ordered comparisons between objects of different types are now disallowed
+  by default (again replacing obscure data driven errors with explicit
+  exceptions)
 
 Some more advanced higher order function manipulation and metaprogramming
 capabilities are also readily available in Python 3:
@@ -1997,6 +2047,8 @@ capabilities are also readily available in Python 3:
   <https://docs.python.org/3/library/importlib.html#importlib.abc.InspectLoader.source_to_code>`__
   translation step can be overridden, while reusing the rest of the import
   machinery (including bytecode caching) in a custom import hook
+* the :class:`dis.Bytecode` API and related functionality makes it easier to
+  work with CPython bytecode
 
 Various improvements in Python 3 also permitted some significant
 documentation improvements relative to Python 2:
@@ -2028,7 +2080,7 @@ effectively ported to also run on Python 3.
 With Python 3 software collections available for both Red Hat Enterprise
 Linux and CentOS, Ubuntu including a fully supported Python 3 stack in its
 latest LTS release, and Continuum Analytics releasing Anaconda3 (a Python 3
-based version of their scientific software release), the number of cases
+based version of their scientific software distribution), the number of cases
 where using Python 2 is preferable to using Python 3 is dwindling to those
 where:
 
