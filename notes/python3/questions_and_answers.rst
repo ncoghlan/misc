@@ -1872,7 +1872,7 @@ clearer separation between binary and text data:
   (allowing non-English speakers to use names in their native languages
   when appropriate)
 * Python 3 deliberately has no equivalent to the implicit ASCII based
-  decoding that takes place in Python 2 when an 8-bit ``str`` encoding
+  decoding that takes place in Python 2 when an 8-bit ``str`` object
   encounters a ``unicode`` object (note that disabling this implicit
   conversion in Python 2, while technically possible, is not typically
   feasible, as turning it off breaks various parts of the standard library)
