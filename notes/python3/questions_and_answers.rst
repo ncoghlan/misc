@@ -1998,6 +1998,10 @@ Other quality of life improvements include:
   level interface provided by
 * :mod:`statistics` for a simple high school level statistics library
   (mean, median, mode, variance, standard deviation, etc)
+* :meth:`datetime.timestamp` makes it easy to convert a datetime object to a
+  UNIX timestamp
+* :func:`time.get_clock_info` and related APIs provide access to a rich
+  collection of cross platform time measurement options
 * :mod:`venv` provides virtual environment support out of the box, in a way
   that is better integrated with the core interpreter than is possible in
   Python 2 with only ``virtualenv`` available
