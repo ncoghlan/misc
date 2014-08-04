@@ -2,7 +2,7 @@ Python 3 Q & A
 ==============
 
 :Published:    29th June, 2012
-:Last Updated: 20th July, 2014
+:Last Updated: 4th August, 2014
 
 With the long transition to "Python 3 by default" still in progress, the
 question is occasionally raised as to whether or not the core Python
@@ -829,6 +829,10 @@ Red Hat Enterprise Linux 7, and marking the beginning of the end of the Python
 2.7 rollout (the CentOS system Python is a key dependency for many Python
 users).
 
+boto v2.32.0 released with Python 3 support for most modules.
+
+nltk 3.0b1 released with Python 3 support and the NLTK book switched over to
+covering Python 3 by default.
 
 **April 2015**: Fedora 22, target release for the "Python 3 by default"
 Fedora migration plan.
@@ -848,25 +852,25 @@ it to be recommended unreservedly for all *new* Python projects.
 
 Since 3.0 turned out to be a false start due to its IO stack being unusably
 slow, I start that counter from the release of 3.1: June 27, 2009.
-In the latest update of this Q&A (May 28, 2014), that puts us only
-1 month away from that original goal.
+In the latest update of this Q&A (August 4, 2014), that means we clearly
+missed that original goal - the text model changes in particular proved to
+be a larger barrier to migration than expected.
 
-In the past few years, key parts of the ecosystem have successfully added
-Python 3 support. NumPy and the rest of the scientific Python stack supports
-both versions, as do several GUI frameworks (including PyGame). The Pyramid,
-Django and Flask web frameworks support both versions, as does the mod_wsgi
-Python application server, and the py2app and cx-Freeze binary creators. The
-upgrade of Pillow from a repackaging project to a full development fork also
-brought PIL support to Python 3.
+However, despite those challenges, key parts of the ecosystem have
+successfully added Python 3 support. NumPy and the rest of the scientific
+Python stack supports both versions, as do several GUI frameworks (including
+PyGame). The Pyramid, Django and Flask web frameworks support both versions,
+as does the mod_wsgi Python application server, and the py2exe, py2app and
+cx-Freeze binary creators. The upgrade of Pillow from a repackaging project
+to a full development fork also brought PIL support to Python 3.
 
-nltk doesn't support Python 3 in an official release yet, but an alpha
-release with Python 3 compatibility is available.
+nltk supports Python 3 as of nltk 3.0, and the NLTK book has switched to be
+based on on Python 3 by default.
 
-For AWS users, the main ``boto`` library is Python 2 only, so Python 3
-users will either need to try to Python 3 branch in the main boto repo
-(which appears to be quite old at this point), or else try `boto3
-<http://boto3.readthedocs.org>`__ that is intended to be an eventual
-replacement for the original ``boto``.
+For AWS users, most ``boto`` modules also work on Python 3 as of
+`http://boto.readthedocs.org/en/latest/releasenotes/v2.32.0.html <boto
+v2.32.0>`__.
+
 
 This means that Twisted and gevent are the main critical dependencies that
 don't support Python 3 yet, but solid progress has been made in both cases.
@@ -882,8 +886,7 @@ single source Python 2/3 code bases. The `Tornado web server
 <http://www.tornadoweb.org/en/stable/>`__ is another option for
 asynchronous IO support that already runs on both Python 2 and Python 3.
 
-If there is any functionality that py2exe provides that is not available
-in cx-Freeze, then that may also cause problems for affected projects.
+For installed apps, PyInstaller is currently still Python 2 only.
 
 There is a `Python 2 or Python 3`_ page on the Python wiki which aims to
 provide a reasonably up to date overview of the current state of the
