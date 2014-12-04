@@ -223,7 +223,7 @@ surprising errors.
 This is just one more reason why main modules in more complex applications
 should be kept fairly minimal - it's generally far more robust to move most
 of the functionality to a function or object in a separate module, and just
-import and load that from the main module. That way, inadvertently executing
+import that module from the main module. That way, inadvertently executing
 the main module twice becomes harmless. Keeping main modules small and
 simple also helps to avoid a few potential problems with object
 serialisation as well as with the multiprocessing package.
