@@ -130,7 +130,7 @@ that handled serialisation or an ``example.tests.unittest`` test runner)::
     python -m test_foo
     python -c "from test_foo import main; main()"
 
-    # working directory: project/package
+    # working directory: project/example
     tests/test_foo.py
     python tests/test_foo.py
     python -m tests.test_foo
@@ -162,12 +162,12 @@ know how to do) or else to make sure to import the module instead of
 executing it directly::
 
     # working directory: project
-    python -c "from package.tests.test_foo import main; main()"
+    python -c "from example.tests.test_foo import main; main()"
 
 Since Python 2.6, however, the following also works properly::
 
     # working directory: project
-    python -m package.tests.test_foo
+    python -m example.tests.test_foo
 
 This last approach is actually how I prefer to use my shell when
 programming in Python - leave my working directory set to the project
