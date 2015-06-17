@@ -1,0 +1,52 @@
+# I liked Robyn Bergeron's suggestion of a "recruiter coaching"
+# template for bad DevOps hiring pitches, so I went ahead and wrote one :)
+# http://opensource.com/business/15/6/interview-robyn-bergeron-elastic
+#
+# I know I tend to be overly verbose, so editing suggestions via PR are
+# welcome, although I don't promise to accept them.
+#
+# Is actually sending this to a recruiter a good idea? Not a clue, but it
+# seems unlikely it could make the problem of fad-driven technology
+# marketing and recruiting *worse*...
+
+Hi <recruiter's name>,
+
+Thank you for your expression of interest in my work.
+
+The wording of your recruiting pitch suggests that your organisation may be
+struggling to come to grips with the rich concepts of empathetic collaboration
+and cooperation encapsulated in the term "DevOps".
+
+While there are a lot of folks out there that will happily tell you "hire me
+and you'll be doing DevOps", and there are also plenty of vendors that will tell
+you "buy our tools or subscribe to our services and you'll be doing DevOps",
+the truth is that DevOps refers primarily to a cultural shift of developers
+caring about their impact on operations teams, and operations teams caring
+about their impact on development teams.
+
+Anyone that tries to actually put DevOps principles into practice, however, will
+soon find that the implications of thinking outside the boundaries of one's
+immediate role go far beyond those two groups. How will negotiating new service
+agreements impact Finance? What are the Legal implications of sharing data with
+third party services? Is there a Marketing opportunity here in describing the
+way we use our own products?
+
+Individuals and tools may help nudge organisations in the direction of that
+change, but in the absence of high levels of support for breaking down
+institutional silos and removing barriers to effective collaboration, folks
+are more likely to get frustrated, burn out and leave than they are to have
+a major impact on the organisation.
+
+I'm afraid it doesn't sound to me like you're thinking in terms of that kind of
+significant business transformation, so I suspect you're only going to attract
+folks that will tell you what you want to hear, rather than helping you
+address the root causes of the problems you need to solve.
+
+If that prospect concerns you, then you may want to read this excellent
+interview with Elastic's Robyn Bergeron
+(http://opensource.com/business/15/6/interview-robyn-bergeron-elastic), or
+perhaps consider picking up a copy of Gene Kim's "The Phoenix Project"
+(http://www.amazon.com/The-Phoenix-Project-Helping-Business/dp/0988262592).
+
+Regards,
+<your name>
