@@ -7,14 +7,14 @@ Efficiently Exploiting Multiple Cores with Python
 :Last Updated: 21st June, 2015
 
 Both the Python reference interpreter (CPython), and the alternative
-interpeter that offers the faster single-threaded performance for pure
+interpeter that offers the fastest single-threaded performance for pure
 Python code (PyPy) use a Global Interpreter Lock to avoid various problems
-that arise with threading models that implicitly allow concurrent access to
-objects from multiple threads of execution.
+that arise when using threading models that implicitly allowing concurrent
+access to objects from multiple threads of execution.
 
-This has been the source of much debate, both online and off-, so this article
-aims to summarise the design trade-offs involved, and give details on some
-of the prospects for improvement that are being investigated.
+This approach has been the source of much debate, both online and off-, so this
+article aims to summarise the design trade-offs involved, and give details on
+some of the prospects for improvement that are being investigated.
 
 
 Why is using a Global Interpreter Lock (GIL) a problem?
@@ -36,19 +36,47 @@ cores.
 At this point, one of those requirements has to give. The developer has to
 either:
 
-* use a concurrency technique other than shared memory threading
-* move parts of the application out into non-Python code (the path taken
-  by the NumPy/SciPy community, all Cython users and many other people
-  using Python as a glue language to bind disparate components together)
-* use a Python implementation that doesn't rely on a GIL (while the main
-  purpose of Jython and IronPython is to interoperate with other JVM and
-  CLR components, they are also free threaded thanks to the cross-platform
-  threading primitives provide by the underlying virtual machines)
-* use a language other than Python
+* use a parallel execution technique other than shared memory threading
 
-Many Python developers find this annoying - they want to use threads *and*
-they want to use Python, but they have the CPython core developers in their
-way saying "Sorry, we don't support that style of programming".
+  The main alternative provided in the standard library for CPU bound
+  applications is the multiprocessing module, which works well for workloads
+  that consist of relatively small numbers of long running computational tasks,
+  but results in excessive message passing overhead if the duration of
+  individual operations is short
+
+* move parts of the application out into binary extension modules, including
+  wrappers for existing third party libraries
+
+  This is the path taken by the NumPy/SciPy community, Cython users and
+  many other people using Python as a glue language to bind disparate
+  components together
+
+* use a Python implementation that doesn't rely on a GIL
+
+  While the main purpose of Jython and IronPython is to interoperate with other
+  JVM and CLR components, they are also free threaded thanks to the
+  cross-platform threading primitives provide by the underlying virtual
+  machines.
+
+* use a language other than Python for the entire application
+
+  This is a popular approach for established systems where the problem domain
+  is now well understood and the service's scope is stable. In these kinds of
+  situations, efficiency-of-execution considerations start to weigh more
+  heavily than ease-of-modification considerations in the choice of development
+  language, which tends to count heavily against languages like Python that
+  deliberately avoid doing any kind of inter-module consistency analysis at
+  compile time.
+
+  This approach also works very well for applications that happen to fall
+  entirely within the purview of more specialised languages, such as JavaScript
+  for web service development, Go for network services and command line
+  applications, and Julia for data analysis.
+
+Many Python developers find this annoying - they want to use threads to take
+full advantage of multicore machines *and* they want to use Python, but they
+have the CPython and PyPy core developers in their way saying "Sorry, we don't
+recommend that style of programming".
 
 
 What alternative approaches are available?
@@ -56,9 +84,9 @@ What alternative approaches are available?
 
 Assuming that a free-threaded Python implementation like Jython or IronPython
 isn't suitable for a given application, then there are two main approaches
-to handling distribution of CPU bound Python workloads in the presence of
-a GIL. Which one will be more appropriate will depend on the specific task
-and developer preference.
+to handling distribution of CPU bound Python workloads across multiple cores in
+the presence of a GIL. Which one will be more appropriate will depend on the
+specific task and developer preference.
 
 The approach most directly supported by python-dev is the use of
 process-based concurrency rather than thread-based concurrency. All
@@ -76,12 +104,15 @@ The main downside of this approach is that the overhead of message
 serialisation and interprocess communication can significantly increase the
 response latency and reduce the overall throughput of an application (see this
 `PyCon 2015 presentation <http://pyvideo.org/video/3432/python-concurrency-from-the-ground-up-live>`__
-from David Beazley for some example figures).
+from David Beazley for some example figures). Whether or not this overhead
+is considered acceptable in any given application will depend on the relative
+proportion of time that application ends up spending on interprocess
+communication overhead versus doing useful work.
 
 The major alternative approach promoted by the community is best represented
 by `Cython`_. Cython is a Python superset designed to be compiled down to
 CPython C extension modules. One of the features Cython offers (as is
-possible from any C extension module) is the ability to explicitly release
+possible from any binary extension module) is the ability to explicitly release
 the GIL around a section of code. By releasing the GIL in this fashion,
 Cython code can fully exploit all cores on a machine for computationally
 intensive sections of the code, while retaining all the benefits of Python
@@ -93,7 +124,10 @@ exploiting vector operations provided by the CPU when appopriate).
 
 This approach also works when calling out to *any* code written in other
 languages: release the GIL when handing over control to the external library,
-reacquire it when returning control to the Python interpreter.
+reacquire it when returning control to the Python interpreter. Many binary
+extension modules for Python already do this implicitly (especially those
+developed by the members of the Python community focused on data analysis
+tasks).
 
 .. _Cython: http://www.cython.org/
 .. _release the GIL: http://docs.cython.org/src/userguide/external_C_code.html#acquiring-and-releasing-the-gil
@@ -112,11 +146,11 @@ tested. Still in the test domain, I later used Python to communicate with
 serial hardware (and push data through serial circuits and analyse what
 came back), write prototype clients to ensure new hardware systems were full
 functional replacements for old ones and write hardware simulators to allow
-more integration errors could be caught during software development rather
+more integration errors to be caught during software development rather
 than only after new releases were deployed to the test lab that had real
 hardware available.
 
-Other current Python users are often in a similar boat - we're using Python
+Other current Python users are often in a similar situation: we're using Python
 as an orchestration language, getting other pieces of hardware and software
 to play nice, so the Python components just need to be "fast enough", and
 allow multiple *external* operations to occur in parallel, rather than
@@ -128,30 +162,31 @@ then investing effort in speeding up our Python code doesn't offer a good
 return on our time.
 
 This is certainly true of the scientific community, where the heavy numeric
-lifting is all done in C or FORTRAN, and the Python components are there to
-make everything hang together in a way humans can read relatively easily.
+lifting is often done in C or FORTRAN, and the Python components are there to
+make everything hang together in a way that humans can read relatively easily.
 
 In the case of web development, while the speed of the application server
 may become a determining factor at truly massive scale, smaller applications
 are likely to gain more through language independent techniques like adding a
 Varnish caching server in front of the overall application, and a memory cache
-to avoid repeating calcuations for common inputs before the application server
+to avoid repeating calcuations for common inputs before the application code
 itself is likely to become the bottleneck.
 
 This means for the kind of use case where Python is primarily playing an
 orchestration role, as well as those where the application is IO bound
-rather than CPU bound, free threading doesn't really provide a lot of
-benefit - the Python code was never the bottleneck in the first place, so
-focusing optimisation efforts on the Python runtime doesn't make sense.
+rather than CPU bound, being able to run across multiple cores doesn't really
+provide a lot of benefit - the Python code was never the bottleneck in the
+first place, so focusing optimisation efforts on the Python components doesn't
+make sense.
 
 Instead, people drop out of pure Python code into an environment that is
-vastly easier to optimise and already supports free threading. This may be
-hand written C or C++ code, it may be something with Pythonic syntax but
-reduced dynamism like Cython or Numba, or it may be another more static
-language on a preexisting runtime like the JVM or the CLR, but however it
-is achieved, the level shift allows optimisations and parallelism to be
-applied at the places where they will do the most good for the overall
-speed of the application.
+vastly easier to optimise and already supports running across multiple cores
+within a single process. This may be hand written C or C++ code, it may be
+something with Pythonic syntax but reduced dynamism like Cython or Numba, or
+it may be another more static language on a preexisting runtime like the JVM
+or the CLR, but however it is achieved, the level shift allows optimisations
+and parallelism to be applied at the places where they will do the most good
+for the overall speed of the application.
 
 
 Why isn't "just remove the GIL" the obvious answer?
@@ -206,10 +241,10 @@ reference interpreter:
   maintaining high performance cross platform threading primitives).
 
 It is important to keep in mind that CPython already has a significant user
-base (sufficient to see Python ranked by the IEEE as one of the top 5 programming
-languages in the world), and it's necessarily the case that these users either
-don't find the GIL to be an intolerable burden for their use cases, or else
-find it to be a problem that is tolerably easy to work around.
+base (sufficient to see Python ranked by IEEE Spectrum in 2014 as one of the
+top 5 programming languages in the world), and it's necessarily the case that
+these users either don't find the GIL to be an intolerable burden for their use
+cases, or else find it to be a problem that is tolerably easy to work around.
 
 Core development efforts in the concurrency and parallelism arena have thus
 historically focused on better serving the needs of those users by providing
@@ -244,11 +279,11 @@ For seriously parallel problems, a free threaded interpreter that uses
 fine-grained locking to scale across multiple cores doesn't help all that
 much, as it is desired to scale not only to multiple cores on a single machine,
 but to multiple *machines*. As soon as a second machine enters the picture,
-shared memory based concurrency can't help you: you need to use a concurrency
-model (such as message passing or a shared datastore) that allows information
-to be passed between processes, either on a single machine or on multiple
-machines. (Folks that have this kind of problem to solve would be well advised
-to investigate adopting
+shared memory based concurrency can't help you: you need to use a parallel
+execution model (such as message passing or a shared datastore) that allows
+information to be passed between processes, either on a single machine or on
+multiple machines. (Folks that have this kind of problem to solve would be well
+advised to investigate the viability of adopting
 `Apache Spark <https://spark.apache.org/docs/latest/index.html>`__ as their
 computational platform, either directly or through the
 `Blaze <blaze.pydata.org/>`__ abstraction layer)
@@ -261,13 +296,14 @@ solution that retains the reference counting GC will still need a global
 lock that protects the integrity of the reference counts; secondly, switching
 threads in the CPython runtime will mean updating the reference counts on a
 whole new working set of objects, almost certainly blowing the CPU cache
-and losing a bunch of the speed benefits gained from making more effective
+and losing some of the speed benefits gained from making more effective
 use of multiple cores.
 
 So for a truly free-threaded interpreter, the reference counting GC would
 likely have to go as well, or be replaced with an allocation model that uses
 a separate heap per thread by default, creating yet *another* compatibility
-problem for C extensions.
+problem for C extensions (and one that we already know from experience with
+PyPy, Jython and IronPython poses significant barriers to runtime adoption).
 
 These various factors all combine to explain why it's unlikely we'll ever see
 CPython's coarse-graining locking model replaced by a fine-grained locking
@@ -300,36 +336,28 @@ model within the scope of the CPython project itself:
 * increasing the complexity of the core interpreter implementation for any
   reason always poses risks to maintainability, reliability and portability
 
-It isn't that a free threaded Python implementation isn't possible (Jython
-and IronPython prove that), it's that free threaded virtual machines are
+It isn't that a free threaded Python implementation that complies with the
+Python Language and Library References isn't possible (Jython and IronPython
+prove that's not the case), it's that free threaded virtual machines are
 hard to write correctly in the first place and are harder to maintain once
 implemented. For CPython specifically, any engineering effort directed towards
 free threading support is engineering effort that isn't being directed
 somewhere else. The current core development team don't consider
-that a good trade-off when there are other far more interesting options still
-to be explored.
+that to be a good trade-off when there are other far more interesting options
+still to be explored.
 
 
 What does the future look like for exploitation of multiple cores in Python?
 ----------------------------------------------------------------------------
 
-For data processing workloads, Python users that would prefer something simpler
-to deploy than Apache Spark, don't want to compile their own C extensions with
-Cython, and have data which exceeds the capacity of NumPy's in-memory
-calculation model on the systems they have access to, may wish to investigate
-the `Dask <http://dask.pydata.org/>`__ project, which aims to offer the features
-of core components of the Scientific Python ecosystem
-(notably, NumPy and Pandas) in a form which is limited by the capacity of local
-disk storage, rather than the capacity of local memory.
-
 For CPython, Eric Snow has
 `started working <https://mail.python.org/pipermail/python-ideas/2015-June/034177.html>`__
 with Dr Sarah Mount (at the
 `University of Wolverhamption <http://www.wlv.ac.uk/research/the-research-hub/the-doctoral-college/early-researcher-award-scheme-eras/eras-fellows-2014-15-/dr-sarah-mount/>`__)
-to start seriously some speculative ideas I published a few years back
-regarding the possibility of `refining CPython's subinterpreter
+to investigate some speculative ideas I published a few years back
+regarding the possibility of `refining CPython's subinterpreter support
 <http://www.curiousefficiency.org/posts/2012/07/volunteer-supported-free-threaded-cross.html>`__
-concept to make it a first class language feature that offered true
+to make it a first class language feature that offered true
 in-process support for parallel exploitation of multiple cores in a way that
 didn't break compatibility with C extension modules (at least,  not any more
 than using subinterpreters in combination with extensions that call back into
@@ -354,6 +382,15 @@ easier to farm work out to other processes (for example, the new iteration
 of the `pickle protocol`_ in Python 3.4 included the ability to
 unpickle unbound methods by name, which allow them to be used with the
 multiprocessing APIs).
+
+For data processing workloads, Python users that would prefer something simpler
+to deploy than Apache Spark, don't want to compile their own C extensions with
+Cython, and have data which exceeds the capacity of NumPy's in-memory
+calculation model on the systems they have access to, may wish to investigate
+the `Dask <http://dask.pydata.org/>`__ project, which aims to offer the features
+of core components of the Scientific Python ecosystem
+(notably, NumPy and Pandas) in a form which is limited by the capacity of local
+disk storage, rather than the capacity of local memory.
 
 Another potentially interesting project is `Trent Nelson's PyParallel work`_ on
 using memory page locking to permit the creation of "shared nothing" worker
