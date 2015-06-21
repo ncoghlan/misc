@@ -13,6 +13,7 @@ aspects of the Python 3 transition (as well as Python 3 features in general).
    :maxdepth: 2
 
    questions_and_answers.rst
+   multicore_python.rst
    binary_protocols.rst
    text_file_processing.rst
    enum_creation.rst
