@@ -54,6 +54,7 @@ development communities.
 As with all essays on these pages, feedback is welcome via the
 `issue tracker`_ or `Twitter`_.
 
+.. _source repo: https://bitbucket.org/ncoghlan/misc
 .. _issue tracker: https://bitbucket.org/ncoghlan/misc/issues
 .. _Twitter: https://twitter.com/ncoghlan_dev
 
@@ -3194,11 +3195,11 @@ like pylint, rather than being an inherent limitation of the language itself.
 But, but, surely fixing the GIL is more important than fixing Unicode...
 ------------------------------------------------------------------------
 
-With the publication of Eric Snow and Sarah Mount's proposal to enhance
-CPython's ecisting subinterpreter model to provide native support for
-Communicating Sequential Processes based parallelism, the discussion of
-Python's multicore processing support has been moved out to its own
-:ref:`article <multicore-python>`.
+With Eric Snow's publication of his intent to investigate enhancing
+CPython's existing subinterpreter model to provide native support for
+Communicating Sequential Processes based parallel execution, the discussion of
+Python's multicore processing support that previously appeared here has been
+moved out to its own :ref:`article <multicore-python>`.
 
 
 Well, why not just add JIT compilation, then?
@@ -3257,6 +3258,9 @@ that it means that Numba *doesn't* need to cope with the full dynamism of
 Python the way PyPy does - instead, it can tweak the semantics within the
 decorated functions to reduce the dynamic nature of the language a bit,
 allowing for simpler optimisation.
+
+.. _Numba: http://numba.pydata.org/
+
 
 Anyone that is genuinely interested in getting implicit JIT support into the
 default CPython implementation would do well to look into resurrecting the
