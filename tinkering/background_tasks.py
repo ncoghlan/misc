@@ -1,23 +1,31 @@
-import asyncio
+import asyncio, socket
 
-def run_in_background(target, *, loop=None, executor=None):
-    """Schedules target as a background task
+def schedule_coroutine(target, *, loop=None):
+    """Schedules target coroutine in the given event loop
+
+    If not given, *loop* defaults to the current thread's event loop
 
     Returns the scheduled task.
+    """
+    if asyncio.iscoroutine(target):
+        return asyncio.ensure_future(target, loop=loop)
+    raise TypeError("target must be a coroutine, "
+                    "not {!r}".format(type(target)))
 
-    If target is a future or coroutine, equivalent to asyncio.ensure_future
-    If target is a callable, it is scheduled in the given (or default) executor
+def call_in_background(target, *, loop=None, executor=None):
+    """Schedules and starts target callable as a background task
+
+    If not given, *loop* defaults to the current thread's event loop
+    If not given, *executor* defaults to the loop's default executor
+
+    Returns the scheduled task.
     """
     if loop is None:
         loop = asyncio.get_event_loop()
-    try:
-        return asyncio.ensure_future(target, loop=loop)
-    except TypeError:
-        pass
     if callable(target):
         return loop.run_in_executor(executor, target)
-    raise TypeError("background task must be future, coroutine or "
-                    "callable, not {!r}".format(type(target)))
+    raise TypeError("target must be a callable, "
+                    "not {!r}".format(type(target)))
 
 def run_in_foreground(task, *, loop=None):
     """Runs event loop in current thread until the given task completes
@@ -28,7 +36,7 @@ def run_in_foreground(task, *, loop=None):
     """
     if loop is None:
         loop = asyncio.get_event_loop()
-    return loop.run_until_complete(asyncio.ensure_future(task))
+    return loop.run_until_complete(asyncio.ensure_future(task, loop=loop))
 
 async def handle_tcp_echo(reader, writer):
     data = await reader.read(100)
@@ -51,11 +59,46 @@ async def tcp_echo_client(message, port, loop=None):
     writer.close()
     return data
 
+def tcp_echo_client_sync(message, port):
+    conn = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    print('-> Client connecting to port: %r' % port)
+    conn.connect(('127.0.0.1', port))
+    print('-> Client sending: %r' % message)
+    conn.send(message.encode())
+    data = conn.recv(100).decode()
+    print('<- Client received: %r' % data)
+    print('-- Terminating connection on client')
+    conn.close()
+    return data
+
 """
 make_server = asyncio.start_server(handle_tcp_echo, '127.0.0.1')
 server = run_in_foreground(make_server)
+server.sockets[0]
 port = server.sockets[0].getsockname()[1]
 
+make_server2 = asyncio.start_server(handle_tcp_echo, '127.0.0.1')
+server2 = run_in_foreground(make_server2)
+server2.sockets[0]
+port2 = server2.sockets[0].getsockname()[1]
+
 print(run_in_foreground(tcp_echo_client('Hello World!', port)))
+print(run_in_foreground(tcp_echo_client('Hello World!', port2)))
+
+echo1 = schedule_coroutine(tcp_echo_client('Hello World!', port))
+echo2 = schedule_coroutine(tcp_echo_client('Hello World!', port2))
+run_in_foreground(asyncio.wait([echo1, echo2]))
+echo1.result()
+echo2.result()
+
+query_server = partial(tcp_echo_client_sync, "Hello World!", port)
+query_server2 = partial(tcp_echo_client_sync, "Hello World!", port2)
+bg_call = call_in_background(query_server)
+
+bg_call2 = call_in_background(query_server2)
+
+run_in_foreground(asyncio.wait([bg_call, bg_call2]))
+bg_call.result()
+bg_call2.result()
 """
 
