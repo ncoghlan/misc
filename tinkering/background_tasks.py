@@ -102,3 +102,62 @@ bg_call.result()
 bg_call2.result()
 """
 
+
+"""
+import socket
+def blocking_tcp_client(message, port):
+    conn = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    print('-> Client connecting to port: {}'.format(port))
+    conn.connect(('127.0.0.1', port))
+    print('-> Client sending: {!r}'.format(message))
+    conn.send(message.encode())
+    response = conn.recv(100).decode()
+    print('<- Client received: {!r}'.format(response))
+    print('-- Terminating connection on client')
+    conn.close()
+    return response
+
+import asyncio
+async def handle_tcp_echo(reader, writer):
+    message = (await reader.read(100)).decode()
+    print('-> Server received: {!r}'.format(message))
+    client = writer.get_extra_info('peername')
+    print("<- Server sending {!r} to {}".format(message, client))
+    writer.write(message.encode())
+    await writer.drain()
+    print("-- Terminating connection on server")
+    writer.close()
+
+loop = asyncio.get_event_loop()
+make_server = asyncio.start_server(handle_tcp_echo, '127.0.0.1')
+server = loop.run_until_complete(make_server)
+server.sockets
+port = server.sockets[0].getsockname()[1]
+
+from functools import partial
+query_server = partial(blocking_tcp_client, "Hello World!", port)
+background_call = loop.run_in_executor(None, query_server)
+response = loop.run_until_complete(background_call)
+response
+
+async def tcp_echo_client(message, port):
+    reader, writer = await asyncio.open_connection('127.0.0.1', port)
+    print('-> Client sending: {!r}'.format(message))
+    writer.write(message.encode())
+    response = (await reader.read(100)).decode()
+    print('<- Client received: {!r}'.format(response))
+    print('-- Terminating connection on client')
+    writer.close()
+    return response
+
+response = loop.run_until_complete(tcp_echo_client('Hello World!', port))
+response
+
+def echo_range(stop):
+    tasks = (asyncio.ensure_future(tcp_echo_client(str(i), port)) for i in range(stop))
+    return asyncio.gather(*tasks)
+
+responses = list(loop.run_until_complete(echo_range(10)))
+responses
+
+"""
