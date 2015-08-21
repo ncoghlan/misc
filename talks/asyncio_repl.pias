@@ -1,0 +1,1008 @@
+{
+  "events": [
+    {
+      "act": "OPEN", 
+      "size": [
+        209, 
+        56
+      ], 
+      "term": "fdc6c955cdf540ad9377d2b024c9440f"
+    }, 
+    {
+      "act": "PAUSE", 
+      "duration": 0.0504300594329834
+    }, 
+    {
+      "act": "WRITE", 
+      "data": "\u001b]0;ncoghlan@thechalk:~/devel/py35\u0007[ncoghlan@thechalk py35]$ ", 
+      "term": "fdc6c955cdf540ad9377d2b024c9440f"
+    }, 
+    {
+      "act": "ECHO", 
+      "data": "./python", 
+      "term": "fdc6c955cdf540ad9377d2b024c9440f"
+    }, 
+    {
+      "act": "READ", 
+      "data": "\r", 
+      "term": "fdc6c955cdf540ad9377d2b024c9440f"
+    }, 
+    {
+      "act": "WRITE", 
+      "data": "\r\n", 
+      "term": "fdc6c955cdf540ad9377d2b024c9440f"
+    }, 
+    {
+      "act": "PAUSE", 
+      "duration": 0.0132598876953125
+    }, 
+    {
+      "act": "WRITE", 
+      "data": "Python 3.5.0b4+ (3.5:78c6149f5a4b, Aug  2 2015, 07:09:42) \r\n[GCC 5.1.1 20150618 (Red Hat 5.1.1-4)] on linux\r\nType \"help\", \"copyright\", \"credits\" or \"license\" for more information.\r\n", 
+      "term": "fdc6c955cdf540ad9377d2b024c9440f"
+    }, 
+    {
+      "act": "PAUSE", 
+      "duration": 0.0012137889862060547
+    }, 
+    {
+      "act": "WRITE", 
+      "data": ">>> ", 
+      "term": "fdc6c955cdf540ad9377d2b024c9440f"
+    }, 
+    {
+      "act": "ECHO", 
+      "data": "import socket", 
+      "term": "fdc6c955cdf540ad9377d2b024c9440f"
+    }, 
+    {
+      "act": "READ", 
+      "data": "\r", 
+      "term": "fdc6c955cdf540ad9377d2b024c9440f"
+    }, 
+    {
+      "act": "WRITE", 
+      "data": "\r\n", 
+      "term": "fdc6c955cdf540ad9377d2b024c9440f"
+    }, 
+    {
+      "act": "PAUSE", 
+      "duration": 0.0030889511108398438
+    }, 
+    {
+      "act": "WRITE", 
+      "data": ">>> ", 
+      "term": "fdc6c955cdf540ad9377d2b024c9440f"
+    }, 
+    {
+      "act": "ECHO", 
+      "data": "def blocking_tcp_client(message, port):", 
+      "term": "fdc6c955cdf540ad9377d2b024c9440f"
+    }, 
+    {
+      "act": "READ", 
+      "data": "\r", 
+      "term": "fdc6c955cdf540ad9377d2b024c9440f"
+    }, 
+    {
+      "act": "WRITE", 
+      "data": "\r\n... ", 
+      "term": "fdc6c955cdf540ad9377d2b024c9440f"
+    }, 
+    {
+      "act": "ECHO", 
+      "data": "    conn = socket.socket(socket.AF_INET, socket.SOCK_STREAM)", 
+      "term": "fdc6c955cdf540ad9377d2b024c9440f"
+    }, 
+    {
+      "act": "READ", 
+      "data": "\r", 
+      "term": "fdc6c955cdf540ad9377d2b024c9440f"
+    }, 
+    {
+      "act": "WRITE", 
+      "data": "\r\n... ", 
+      "term": "fdc6c955cdf540ad9377d2b024c9440f"
+    }, 
+    {
+      "act": "ECHO", 
+      "data": "    print('-> Client connecting to port: {}'.format(port))", 
+      "term": "fdc6c955cdf540ad9377d2b024c9440f"
+    }, 
+    {
+      "act": "READ", 
+      "data": "\r", 
+      "term": "fdc6c955cdf540ad9377d2b024c9440f"
+    }, 
+    {
+      "act": "WRITE", 
+      "data": "\r\n... ", 
+      "term": "fdc6c955cdf540ad9377d2b024c9440f"
+    }, 
+    {
+      "act": "ECHO", 
+      "data": "    conn.connect(('127.0.0.1', port))", 
+      "term": "fdc6c955cdf540ad9377d2b024c9440f"
+    }, 
+    {
+      "act": "READ", 
+      "data": "\r", 
+      "term": "fdc6c955cdf540ad9377d2b024c9440f"
+    }, 
+    {
+      "act": "WRITE", 
+      "data": "\r\n... ", 
+      "term": "fdc6c955cdf540ad9377d2b024c9440f"
+    }, 
+    {
+      "act": "ECHO", 
+      "data": "    print('-> Client sending: {!r}'.format(message))", 
+      "term": "fdc6c955cdf540ad9377d2b024c9440f"
+    }, 
+    {
+      "act": "READ", 
+      "data": "\r", 
+      "term": "fdc6c955cdf540ad9377d2b024c9440f"
+    }, 
+    {
+      "act": "WRITE", 
+      "data": "\r\n... ", 
+      "term": "fdc6c955cdf540ad9377d2b024c9440f"
+    }, 
+    {
+      "act": "ECHO", 
+      "data": "    conn.send(message.encode())", 
+      "term": "fdc6c955cdf540ad9377d2b024c9440f"
+    }, 
+    {
+      "act": "READ", 
+      "data": "\r", 
+      "term": "fdc6c955cdf540ad9377d2b024c9440f"
+    }, 
+    {
+      "act": "WRITE", 
+      "data": "\r\n... ", 
+      "term": "fdc6c955cdf540ad9377d2b024c9440f"
+    }, 
+    {
+      "act": "ECHO", 
+      "data": "    response = conn.recv(100).decode()", 
+      "term": "fdc6c955cdf540ad9377d2b024c9440f"
+    }, 
+    {
+      "act": "READ", 
+      "data": "\r", 
+      "term": "fdc6c955cdf540ad9377d2b024c9440f"
+    }, 
+    {
+      "act": "WRITE", 
+      "data": "\r\n... ", 
+      "term": "fdc6c955cdf540ad9377d2b024c9440f"
+    }, 
+    {
+      "act": "ECHO", 
+      "data": "    print('<- Client received: {!r}'.format(response))", 
+      "term": "fdc6c955cdf540ad9377d2b024c9440f"
+    }, 
+    {
+      "act": "READ", 
+      "data": "\r", 
+      "term": "fdc6c955cdf540ad9377d2b024c9440f"
+    }, 
+    {
+      "act": "WRITE", 
+      "data": "\r\n", 
+      "term": "fdc6c955cdf540ad9377d2b024c9440f"
+    }, 
+    {
+      "act": "READ", 
+      "data": " ", 
+      "term": "fdc6c955cdf540ad9377d2b024c9440f"
+    }, 
+    {
+      "act": "WRITE", 
+      "data": "...  ", 
+      "term": "fdc6c955cdf540ad9377d2b024c9440f"
+    }, 
+    {
+      "act": "ECHO", 
+      "data": "   print('-- Terminating connection on client')", 
+      "term": "fdc6c955cdf540ad9377d2b024c9440f"
+    }, 
+    {
+      "act": "READ", 
+      "data": "\r", 
+      "term": "fdc6c955cdf540ad9377d2b024c9440f"
+    }, 
+    {
+      "act": "WRITE", 
+      "data": "\r\n... ", 
+      "term": "fdc6c955cdf540ad9377d2b024c9440f"
+    }, 
+    {
+      "act": "ECHO", 
+      "data": "    conn.close()", 
+      "term": "fdc6c955cdf540ad9377d2b024c9440f"
+    }, 
+    {
+      "act": "READ", 
+      "data": "\r", 
+      "term": "fdc6c955cdf540ad9377d2b024c9440f"
+    }, 
+    {
+      "act": "WRITE", 
+      "data": "\r\n... ", 
+      "term": "fdc6c955cdf540ad9377d2b024c9440f"
+    }, 
+    {
+      "act": "ECHO", 
+      "data": "    return response", 
+      "term": "fdc6c955cdf540ad9377d2b024c9440f"
+    }, 
+    {
+      "act": "READ", 
+      "data": "\r", 
+      "term": "fdc6c955cdf540ad9377d2b024c9440f"
+    }, 
+    {
+      "act": "WRITE", 
+      "data": "\r\n", 
+      "term": "fdc6c955cdf540ad9377d2b024c9440f"
+    }, 
+    {
+      "act": "READ", 
+      "data": "\r", 
+      "term": "fdc6c955cdf540ad9377d2b024c9440f"
+    }, 
+    {
+      "act": "WRITE", 
+      "data": "... \r\n", 
+      "term": "fdc6c955cdf540ad9377d2b024c9440f"
+    }, 
+    {
+      "act": "PAUSE", 
+      "duration": 6.103515625e-05
+    }, 
+    {
+      "act": "WRITE", 
+      "data": ">>> ", 
+      "term": "fdc6c955cdf540ad9377d2b024c9440f"
+    }, 
+    {
+      "act": "ECHO", 
+      "data": "import asyncio", 
+      "term": "fdc6c955cdf540ad9377d2b024c9440f"
+    }, 
+    {
+      "act": "READ", 
+      "data": "\r", 
+      "term": "fdc6c955cdf540ad9377d2b024c9440f"
+    }, 
+    {
+      "act": "WRITE", 
+      "data": "\r\n", 
+      "term": "fdc6c955cdf540ad9377d2b024c9440f"
+    }, 
+    {
+      "act": "PAUSE", 
+      "duration": 0.04437899589538574
+    }, 
+    {
+      "act": "WRITE", 
+      "data": ">>> ", 
+      "term": "fdc6c955cdf540ad9377d2b024c9440f"
+    }, 
+    {
+      "act": "ECHO", 
+      "data": "async def handle_tcp_echo(reader, writer):", 
+      "term": "fdc6c955cdf540ad9377d2b024c9440f"
+    }, 
+    {
+      "act": "READ", 
+      "data": "\r", 
+      "term": "fdc6c955cdf540ad9377d2b024c9440f"
+    }, 
+    {
+      "act": "WRITE", 
+      "data": "\r\n... ", 
+      "term": "fdc6c955cdf540ad9377d2b024c9440f"
+    }, 
+    {
+      "act": "ECHO", 
+      "data": "    message = (await reader.read(100)).decode()", 
+      "term": "fdc6c955cdf540ad9377d2b024c9440f"
+    }, 
+    {
+      "act": "READ", 
+      "data": "\r", 
+      "term": "fdc6c955cdf540ad9377d2b024c9440f"
+    }, 
+    {
+      "act": "WRITE", 
+      "data": "\r\n... ", 
+      "term": "fdc6c955cdf540ad9377d2b024c9440f"
+    }, 
+    {
+      "act": "ECHO", 
+      "data": "    print('-> Server received: {!r}'.format(message))", 
+      "term": "fdc6c955cdf540ad9377d2b024c9440f"
+    }, 
+    {
+      "act": "READ", 
+      "data": "\r", 
+      "term": "fdc6c955cdf540ad9377d2b024c9440f"
+    }, 
+    {
+      "act": "WRITE", 
+      "data": "\r\n... ", 
+      "term": "fdc6c955cdf540ad9377d2b024c9440f"
+    }, 
+    {
+      "act": "ECHO", 
+      "data": "    client = writer.get_extra_info('peername')", 
+      "term": "fdc6c955cdf540ad9377d2b024c9440f"
+    }, 
+    {
+      "act": "READ", 
+      "data": "\r", 
+      "term": "fdc6c955cdf540ad9377d2b024c9440f"
+    }, 
+    {
+      "act": "WRITE", 
+      "data": "\r\n", 
+      "term": "fdc6c955cdf540ad9377d2b024c9440f"
+    }, 
+    {
+      "act": "READ", 
+      "data": " ", 
+      "term": "fdc6c955cdf540ad9377d2b024c9440f"
+    }, 
+    {
+      "act": "WRITE", 
+      "data": "...  ", 
+      "term": "fdc6c955cdf540ad9377d2b024c9440f"
+    }, 
+    {
+      "act": "ECHO", 
+      "data": "   print(\"<- Server sending {!r} to {}\".format(message, client))", 
+      "term": "fdc6c955cdf540ad9377d2b024c9440f"
+    }, 
+    {
+      "act": "READ", 
+      "data": "\r", 
+      "term": "fdc6c955cdf540ad9377d2b024c9440f"
+    }, 
+    {
+      "act": "WRITE", 
+      "data": "\r\n... ", 
+      "term": "fdc6c955cdf540ad9377d2b024c9440f"
+    }, 
+    {
+      "act": "ECHO", 
+      "data": "    writer.write(message.encode())", 
+      "term": "fdc6c955cdf540ad9377d2b024c9440f"
+    }, 
+    {
+      "act": "READ", 
+      "data": "\r", 
+      "term": "fdc6c955cdf540ad9377d2b024c9440f"
+    }, 
+    {
+      "act": "WRITE", 
+      "data": "\r\n... ", 
+      "term": "fdc6c955cdf540ad9377d2b024c9440f"
+    }, 
+    {
+      "act": "ECHO", 
+      "data": "    await writer.drain()", 
+      "term": "fdc6c955cdf540ad9377d2b024c9440f"
+    }, 
+    {
+      "act": "READ", 
+      "data": "\r", 
+      "term": "fdc6c955cdf540ad9377d2b024c9440f"
+    }, 
+    {
+      "act": "WRITE", 
+      "data": "\r\n... ", 
+      "term": "fdc6c955cdf540ad9377d2b024c9440f"
+    }, 
+    {
+      "act": "ECHO", 
+      "data": "    print(\"-- Terminating connection on server\")", 
+      "term": "fdc6c955cdf540ad9377d2b024c9440f"
+    }, 
+    {
+      "act": "READ", 
+      "data": "\r", 
+      "term": "fdc6c955cdf540ad9377d2b024c9440f"
+    }, 
+    {
+      "act": "WRITE", 
+      "data": "\r\n... ", 
+      "term": "fdc6c955cdf540ad9377d2b024c9440f"
+    }, 
+    {
+      "act": "ECHO", 
+      "data": "    writer.close()", 
+      "term": "fdc6c955cdf540ad9377d2b024c9440f"
+    }, 
+    {
+      "act": "READ", 
+      "data": "\r", 
+      "term": "fdc6c955cdf540ad9377d2b024c9440f"
+    }, 
+    {
+      "act": "WRITE", 
+      "data": "\r\n... ", 
+      "term": "fdc6c955cdf540ad9377d2b024c9440f"
+    }, 
+    {
+      "act": "READ", 
+      "data": "\r", 
+      "term": "fdc6c955cdf540ad9377d2b024c9440f"
+    }, 
+    {
+      "act": "WRITE", 
+      "data": "\r\n", 
+      "term": "fdc6c955cdf540ad9377d2b024c9440f"
+    }, 
+    {
+      "act": "PAUSE", 
+      "duration": 7.486343383789062e-05
+    }, 
+    {
+      "act": "WRITE", 
+      "data": ">>> ", 
+      "term": "fdc6c955cdf540ad9377d2b024c9440f"
+    }, 
+    {
+      "act": "ECHO", 
+      "data": "loop = asyncio.get_event_loop()", 
+      "term": "fdc6c955cdf540ad9377d2b024c9440f"
+    }, 
+    {
+      "act": "READ", 
+      "data": "\r", 
+      "term": "fdc6c955cdf540ad9377d2b024c9440f"
+    }, 
+    {
+      "act": "WRITE", 
+      "data": "\r\n>>> ", 
+      "term": "fdc6c955cdf540ad9377d2b024c9440f"
+    }, 
+    {
+      "act": "ECHO", 
+      "data": "make_server = asyncio.start_server(handle_tcp_echo, '127.0.0.1')", 
+      "term": "fdc6c955cdf540ad9377d2b024c9440f"
+    }, 
+    {
+      "act": "READ", 
+      "data": "\r", 
+      "term": "fdc6c955cdf540ad9377d2b024c9440f"
+    }, 
+    {
+      "act": "WRITE", 
+      "data": "\r\n>>> ", 
+      "term": "fdc6c955cdf540ad9377d2b024c9440f"
+    }, 
+    {
+      "act": "ECHO", 
+      "data": "server = loop.run_until_complete(make_server)", 
+      "term": "fdc6c955cdf540ad9377d2b024c9440f"
+    }, 
+    {
+      "act": "READ", 
+      "data": "\r", 
+      "term": "fdc6c955cdf540ad9377d2b024c9440f"
+    }, 
+    {
+      "act": "WRITE", 
+      "data": "\r\n", 
+      "term": "fdc6c955cdf540ad9377d2b024c9440f"
+    }, 
+    {
+      "act": "PAUSE", 
+      "duration": 0.002196073532104492
+    }, 
+    {
+      "act": "WRITE", 
+      "data": ">>> ", 
+      "term": "fdc6c955cdf540ad9377d2b024c9440f"
+    }, 
+    {
+      "act": "ECHO", 
+      "data": "server.sockets", 
+      "term": "fdc6c955cdf540ad9377d2b024c9440f"
+    }, 
+    {
+      "act": "READ", 
+      "data": "\r", 
+      "term": "fdc6c955cdf540ad9377d2b024c9440f"
+    }, 
+    {
+      "act": "WRITE", 
+      "data": "\r\n[<socket.socket fd=6, family=AddressFamily.AF_INET, type=2049, proto=6, laddr=('127.0.0.1', 45821)>]\r\n>>> ", 
+      "term": "fdc6c955cdf540ad9377d2b024c9440f"
+    }, 
+    {
+      "act": "ECHO", 
+      "data": "port = server.sockets[0].getsockname()[1]", 
+      "term": "fdc6c955cdf540ad9377d2b024c9440f"
+    }, 
+    {
+      "act": "READ", 
+      "data": "\r", 
+      "term": "fdc6c955cdf540ad9377d2b024c9440f"
+    }, 
+    {
+      "act": "WRITE", 
+      "data": "\r\n>>> ", 
+      "term": "fdc6c955cdf540ad9377d2b024c9440f"
+    }, 
+    {
+      "act": "READ", 
+      "data": "\r", 
+      "term": "fdc6c955cdf540ad9377d2b024c9440f"
+    }, 
+    {
+      "act": "WRITE", 
+      "data": "\r\n>>> ", 
+      "term": "fdc6c955cdf540ad9377d2b024c9440f"
+    }, 
+    {
+      "act": "ECHO", 
+      "data": "from functools import partial", 
+      "term": "fdc6c955cdf540ad9377d2b024c9440f"
+    }, 
+    {
+      "act": "READ", 
+      "data": "\r", 
+      "term": "fdc6c955cdf540ad9377d2b024c9440f"
+    }, 
+    {
+      "act": "WRITE", 
+      "data": "\r\n>>> ", 
+      "term": "fdc6c955cdf540ad9377d2b024c9440f"
+    }, 
+    {
+      "act": "ECHO", 
+      "data": "query_server = partial(blocking_tcp_client, \"Hello World!\", port)", 
+      "term": "fdc6c955cdf540ad9377d2b024c9440f"
+    }, 
+    {
+      "act": "READ", 
+      "data": "\r", 
+      "term": "fdc6c955cdf540ad9377d2b024c9440f"
+    }, 
+    {
+      "act": "WRITE", 
+      "data": "\r\n>>> ", 
+      "term": "fdc6c955cdf540ad9377d2b024c9440f"
+    }, 
+    {
+      "act": "ECHO", 
+      "data": "background_call = loop.run_in_executor(None, query_server)", 
+      "term": "fdc6c955cdf540ad9377d2b024c9440f"
+    }, 
+    {
+      "act": "READ", 
+      "data": "\r", 
+      "term": "fdc6c955cdf540ad9377d2b024c9440f"
+    }, 
+    {
+      "act": "WRITE", 
+      "data": "\r\n", 
+      "term": "fdc6c955cdf540ad9377d2b024c9440f"
+    }, 
+    {
+      "act": "PAUSE", 
+      "duration": 0.00013399124145507812
+    }, 
+    {
+      "act": "WRITE", 
+      "data": "-> Client connecting to port: 45821\r\n-> Client sending: 'Hello World!'\r\n>>> ", 
+      "term": "fdc6c955cdf540ad9377d2b024c9440f"
+    }, 
+    {
+      "act": "ECHO", 
+      "data": "response = loop.run_until_complete(background_call)", 
+      "term": "fdc6c955cdf540ad9377d2b024c9440f"
+    }, 
+    {
+      "act": "READ", 
+      "data": "\r", 
+      "term": "fdc6c955cdf540ad9377d2b024c9440f"
+    }, 
+    {
+      "act": "WRITE", 
+      "data": "\r\n-> Server received: 'Hello World!'\r\n<- Server sending 'Hello World!' to ('127.0.0.1', 35805)\r\n-- Terminating connection on server\r\n<- Client received: 'Hello World!'\r\n-- Terminating connection on client\r\n>>> ", 
+      "term": "fdc6c955cdf540ad9377d2b024c9440f"
+    }, 
+    {
+      "act": "ECHO", 
+      "data": "response", 
+      "term": "fdc6c955cdf540ad9377d2b024c9440f"
+    }, 
+    {
+      "act": "READ", 
+      "data": "\r", 
+      "term": "fdc6c955cdf540ad9377d2b024c9440f"
+    }, 
+    {
+      "act": "WRITE", 
+      "data": "\r\n'Hello World!'\r\n>>> ", 
+      "term": "fdc6c955cdf540ad9377d2b024c9440f"
+    }, 
+    {
+      "act": "READ", 
+      "data": "\r", 
+      "term": "fdc6c955cdf540ad9377d2b024c9440f"
+    }, 
+    {
+      "act": "WRITE", 
+      "data": "\r\n>>> ", 
+      "term": "fdc6c955cdf540ad9377d2b024c9440f"
+    }, 
+    {
+      "act": "ECHO", 
+      "data": "async def tcp_echo_client(message, port):", 
+      "term": "fdc6c955cdf540ad9377d2b024c9440f"
+    }, 
+    {
+      "act": "READ", 
+      "data": "\r", 
+      "term": "fdc6c955cdf540ad9377d2b024c9440f"
+    }, 
+    {
+      "act": "WRITE", 
+      "data": "\r\n... ", 
+      "term": "fdc6c955cdf540ad9377d2b024c9440f"
+    }, 
+    {
+      "act": "ECHO", 
+      "data": "    reader, writer = await asyncio.open_connection('127.0.0.1', port)", 
+      "term": "fdc6c955cdf540ad9377d2b024c9440f"
+    }, 
+    {
+      "act": "READ", 
+      "data": "\r", 
+      "term": "fdc6c955cdf540ad9377d2b024c9440f"
+    }, 
+    {
+      "act": "WRITE", 
+      "data": "\r\n... ", 
+      "term": "fdc6c955cdf540ad9377d2b024c9440f"
+    }, 
+    {
+      "act": "ECHO", 
+      "data": "    print('-> Client sending: {!r}'.format(message))", 
+      "term": "fdc6c955cdf540ad9377d2b024c9440f"
+    }, 
+    {
+      "act": "READ", 
+      "data": "\r", 
+      "term": "fdc6c955cdf540ad9377d2b024c9440f"
+    }, 
+    {
+      "act": "WRITE", 
+      "data": "\r\n... ", 
+      "term": "fdc6c955cdf540ad9377d2b024c9440f"
+    }, 
+    {
+      "act": "ECHO", 
+      "data": "    writer.write(message.encode())", 
+      "term": "fdc6c955cdf540ad9377d2b024c9440f"
+    }, 
+    {
+      "act": "READ", 
+      "data": "\r", 
+      "term": "fdc6c955cdf540ad9377d2b024c9440f"
+    }, 
+    {
+      "act": "WRITE", 
+      "data": "\r\n... ", 
+      "term": "fdc6c955cdf540ad9377d2b024c9440f"
+    }, 
+    {
+      "act": "ECHO", 
+      "data": "    response = (await reader.read(100)).decode()", 
+      "term": "fdc6c955cdf540ad9377d2b024c9440f"
+    }, 
+    {
+      "act": "READ", 
+      "data": "\r", 
+      "term": "fdc6c955cdf540ad9377d2b024c9440f"
+    }, 
+    {
+      "act": "WRITE", 
+      "data": "\r\n... ", 
+      "term": "fdc6c955cdf540ad9377d2b024c9440f"
+    }, 
+    {
+      "act": "ECHO", 
+      "data": "    print('<- Client received: {!r}'.format(response))", 
+      "term": "fdc6c955cdf540ad9377d2b024c9440f"
+    }, 
+    {
+      "act": "READ", 
+      "data": "\r", 
+      "term": "fdc6c955cdf540ad9377d2b024c9440f"
+    }, 
+    {
+      "act": "WRITE", 
+      "data": "\r\n... ", 
+      "term": "fdc6c955cdf540ad9377d2b024c9440f"
+    }, 
+    {
+      "act": "ECHO", 
+      "data": "    print('-- Terminating connection on client')", 
+      "term": "fdc6c955cdf540ad9377d2b024c9440f"
+    }, 
+    {
+      "act": "READ", 
+      "data": "\r", 
+      "term": "fdc6c955cdf540ad9377d2b024c9440f"
+    }, 
+    {
+      "act": "WRITE", 
+      "data": "\r\n", 
+      "term": "fdc6c955cdf540ad9377d2b024c9440f"
+    }, 
+    {
+      "act": "READ", 
+      "data": " ", 
+      "term": "fdc6c955cdf540ad9377d2b024c9440f"
+    }, 
+    {
+      "act": "WRITE", 
+      "data": "...  ", 
+      "term": "fdc6c955cdf540ad9377d2b024c9440f"
+    }, 
+    {
+      "act": "ECHO", 
+      "data": "   writer.close()", 
+      "term": "fdc6c955cdf540ad9377d2b024c9440f"
+    }, 
+    {
+      "act": "READ", 
+      "data": "\r", 
+      "term": "fdc6c955cdf540ad9377d2b024c9440f"
+    }, 
+    {
+      "act": "WRITE", 
+      "data": "\r\n", 
+      "term": "fdc6c955cdf540ad9377d2b024c9440f"
+    }, 
+    {
+      "act": "READ", 
+      "data": " ", 
+      "term": "fdc6c955cdf540ad9377d2b024c9440f"
+    }, 
+    {
+      "act": "WRITE", 
+      "data": "...  ", 
+      "term": "fdc6c955cdf540ad9377d2b024c9440f"
+    }, 
+    {
+      "act": "ECHO", 
+      "data": "   return response", 
+      "term": "fdc6c955cdf540ad9377d2b024c9440f"
+    }, 
+    {
+      "act": "READ", 
+      "data": "\r", 
+      "term": "fdc6c955cdf540ad9377d2b024c9440f"
+    }, 
+    {
+      "act": "WRITE", 
+      "data": "\r\n... ", 
+      "term": "fdc6c955cdf540ad9377d2b024c9440f"
+    }, 
+    {
+      "act": "READ", 
+      "data": "\r", 
+      "term": "fdc6c955cdf540ad9377d2b024c9440f"
+    }, 
+    {
+      "act": "WRITE", 
+      "data": "\r\n", 
+      "term": "fdc6c955cdf540ad9377d2b024c9440f"
+    }, 
+    {
+      "act": "PAUSE", 
+      "duration": 9.703636169433594e-05
+    }, 
+    {
+      "act": "WRITE", 
+      "data": ">>> ", 
+      "term": "fdc6c955cdf540ad9377d2b024c9440f"
+    }, 
+    {
+      "act": "ECHO", 
+      "data": "response = loop.run_until_complete(tcp_echo_client('Hello World!', port))", 
+      "term": "fdc6c955cdf540ad9377d2b024c9440f"
+    }, 
+    {
+      "act": "READ", 
+      "data": "\r", 
+      "term": "fdc6c955cdf540ad9377d2b024c9440f"
+    }, 
+    {
+      "act": "WRITE", 
+      "data": "\r\n", 
+      "term": "fdc6c955cdf540ad9377d2b024c9440f"
+    }, 
+    {
+      "act": "PAUSE", 
+      "duration": 0.0011570453643798828
+    }, 
+    {
+      "act": "WRITE", 
+      "data": "-> Client sending: 'Hello World!'\r\n-> Server received: 'Hello World!'\r\n<- Server sending 'Hello World!' to ('127.0.0.1', 35811)\r\n-- Terminating connection on server\r\n<- Client received: 'Hello World!'\r\n-- Terminating connection on client\r\n>>> ", 
+      "term": "fdc6c955cdf540ad9377d2b024c9440f"
+    }, 
+    {
+      "act": "ECHO", 
+      "data": "response", 
+      "term": "fdc6c955cdf540ad9377d2b024c9440f"
+    }, 
+    {
+      "act": "READ", 
+      "data": "\r", 
+      "term": "fdc6c955cdf540ad9377d2b024c9440f"
+    }, 
+    {
+      "act": "WRITE", 
+      "data": "\r\n'Hello World!'\r\n>>> ", 
+      "term": "fdc6c955cdf540ad9377d2b024c9440f"
+    }, 
+    {
+      "act": "READ", 
+      "data": "\r", 
+      "term": "fdc6c955cdf540ad9377d2b024c9440f"
+    }, 
+    {
+      "act": "WRITE", 
+      "data": "\r\n>>> ", 
+      "term": "fdc6c955cdf540ad9377d2b024c9440f"
+    }, 
+    {
+      "act": "ECHO", 
+      "data": "def echo_range(stop):", 
+      "term": "fdc6c955cdf540ad9377d2b024c9440f"
+    }, 
+    {
+      "act": "READ", 
+      "data": "\r", 
+      "term": "fdc6c955cdf540ad9377d2b024c9440f"
+    }, 
+    {
+      "act": "WRITE", 
+      "data": "\r\n... ", 
+      "term": "fdc6c955cdf540ad9377d2b024c9440f"
+    }, 
+    {
+      "act": "ECHO", 
+      "data": "    tasks = (asyncio.ensure_future(tcp_echo_client(str(i), port)) for i in range(stop))", 
+      "term": "fdc6c955cdf540ad9377d2b024c9440f"
+    }, 
+    {
+      "act": "READ", 
+      "data": "\r", 
+      "term": "fdc6c955cdf540ad9377d2b024c9440f"
+    }, 
+    {
+      "act": "WRITE", 
+      "data": "\r\n... ", 
+      "term": "fdc6c955cdf540ad9377d2b024c9440f"
+    }, 
+    {
+      "act": "ECHO", 
+      "data": "    return asyncio.gather(*tasks)", 
+      "term": "fdc6c955cdf540ad9377d2b024c9440f"
+    }, 
+    {
+      "act": "READ", 
+      "data": "\r", 
+      "term": "fdc6c955cdf540ad9377d2b024c9440f"
+    }, 
+    {
+      "act": "WRITE", 
+      "data": "\r\n... ", 
+      "term": "fdc6c955cdf540ad9377d2b024c9440f"
+    }, 
+    {
+      "act": "READ", 
+      "data": "\r", 
+      "term": "fdc6c955cdf540ad9377d2b024c9440f"
+    }, 
+    {
+      "act": "WRITE", 
+      "data": "\r\n>>> ", 
+      "term": "fdc6c955cdf540ad9377d2b024c9440f"
+    }, 
+    {
+      "act": "ECHO", 
+      "data": "responses = list(loop.run_until_complete(echo_range(10)))", 
+      "term": "fdc6c955cdf540ad9377d2b024c9440f"
+    }, 
+    {
+      "act": "READ", 
+      "data": "\r", 
+      "term": "fdc6c955cdf540ad9377d2b024c9440f"
+    }, 
+    {
+      "act": "WRITE", 
+      "data": "\r\n", 
+      "term": "fdc6c955cdf540ad9377d2b024c9440f"
+    }, 
+    {
+      "act": "PAUSE", 
+      "duration": 0.003258943557739258
+    }, 
+    {
+      "act": "WRITE", 
+      "data": "-> Client sending: '0'\r\n-> Client sending: '1'\r\n", 
+      "term": "fdc6c955cdf540ad9377d2b024c9440f"
+    }, 
+    {
+      "act": "PAUSE", 
+      "duration": 0.0006361007690429688
+    }, 
+    {
+      "act": "WRITE", 
+      "data": "-> Server received: '0'\r\n<- Server sending '0' to ('127.0.0.1', 35815)\r\n-- Terminating connection on server\r\n-> Server received: '1'\r\n<- Server sending '1' to ('127.0.0.1', 35816)\r\n-- Terminating connection on server\r\n-> Client sending: '2'\r\n-> Client sending: '3'\r\n-> Client sending: '5'\r\n-> Client sending: '6'\r\n-> Client sending: '7'\r\n-> Client sending: '8'\r\n-> Client sending: '9'\r\n-> Client sending: '4'\r\n<- Client received: '0'\r\n-- Terminating connection on client\r\n<- Client received: '1'\r\n-- Terminating connection on client\r\n-> Server received: '2'\r\n<- Server sending '2' to ('127.0.0.1', 35817)\r\n-- Terminating connection on server\r\n-> Server received: '3'\r\n<- Server sending '3' to ('127.0.0.1', 35818)\r\n-- Terminating connection on server\r\n-> Server received: '5'\r\n<- Server sending '5' to ('127.0.0.1', 35819)\r\n-- Terminating connection on server\r\n-> Server received: '6'\r\n<- Server sending '6' to ('127.0.0.1', 35820)\r\n-- Terminating connection on server\r\n<- Client received: '2'\r\n-- Terminating connection on client\r\n<- Client received: '3'\r\n-- Terminating connection on client\r\n-> Server received: '7'\r\n<- Server sending '7' to ('127.0.0.1', 35821)\r\n-- Terminating connection on server\r\n<- Client received: '5'\r\n-- Terminating connection on client\r\n-> Server received: '8'\r\n<- Server sending '8' to ('127.0.0.1', 35822)\r\n-- Terminating connection on server\r\n<- Client received: '6'\r\n-- Terminating connection on client\r\n-> Server received: '9'\r\n<- Server sending '9' to ('127.0.0.1', 35823)\r\n-- Terminating connection on server\r\n<- Client received: '7'\r\n-- Terminating connection on client\r\n-> Server received: '4'\r\n<- Server sending '4' to ('127.0.0.1', 35824)\r\n-- Terminating connection on server\r\n<- Client received: '8'\r\n-- Terminating connection on client\r\n<- Client received: '9'\r\n-- Terminating connection on client\r\n<- Client received: '4'\r\n-- Terminating connection on client\r\n>>> ", 
+      "term": "fdc6c955cdf540ad9377d2b024c9440f"
+    }, 
+    {
+      "act": "ECHO", 
+      "data": "responses", 
+      "term": "fdc6c955cdf540ad9377d2b024c9440f"
+    }, 
+    {
+      "act": "READ", 
+      "data": "\r", 
+      "term": "fdc6c955cdf540ad9377d2b024c9440f"
+    }, 
+    {
+      "act": "WRITE", 
+      "data": "\r\n['0', '1', '2', '3', '4', '5', '6', '7', '8', '9']\r\n>>> ", 
+      "term": "fdc6c955cdf540ad9377d2b024c9440f"
+    }, 
+    {
+      "act": "READ", 
+      "data": "\u0004", 
+      "term": "fdc6c955cdf540ad9377d2b024c9440f"
+    }, 
+    {
+      "act": "WRITE", 
+      "data": "\r\n", 
+      "term": "fdc6c955cdf540ad9377d2b024c9440f"
+    }, 
+    {
+      "act": "PAUSE", 
+      "duration": 0.011358976364135742
+    }, 
+    {
+      "act": "WRITE", 
+      "data": "\u001b]0;ncoghlan@thechalk:~/devel/py35\u0007[ncoghlan@thechalk py35]$ ", 
+      "term": "fdc6c955cdf540ad9377d2b024c9440f"
+    }, 
+    {
+      "act": "READ", 
+      "data": "\u0004", 
+      "term": "fdc6c955cdf540ad9377d2b024c9440f"
+    }, 
+    {
+      "act": "WRITE", 
+      "data": "exit\r\n", 
+      "term": "fdc6c955cdf540ad9377d2b024c9440f"
+    }, 
+    {
+      "act": "CLOSE", 
+      "term": "fdc6c955cdf540ad9377d2b024c9440f"
+    }
+  ], 
+  "shell": "/usr/bin/bash"
+}
