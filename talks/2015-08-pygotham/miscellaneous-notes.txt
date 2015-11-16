@@ -1,0 +1,117 @@
+Talk blurb
+==========
+
+When it comes to open source software, what do you want to be doing? Do you want an occasional hobby where you can have fun contributing back to the community? Have a significant impact on the world by being able to commit full time to growing the available pool of free & open source software? Spend time getting to know the needs of a particular organisation, and applying open source tools to solve their problems? Or perhaps you'd prefer to understand the general needs of a broad category of potential users, and design open source tools that will solve their problems without customisation?
+
+Getting involved in open source development communities can offer all these opportunities and more, but it also makes it incredibly easy for us to overcommit and burn ourselves out. If we're not careful, our unrealistic expectations can also contribute to the burnout of our peers. To ensure sustainability, we need to come to a shared understanding of some of the different ways we can engage with open source communities, what we can reasonably offer for free, and what we should expect to be paid for.
+
+John Mark Walker's articles
+===========================
+
+https://www.linux.com/news/software/applications/831018-how-to-make-money-from-open-source-platforms
+http://www.linux.com/news/software/applications/831645-how-to-make-money-from-open-source-platforms-part-2
+https://www.linux.com/news/software/applications/833312-how-to-make-money-from-open-source-platforms-part-3
+https://www.linux.com/news/software/applications/833939-how-to-make-money-from-open-source-platforms-part-4
+
+Continuum post
+==============
+
+http://www.continuum.io/blog/the-journey
+
+ “the best companies are created by people who want to achieve a goal, and building a business was the only way to do it.”
+
+Red Hat musings
+===============
+
+The main framing for the talk will be to split engagement models up into quadrants based on two binary criteria:
+
+                  Desired scope of impact
+                  Global Impact           Local Impact
+Time Commitment
+High              Upstream Colleagues     Downstream Clients
+Low               Upstream Contributors   Downstream Customers
+
+That is:
+
+    Upstream Contributors are only able to make a small time commitment, but are still interested in their work having a global impact
+    Upstream Colleagues (who may work for different organisations) are able to make a high time commitment, and are primarily interested in their work having a global impact
+    Downstream Clients are willing to pay for a close engagement on effectively applying a community's expertise to their particular problems
+    Downstream Customers are willing to pay for tools that solve their problems without needing heavy customisation first
+
+Those binaries then lead to all sorts of interesting potential follow on points:
+
+    These categories shouldn't be narrowly construed:
+        A "client" may not be in the consulting business sense, it may mean a salaried position working full time for an end user, or backers of crowdfunding campaigns
+        "Customers" not only covers literal customers of a commercial business, but also folks contributing sustainability funding through platforms like Patreon or Gratipay
+        Similarly, a "colleague" may not be a co-worker, but instead a peer at another organisation that is redistributing or using the common project
+        "Contributors" is also a broad category - every blog post, every internal discussion advocating for the use of the project, every end user publicly saying "we use this" is a contribution
+    The community project/commercial redistributor split is not optional for a thriving sustainable open source project:
+        Upstream, community projects optimise for a good contributor experience
+        Downstream, end users and commercial redistributors optimise for a good client and customer experience
+    The "upstream first" contribution model is not optional:
+        Maximising impact for contributors and colleagues requires alignment with upstream
+        Minimising long term sustainability risks for clients and customers requires alignment with upstream
+    "It's open source" is an engineering model, not a business model:
+        If they don't work for the same organisation, colleagues and contributors are helping to improve the software for their own reasons, not to make you more money
+        Clients and customers are mainly paying you to solve their problems, with "it's open source" as a nice risk mitigation tool
+    The market adoption "chasm" lies between upstream and downstream:
+        Getting something to a point where it's good enough for innovators and the earliest of early adopters amounts to getting it to work at all
+        Getting it to a point where it's good enough for mainstream usage requires additional fit and polish people are willing to pay for
+        https://upload.wikimedia.org/wikipedia/commons/d/d3/Technology-Adoption-Lifecycle.png
+    Hence, "Open source tailored specifically to your needs" *is* a business model:
+        Upstream, you can effectively represent the interests of your client and customer communities
+        Downstream, you seek to convince potential clients and customers that you understand and can solve *their* problems
+    "Going proprietary" won't save you:
+        Open source businesses fail for the same reasons any business fails: failing to find a good product/market or service/market fit
+        If you're trying to sell to people that are comfortable using upstream directly, you're trying to sell to the *wrong market*. Your product being open source isn't the problem, your problem is that you're trying to sell to people that don't already appreciate that software needs ongoing investment in maintenance just like hardware does
+        Software effectively decays through failure to progressively adapt to changes in the surrounding technical environment. It's a bit like inflation that way: just as $10 now won't buy as much as $10 would have back in 2005, a piece of software that was state of the art in 2005 is archaic now. As with the $10, the software itself hasn't changed, but the surrounding environment has.
+    Coopetition works:
+        Upstream, you collaborate with your competitors to solve the annoying technical problems that just make things worse for everyone
+        Downstream, you compete for clients and customers based on your differing notions of what good solutions look like
+    Watch out for barriers to engagement
+        If you're not getting a regular stream of one-off contributions, you may want to assess your barriers to contribution
+        If you're looking to grow a small business into a large business, low-touch customer engagement models scale more easily than high-touch client engagement ones
+
+
+Additional musings
+------------------
+
+A possible framing here is in terms of user experience design: collaborate on implementation models, compete on representational models.
+
+
+
+http://www.uxpassion.com/blog/implementation-mental-representation-models-ux-user-experience/
+
+    A pithier phrasing: collaborate on technology, compete on customer service.
+
+        Maximise impact. Ensure sustainability.
+
+            A few more random notes on this:
+
+            * upfront investment vs marginal cost
+
+            * in the age of the internet, once implemented, replicating a piece of software is effectively free
+
+            * capitalising software investment thus doesn't make any sense any more - software development needs to be managed as an operational expenditure
+
+            * three models:
+                magic internet pixies = no opex for sustaining engineering on open source deployments
+                self-support = opex through salaries
+                vendor mediated = opex through software subscriptions
+
+            * the magic internet pixies model:
+                assumes other people will fund sustaining engineering on projects deployed
+                software decays due to changes in surrounding technologies (hardware, operating systems, identity management), as well as changes in user expectations (rich web clients, mobile device access, programmable APIs)
+                works OK during stable periods, seriously problematic during periods of rapid technological change (which now appears to be a permanent state)
+
+            * software-as-a-service:
+                forced upgrades at times convenient for the vendor, rather than the subscriber's
+                responsibility for data management and migrations falls entirely on the vendor
+                vendor has complete visibility into the data and integrated systems to be migrated
+
+            * software subscriptions = pay for sustaining engineering, get new features for free
+                encourage (but don't force) upgrades by charging more for sustaining engineering on older software
+                responsibility for data management and migration is shared between the vendor and the end user
+                work to minimise barriers to upgrades to reduce ongoing sustaining engineering costs
+
+            Start from a client/customer perspective, and then move into the business model design aspects.

@@ -1,0 +1,901 @@
+{
+  "events": [
+    {
+      "act": "OPEN", 
+      "size": [
+        113, 
+        51
+      ], 
+      "term": "1ce1182f343c4952b23496b721fa65e8"
+    }, 
+    {
+      "act": "PAUSE", 
+      "duration": 0.44075798988342285
+    }, 
+    {
+      "act": "WRITE", 
+      "data": "\u001b]0;ncoghlan@lancre:~/devel/py34\u0007\u001b[?1034h[ncoghlan@lancre py34]$ ", 
+      "term": "1ce1182f343c4952b23496b721fa65e8"
+    }, 
+    {
+      "act": "ECHO", 
+      "data": "./python", 
+      "term": "1ce1182f343c4952b23496b721fa65e8"
+    }, 
+    {
+      "act": "READ", 
+      "data": "\r", 
+      "term": "1ce1182f343c4952b23496b721fa65e8"
+    }, 
+    {
+      "act": "WRITE", 
+      "data": "\r\n", 
+      "term": "1ce1182f343c4952b23496b721fa65e8"
+    }, 
+    {
+      "act": "PAUSE", 
+      "duration": 0.09834504127502441
+    }, 
+    {
+      "act": "WRITE", 
+      "data": "Python 3.4.1+ (3.4:a50297e793f9+, Jul 25 2014, 21:35:32) \r\n[GCC 4.8.3 20140624 (Red Hat 4.8.3-1)] on linux\r\nType \"help\", \"copyright\", \"credits\" or \"license\" for more information.\r\n", 
+      "term": "1ce1182f343c4952b23496b721fa65e8"
+    }, 
+    {
+      "act": "PAUSE", 
+      "duration": 0.004137992858886719
+    }, 
+    {
+      "act": "WRITE", 
+      "data": "\u001b[?1034h>>> ", 
+      "term": "1ce1182f343c4952b23496b721fa65e8"
+    }, 
+    {
+      "act": "ECHO", 
+      "data": "class Base(", 
+      "term": "1ce1182f343c4952b23496b721fa65e8"
+    }, 
+    {
+      "act": "READ", 
+      "data": "\u007f", 
+      "term": "1ce1182f343c4952b23496b721fa65e8"
+    }, 
+    {
+      "act": "WRITE", 
+      "data": "\b\u001b[K", 
+      "term": "1ce1182f343c4952b23496b721fa65e8"
+    }, 
+    {
+      "act": "ECHO", 
+      "data": ":", 
+      "term": "1ce1182f343c4952b23496b721fa65e8"
+    }, 
+    {
+      "act": "READ", 
+      "data": "\r", 
+      "term": "1ce1182f343c4952b23496b721fa65e8"
+    }, 
+    {
+      "act": "WRITE", 
+      "data": "\r\n... ", 
+      "term": "1ce1182f343c4952b23496b721fa65e8"
+    }, 
+    {
+      "act": "ECHO", 
+      "data": "    def hello(self):", 
+      "term": "1ce1182f343c4952b23496b721fa65e8"
+    }, 
+    {
+      "act": "READ", 
+      "data": "\r", 
+      "term": "1ce1182f343c4952b23496b721fa65e8"
+    }, 
+    {
+      "act": "WRITE", 
+      "data": "\r\n... ", 
+      "term": "1ce1182f343c4952b23496b721fa65e8"
+    }, 
+    {
+      "act": "ECHO", 
+      "data": "        print(\"Base!\")", 
+      "term": "1ce1182f343c4952b23496b721fa65e8"
+    }, 
+    {
+      "act": "READ", 
+      "data": "\r", 
+      "term": "1ce1182f343c4952b23496b721fa65e8"
+    }, 
+    {
+      "act": "WRITE", 
+      "data": "\r\n... ", 
+      "term": "1ce1182f343c4952b23496b721fa65e8"
+    }, 
+    {
+      "act": "READ", 
+      "data": "\r", 
+      "term": "1ce1182f343c4952b23496b721fa65e8"
+    }, 
+    {
+      "act": "WRITE", 
+      "data": "\r\n>>> ", 
+      "term": "1ce1182f343c4952b23496b721fa65e8"
+    }, 
+    {
+      "act": "ECHO", 
+      "data": "class Child", 
+      "term": "1ce1182f343c4952b23496b721fa65e8"
+    }, 
+    {
+      "act": "READ", 
+      "data": "\u007f", 
+      "term": "1ce1182f343c4952b23496b721fa65e8"
+    }, 
+    {
+      "act": "WRITE", 
+      "data": "\b\u001b[K", 
+      "term": "1ce1182f343c4952b23496b721fa65e8"
+    }, 
+    {
+      "act": "READ", 
+      "data": "\u007f", 
+      "term": "1ce1182f343c4952b23496b721fa65e8"
+    }, 
+    {
+      "act": "WRITE", 
+      "data": "\b\u001b[K", 
+      "term": "1ce1182f343c4952b23496b721fa65e8"
+    }, 
+    {
+      "act": "READ", 
+      "data": "\u007f", 
+      "term": "1ce1182f343c4952b23496b721fa65e8"
+    }, 
+    {
+      "act": "WRITE", 
+      "data": "\b\u001b[K", 
+      "term": "1ce1182f343c4952b23496b721fa65e8"
+    }, 
+    {
+      "act": "READ", 
+      "data": "\u007f", 
+      "term": "1ce1182f343c4952b23496b721fa65e8"
+    }, 
+    {
+      "act": "WRITE", 
+      "data": "\b\u001b[K", 
+      "term": "1ce1182f343c4952b23496b721fa65e8"
+    }, 
+    {
+      "act": "READ", 
+      "data": "\u007f", 
+      "term": "1ce1182f343c4952b23496b721fa65e8"
+    }, 
+    {
+      "act": "WRITE", 
+      "data": "\b\u001b[K", 
+      "term": "1ce1182f343c4952b23496b721fa65e8"
+    }, 
+    {
+      "act": "ECHO", 
+      "data": "Derived(Base):", 
+      "term": "1ce1182f343c4952b23496b721fa65e8"
+    }, 
+    {
+      "act": "READ", 
+      "data": "\r", 
+      "term": "1ce1182f343c4952b23496b721fa65e8"
+    }, 
+    {
+      "act": "WRITE", 
+      "data": "\r\n... ", 
+      "term": "1ce1182f343c4952b23496b721fa65e8"
+    }, 
+    {
+      "act": "ECHO", 
+      "data": "    def hello(self):", 
+      "term": "1ce1182f343c4952b23496b721fa65e8"
+    }, 
+    {
+      "act": "READ", 
+      "data": "\r", 
+      "term": "1ce1182f343c4952b23496b721fa65e8"
+    }, 
+    {
+      "act": "WRITE", 
+      "data": "\r\n... ", 
+      "term": "1ce1182f343c4952b23496b721fa65e8"
+    }, 
+    {
+      "act": "ECHO", 
+      "data": "        super().hello()", 
+      "term": "1ce1182f343c4952b23496b721fa65e8"
+    }, 
+    {
+      "act": "READ", 
+      "data": "\r", 
+      "term": "1ce1182f343c4952b23496b721fa65e8"
+    }, 
+    {
+      "act": "WRITE", 
+      "data": "\r\n... ", 
+      "term": "1ce1182f343c4952b23496b721fa65e8"
+    }, 
+    {
+      "act": "ECHO", 
+      "data": "        print(\"Derived!\")", 
+      "term": "1ce1182f343c4952b23496b721fa65e8"
+    }, 
+    {
+      "act": "READ", 
+      "data": "\r", 
+      "term": "1ce1182f343c4952b23496b721fa65e8"
+    }, 
+    {
+      "act": "WRITE", 
+      "data": "\r\n... ", 
+      "term": "1ce1182f343c4952b23496b721fa65e8"
+    }, 
+    {
+      "act": "READ", 
+      "data": "\r", 
+      "term": "1ce1182f343c4952b23496b721fa65e8"
+    }, 
+    {
+      "act": "WRITE", 
+      "data": "\r\n>>> ", 
+      "term": "1ce1182f343c4952b23496b721fa65e8"
+    }, 
+    {
+      "act": "ECHO", 
+      "data": "Derived().hello()", 
+      "term": "1ce1182f343c4952b23496b721fa65e8"
+    }, 
+    {
+      "act": "READ", 
+      "data": "\r", 
+      "term": "1ce1182f343c4952b23496b721fa65e8"
+    }, 
+    {
+      "act": "WRITE", 
+      "data": "\r\nBase!\r\nDerived!\r\n>>> ", 
+      "term": "1ce1182f343c4952b23496b721fa65e8"
+    }, 
+    {
+      "act": "ECHO", 
+      "data": "Derived.h", 
+      "term": "1ce1182f343c4952b23496b721fa65e8"
+    }, 
+    {
+      "act": "READ", 
+      "data": "\u007f", 
+      "term": "1ce1182f343c4952b23496b721fa65e8"
+    }, 
+    {
+      "act": "WRITE", 
+      "data": "\b\u001b[K", 
+      "term": "1ce1182f343c4952b23496b721fa65e8"
+    }, 
+    {
+      "act": "READ", 
+      "data": "\u007f", 
+      "term": "1ce1182f343c4952b23496b721fa65e8"
+    }, 
+    {
+      "act": "WRITE", 
+      "data": "\b\u001b[K", 
+      "term": "1ce1182f343c4952b23496b721fa65e8"
+    }, 
+    {
+      "act": "READ", 
+      "data": "\u007f", 
+      "term": "1ce1182f343c4952b23496b721fa65e8"
+    }, 
+    {
+      "act": "WRITE", 
+      "data": "\b\u001b[K", 
+      "term": "1ce1182f343c4952b23496b721fa65e8"
+    }, 
+    {
+      "act": "READ", 
+      "data": "\u007f", 
+      "term": "1ce1182f343c4952b23496b721fa65e8"
+    }, 
+    {
+      "act": "WRITE", 
+      "data": "\b\u001b[K", 
+      "term": "1ce1182f343c4952b23496b721fa65e8"
+    }, 
+    {
+      "act": "READ", 
+      "data": "\u007f", 
+      "term": "1ce1182f343c4952b23496b721fa65e8"
+    }, 
+    {
+      "act": "WRITE", 
+      "data": "\b\u001b[K", 
+      "term": "1ce1182f343c4952b23496b721fa65e8"
+    }, 
+    {
+      "act": "READ", 
+      "data": "\u007f", 
+      "term": "1ce1182f343c4952b23496b721fa65e8"
+    }, 
+    {
+      "act": "WRITE", 
+      "data": "\b\u001b[K", 
+      "term": "1ce1182f343c4952b23496b721fa65e8"
+    }, 
+    {
+      "act": "READ", 
+      "data": "\u007f", 
+      "term": "1ce1182f343c4952b23496b721fa65e8"
+    }, 
+    {
+      "act": "WRITE", 
+      "data": "\b\u001b[K", 
+      "term": "1ce1182f343c4952b23496b721fa65e8"
+    }, 
+    {
+      "act": "READ", 
+      "data": "\u007f", 
+      "term": "1ce1182f343c4952b23496b721fa65e8"
+    }, 
+    {
+      "act": "WRITE", 
+      "data": "\b\u001b[K", 
+      "term": "1ce1182f343c4952b23496b721fa65e8"
+    }, 
+    {
+      "act": "READ", 
+      "data": "\u007f", 
+      "term": "1ce1182f343c4952b23496b721fa65e8"
+    }, 
+    {
+      "act": "WRITE", 
+      "data": "\b\u001b[K", 
+      "term": "1ce1182f343c4952b23496b721fa65e8"
+    }, 
+    {
+      "act": "READ", 
+      "data": "\u007f", 
+      "term": "1ce1182f343c4952b23496b721fa65e8"
+    }, 
+    {
+      "act": "WRITE", 
+      "data": "\u0007", 
+      "term": "1ce1182f343c4952b23496b721fa65e8"
+    }, 
+    {
+      "act": "ECHO", 
+      "data": "import dis", 
+      "term": "1ce1182f343c4952b23496b721fa65e8"
+    }, 
+    {
+      "act": "READ", 
+      "data": "\r", 
+      "term": "1ce1182f343c4952b23496b721fa65e8"
+    }, 
+    {
+      "act": "WRITE", 
+      "data": "\r\n", 
+      "term": "1ce1182f343c4952b23496b721fa65e8"
+    }, 
+    {
+      "act": "PAUSE", 
+      "duration": 0.04718303680419922
+    }, 
+    {
+      "act": "WRITE", 
+      "data": ">>> ", 
+      "term": "1ce1182f343c4952b23496b721fa65e8"
+    }, 
+    {
+      "act": "ECHO", 
+      "data": "dis.show_code(Derived.hello)", 
+      "term": "1ce1182f343c4952b23496b721fa65e8"
+    }, 
+    {
+      "act": "READ", 
+      "data": "\r", 
+      "term": "1ce1182f343c4952b23496b721fa65e8"
+    }, 
+    {
+      "act": "WRITE", 
+      "data": "\r\nName:              hello\r\nFilename:          <stdin>\r\nArgument count:    1\r\nKw-only arguments: 0\r\nNumber of locals:  1\r\nStack size:        2\r\nFlags:             OPTIMIZED, NEWLOCALS\r\nConstants:\r\n   0: None\r\n   1: 'Derived!'\r\nNames:\r\n   0: super\r\n   1: hello\r\n   2: print\r\nVariable names:\r\n   0: self\r\nFree variables:\r\n   0: __class__\r\n>>> ", 
+      "term": "1ce1182f343c4952b23496b721fa65e8"
+    }, 
+    {
+      "act": "ECHO", 
+      "data": "Derived.hello.__clous", 
+      "term": "1ce1182f343c4952b23496b721fa65e8"
+    }, 
+    {
+      "act": "READ", 
+      "data": "\u007f", 
+      "term": "1ce1182f343c4952b23496b721fa65e8"
+    }, 
+    {
+      "act": "WRITE", 
+      "data": "\b\u001b[K", 
+      "term": "1ce1182f343c4952b23496b721fa65e8"
+    }, 
+    {
+      "act": "READ", 
+      "data": "\u007f", 
+      "term": "1ce1182f343c4952b23496b721fa65e8"
+    }, 
+    {
+      "act": "WRITE", 
+      "data": "\b\u001b[K", 
+      "term": "1ce1182f343c4952b23496b721fa65e8"
+    }, 
+    {
+      "act": "ECHO", 
+      "data": "sure__", 
+      "term": "1ce1182f343c4952b23496b721fa65e8"
+    }, 
+    {
+      "act": "READ", 
+      "data": "\r", 
+      "term": "1ce1182f343c4952b23496b721fa65e8"
+    }, 
+    {
+      "act": "WRITE", 
+      "data": "\r\n(<cell at 0x7fce8aaf5dd8: type object at 0xe54d48>,)\r\n>>> ", 
+      "term": "1ce1182f343c4952b23496b721fa65e8"
+    },
+    {
+      "act": "WRITE", 
+      "data": "\b\u001b[K", 
+      "term": "1ce1182f343c4952b23496b721fa65e8"
+    }, 
+    {
+      "act": "READ", 
+      "data": "\u001b", 
+      "term": "1ce1182f343c4952b23496b721fa65e8"
+    }, 
+    {
+      "act": "READ", 
+      "data": "[", 
+      "term": "1ce1182f343c4952b23496b721fa65e8"
+    }, 
+    {
+      "act": "READ", 
+      "data": "H", 
+      "term": "1ce1182f343c4952b23496b721fa65e8"
+    }, 
+    {
+      "act": "WRITE", 
+      "data": "\r\u001b[C\u001b[C\u001b[C\u001b[C", 
+      "term": "1ce1182f343c4952b23496b721fa65e8"
+    }, 
+    {
+      "act": "READ", 
+      "data": "\u001b", 
+      "term": "1ce1182f343c4952b23496b721fa65e8"
+    }, 
+    {
+      "act": "READ", 
+      "data": "[", 
+      "term": "1ce1182f343c4952b23496b721fa65e8"
+    }, 
+    {
+      "act": "READ", 
+      "data": "3", 
+      "term": "1ce1182f343c4952b23496b721fa65e8"
+    }, 
+    {
+      "act": "READ", 
+      "data": "~", 
+      "term": "1ce1182f343c4952b23496b721fa65e8"
+    }, 
+    {
+      "act": "WRITE", 
+      "data": "\u001b[1Pir(Derived.hello.__closure__[0]\r\u001b[C\u001b[C\u001b[C\u001b[C", 
+      "term": "1ce1182f343c4952b23496b721fa65e8"
+    }, 
+    {
+      "act": "READ", 
+      "data": "\u001b", 
+      "term": "1ce1182f343c4952b23496b721fa65e8"
+    }, 
+    {
+      "act": "READ", 
+      "data": "[", 
+      "term": "1ce1182f343c4952b23496b721fa65e8"
+    }, 
+    {
+      "act": "READ", 
+      "data": "3", 
+      "term": "1ce1182f343c4952b23496b721fa65e8"
+    }, 
+    {
+      "act": "READ", 
+      "data": "~", 
+      "term": "1ce1182f343c4952b23496b721fa65e8"
+    }, 
+    {
+      "act": "WRITE", 
+      "data": "\u001b[1Pr(Derived.hello.__closure__[0]\r\u001b[C\u001b[C\u001b[C\u001b[C", 
+      "term": "1ce1182f343c4952b23496b721fa65e8"
+    }, 
+    {
+      "act": "READ", 
+      "data": "\u001b", 
+      "term": "1ce1182f343c4952b23496b721fa65e8"
+    }, 
+    {
+      "act": "READ", 
+      "data": "[", 
+      "term": "1ce1182f343c4952b23496b721fa65e8"
+    }, 
+    {
+      "act": "READ", 
+      "data": "3", 
+      "term": "1ce1182f343c4952b23496b721fa65e8"
+    }, 
+    {
+      "act": "READ", 
+      "data": "~", 
+      "term": "1ce1182f343c4952b23496b721fa65e8"
+    }, 
+    {
+      "act": "WRITE", 
+      "data": "\u001b[1P(Derived.hello.__closure__[0]\r\u001b[C\u001b[C\u001b[C\u001b[C", 
+      "term": "1ce1182f343c4952b23496b721fa65e8"
+    }, 
+    {
+      "act": "READ", 
+      "data": "\u001b", 
+      "term": "1ce1182f343c4952b23496b721fa65e8"
+    }, 
+    {
+      "act": "READ", 
+      "data": "[", 
+      "term": "1ce1182f343c4952b23496b721fa65e8"
+    }, 
+    {
+      "act": "READ", 
+      "data": "3", 
+      "term": "1ce1182f343c4952b23496b721fa65e8"
+    }, 
+    {
+      "act": "READ", 
+      "data": "~", 
+      "term": "1ce1182f343c4952b23496b721fa65e8"
+    }, 
+    {
+      "act": "WRITE", 
+      "data": "\u001b[1PDerived.hello.__closure__[0]\r\u001b[C\u001b[C\u001b[C\u001b[C", 
+      "term": "1ce1182f343c4952b23496b721fa65e8"
+    }, 
+    {
+      "act": "READ", 
+      "data": "\u001b", 
+      "term": "1ce1182f343c4952b23496b721fa65e8"
+    }, 
+    {
+      "act": "READ", 
+      "data": "[", 
+      "term": "1ce1182f343c4952b23496b721fa65e8"
+    }, 
+    {
+      "act": "READ", 
+      "data": "F", 
+      "term": "1ce1182f343c4952b23496b721fa65e8"
+    }, 
+    {
+      "act": "WRITE", 
+      "data": "\u001b[C\u001b[C\u001b[C\u001b[C\u001b[C\u001b[C\u001b[C\u001b[C\u001b[C\u001b[C\u001b[C\u001b[C\u001b[C\u001b[C\u001b[C\u001b[C\u001b[C\u001b[C\u001b[C\u001b[C\u001b[C\u001b[C\u001b[C\u001b[C\u001b[C\u001b[C\u001b[C\u001b[C", 
+      "term": "1ce1182f343c4952b23496b721fa65e8"
+    }, 
+    {
+      "act": "ECHO", 
+      "data": ".cell_contents", 
+      "term": "1ce1182f343c4952b23496b721fa65e8"
+    }, 
+    {
+      "act": "READ", 
+      "data": "\r", 
+      "term": "1ce1182f343c4952b23496b721fa65e8"
+    }, 
+    {
+      "act": "WRITE", 
+      "data": "\r\n<class '__main__.Derived'>\r\n>>> ", 
+      "term": "1ce1182f343c4952b23496b721fa65e8"
+    }, 
+    {
+      "act": "ECHO", 
+      "data": "_note_", 
+      "term": "1ce1182f343c4952b23496b721fa65e8"
+    }, 
+    {
+      "act": "READ", 
+      "data": "\u007f", 
+      "term": "1ce1182f343c4952b23496b721fa65e8"
+    }, 
+    {
+      "act": "WRITE", 
+      "data": "\b\u001b[K", 
+      "term": "1ce1182f343c4952b23496b721fa65e8"
+    }, 
+    {
+      "act": "READ", 
+      "data": "\u007f", 
+      "term": "1ce1182f343c4952b23496b721fa65e8"
+    }, 
+    {
+      "act": "WRITE", 
+      "data": "\b\u001b[K", 
+      "term": "1ce1182f343c4952b23496b721fa65e8"
+    }, 
+    {
+      "act": "ECHO", 
+      "data": "_super = super", 
+      "term": "1ce1182f343c4952b23496b721fa65e8"
+    }, 
+    {
+      "act": "READ", 
+      "data": "\r", 
+      "term": "1ce1182f343c4952b23496b721fa65e8"
+    }, 
+    {
+      "act": "WRITE",
+      "data": "\r\n>>> ",
+      "term": "1ce1182f343c4952b23496b721fa65e8"
+    },
+    {
+      "act": "ECHO", 
+      "data": "class Oterh", 
+      "term": "1ce1182f343c4952b23496b721fa65e8"
+    }, 
+    {
+      "act": "READ", 
+      "data": "\u007f", 
+      "term": "1ce1182f343c4952b23496b721fa65e8"
+    }, 
+    {
+      "act": "WRITE", 
+      "data": "\b\u001b[K", 
+      "term": "1ce1182f343c4952b23496b721fa65e8"
+    }, 
+    {
+      "act": "READ", 
+      "data": "\u007f", 
+      "term": "1ce1182f343c4952b23496b721fa65e8"
+    }, 
+    {
+      "act": "WRITE", 
+      "data": "\b\u001b[K", 
+      "term": "1ce1182f343c4952b23496b721fa65e8"
+    }, 
+    {
+      "act": "READ", 
+      "data": "\u007f", 
+      "term": "1ce1182f343c4952b23496b721fa65e8"
+    }, 
+    {
+      "act": "WRITE", 
+      "data": "\b\u001b[K", 
+      "term": "1ce1182f343c4952b23496b721fa65e8"
+    }, 
+    {
+      "act": "ECHO", 
+      "data": "herDerived(Base):", 
+      "term": "1ce1182f343c4952b23496b721fa65e8"
+    }, 
+    {
+      "act": "READ", 
+      "data": "\r", 
+      "term": "1ce1182f343c4952b23496b721fa65e8"
+    }, 
+    {
+      "act": "WRITE", 
+      "data": "\r\n... ", 
+      "term": "1ce1182f343c4952b23496b721fa65e8"
+    }, 
+    {
+      "act": "ECHO", 
+      "data": "    def hello(self):", 
+      "term": "1ce1182f343c4952b23496b721fa65e8"
+    }, 
+    {
+      "act": "READ", 
+      "data": "\r", 
+      "term": "1ce1182f343c4952b23496b721fa65e8"
+    }, 
+    {
+      "act": "WRITE", 
+      "data": "\r\n... ", 
+      "term": "1ce1182f343c4952b23496b721fa65e8"
+    }, 
+    {
+      "act": "ECHO", 
+      "data": "        _notr", 
+      "term": "1ce1182f343c4952b23496b721fa65e8"
+    }, 
+    {
+      "act": "READ", 
+      "data": "\u007f", 
+      "term": "1ce1182f343c4952b23496b721fa65e8"
+    }, 
+    {
+      "act": "WRITE", 
+      "data": "\b\u001b[K", 
+      "term": "1ce1182f343c4952b23496b721fa65e8"
+    }, 
+    {
+      "act": "ECHO", 
+      "data": "_super = s", 
+      "term": "1ce1182f343c4952b23496b721fa65e8"
+    }, 
+    {
+      "act": "READ", 
+      "data": "\u007f", 
+      "term": "1ce1182f343c4952b23496b721fa65e8"
+    }, 
+    {
+      "act": "WRITE", 
+      "data": "\b\u001b[K", 
+      "term": "1ce1182f343c4952b23496b721fa65e8"
+    }, 
+    {
+      "act": "READ", 
+      "data": "\u007f", 
+      "term": "1ce1182f343c4952b23496b721fa65e8"
+    }, 
+    {
+      "act": "WRITE", 
+      "data": "\b\u001b[K", 
+      "term": "1ce1182f343c4952b23496b721fa65e8"
+    }, 
+    {
+      "act": "READ", 
+      "data": "\u007f", 
+      "term": "1ce1182f343c4952b23496b721fa65e8"
+    }, 
+    {
+      "act": "WRITE", 
+      "data": "\b\u001b[K", 
+      "term": "1ce1182f343c4952b23496b721fa65e8"
+    }, 
+    {
+      "act": "READ", 
+      "data": "\u007f", 
+      "term": "1ce1182f343c4952b23496b721fa65e8"
+    }, 
+    {
+      "act": "WRITE", 
+      "data": "\b\u001b[K", 
+      "term": "1ce1182f343c4952b23496b721fa65e8"
+    }, 
+    {
+      "act": "ECHO", 
+      "data": "().hello()", 
+      "term": "1ce1182f343c4952b23496b721fa65e8"
+    }, 
+    {
+      "act": "READ", 
+      "data": "\r", 
+      "term": "1ce1182f343c4952b23496b721fa65e8"
+    }, 
+    {
+      "act": "WRITE", 
+      "data": "\r\n... ", 
+      "term": "1ce1182f343c4952b23496b721fa65e8"
+    }, 
+    {
+      "act": "ECHO", 
+      "data": "        print(\"OtherDerived!\")", 
+      "term": "1ce1182f343c4952b23496b721fa65e8"
+    }, 
+    {
+      "act": "READ", 
+      "data": "\r", 
+      "term": "1ce1182f343c4952b23496b721fa65e8"
+    }, 
+    {
+      "act": "WRITE", 
+      "data": "\r\n... ", 
+      "term": "1ce1182f343c4952b23496b721fa65e8"
+    }, 
+    {
+      "act": "READ", 
+      "data": "\r", 
+      "term": "1ce1182f343c4952b23496b721fa65e8"
+    }, 
+    {
+      "act": "WRITE", 
+      "data": "\r\n>>> ", 
+      "term": "1ce1182f343c4952b23496b721fa65e8"
+    }, 
+    {
+      "act": "ECHO", 
+      "data": "OtherDerived.hello()", 
+      "term": "1ce1182f343c4952b23496b721fa65e8"
+    }, 
+    {
+      "act": "READ", 
+      "data": "\r", 
+      "term": "1ce1182f343c4952b23496b721fa65e8"
+    }, 
+    {
+      "act": "WRITE", 
+      "data": "\r\nTraceback (most recent call last):\r\n  File \"<stdin>\", line 1, in <module>\r\nTypeError: hello() missing 1 required positional argument: 'self'\r\n>>> ", 
+      "term": "1ce1182f343c4952b23496b721fa65e8"
+    }, 
+    {
+      "act": "ECHO", 
+      "data": "dis.show_code(OtherDervi", 
+      "term": "1ce1182f343c4952b23496b721fa65e8"
+    }, 
+    {
+      "act": "READ", 
+      "data": "\u007f", 
+      "term": "1ce1182f343c4952b23496b721fa65e8"
+    }, 
+    {
+      "act": "WRITE", 
+      "data": "\b\u001b[K", 
+      "term": "1ce1182f343c4952b23496b721fa65e8"
+    }, 
+    {
+      "act": "READ", 
+      "data": "\u007f", 
+      "term": "1ce1182f343c4952b23496b721fa65e8"
+    }, 
+    {
+      "act": "WRITE", 
+      "data": "\b\u001b[K", 
+      "term": "1ce1182f343c4952b23496b721fa65e8"
+    }, 
+    {
+      "act": "ECHO", 
+      "data": "ived.hello)", 
+      "term": "1ce1182f343c4952b23496b721fa65e8"
+    }, 
+    {
+      "act": "READ", 
+      "data": "\r", 
+      "term": "1ce1182f343c4952b23496b721fa65e8"
+    }, 
+    {
+      "act": "WRITE", 
+      "data": "\r\nName:              hello\r\nFilename:          <stdin>\r\nArgument count:    1\r\nKw-only arguments: 0\r\nNumber of locals:  1\r\nStack size:        2\r\nFlags:             OPTIMIZED, NEWLOCALS, NOFREE\r\nConstants:\r\n   0: None\r\n   1: 'OtherDerived!'\r\nNames:\r\n   0: _not_super\r\n   1: hello\r\n   2: print\r\nVariable names:\r\n   0: self\r\n>>> ", 
+      "term": "1ce1182f343c4952b23496b721fa65e8"
+    }, 
+    {
+      "act": "READ", 
+      "data": "\u0004", 
+      "term": "1ce1182f343c4952b23496b721fa65e8"
+    }, 
+    {
+      "act": "WRITE", 
+      "data": "\r\n", 
+      "term": "1ce1182f343c4952b23496b721fa65e8"
+    }, 
+    {
+      "act": "PAUSE", 
+      "duration": 0.014966964721679688
+    }, 
+    {
+      "act": "WRITE", 
+      "data": "\u001b]0;ncoghlan@lancre:~/devel/py34\u0007[ncoghlan@lancre py34]$ ", 
+      "term": "1ce1182f343c4952b23496b721fa65e8"
+    }, 
+    {
+      "act": "READ", 
+      "data": "\u0004", 
+      "term": "1ce1182f343c4952b23496b721fa65e8"
+    }, 
+    {
+      "act": "WRITE", 
+      "data": "exit\r\n", 
+      "term": "1ce1182f343c4952b23496b721fa65e8"
+    }, 
+    {
+      "act": "CLOSE", 
+      "term": "1ce1182f343c4952b23496b721fa65e8"
+    }
+  ]
+}

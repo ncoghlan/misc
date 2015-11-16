@@ -1,0 +1,38 @@
+--- /home/ncoghlan/devel/avalanche/avalanche/js/slides.js	2015-07-28 20:15:46.483183927 +1000
++++ theme/js/slides.js	2015-07-28 22:01:44.115478301 +1000
+@@ -107,6 +107,26 @@
+         }
+     };
+ 
++    var startPlayers = function(slideNo) {
++        var el = getSlideEl(slideNo);
++        if (el) {
++            var players = el.getElementsByClassName("pias_player");
++            for (var i=0; i < players.length; i++) {
++                var player_div = players[i];
++                var divname = player_div.id;
++                if (player_div.innerHTML) {
++                    continue;
++                }
++                var jsname = divname.replace(/^pias-/, "").replace(/-player$/, "");
++                jsname = "demo-js/" + jsname + ".js"
++                var player = new PIAS.Player(jQuery("#" + divname));
++                player.play(jsname, function() {
++                    player.destroy();
++                });
++            }
++        }
++    };
++
+     var updateSlideClasses = function(updateOther) {
+         window.location.hash = (isPresenterView ? "presenter" : "slide") + currentSlideNo;
+ 
+@@ -128,6 +148,8 @@
+ 
+         document.getElementsByTagName('title')[0].innerText = getSlideTitle(currentSlideNo);
+ 
++        if (!isPresenterView) startPlayers(currentSlideNo);
++
+         updatePresenterNotes();
+ 
+         if (updateOther) { updateOtherPage(); }

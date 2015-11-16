@@ -1,0 +1,326 @@
+{
+  "events": [
+    {
+      "act": "OPEN", 
+      "size": [
+        113, 
+        51
+      ], 
+      "term": "246744de1d184199a41198572c8b8f2d"
+    }, 
+    {
+      "act": "PAUSE", 
+      "duration": 0.46550583839416504
+    }, 
+    {
+      "act": "WRITE", 
+      "data": "\u001b]0;ncoghlan@lancre:~/devel/py3k\u0007\u001b[?1034h[ncoghlan@lancre py3k]$ ", 
+      "term": "246744de1d184199a41198572c8b8f2d"
+    }, 
+    {
+      "act": "ECHO", 
+      "data": "python3", 
+      "term": "246744de1d184199a41198572c8b8f2d"
+    }, 
+    {
+      "act": "READ", 
+      "data": "\r", 
+      "term": "246744de1d184199a41198572c8b8f2d"
+    }, 
+    {
+      "act": "WRITE", 
+      "data": "\r\n", 
+      "term": "246744de1d184199a41198572c8b8f2d"
+    }, 
+    {
+      "act": "PAUSE", 
+      "duration": 0.0632619857788086
+    }, 
+    {
+      "act": "WRITE", 
+      "data": "Python 3.3.2 (default, Jun 30 2014, 17:20:03) \r\n[GCC 4.8.3 20140624 (Red Hat 4.8.3-1)] on linux\r\nType \"help\", \"copyright\", \"credits\" or \"license\" for more information.\r\n\u001b[?1034h>>> ", 
+      "term": "246744de1d184199a41198572c8b8f2d"
+    }, 
+    {
+      "act": "ECHO", 
+      "data": "quit", 
+      "term": "246744de1d184199a41198572c8b8f2d"
+    }, 
+    {
+      "act": "READ", 
+      "data": "\r", 
+      "term": "246744de1d184199a41198572c8b8f2d"
+    }, 
+    {
+      "act": "WRITE", 
+      "data": "\r\nUse quit() or Ctrl-D (i.e. EOF) to exit\r\n>>> ", 
+      "term": "246744de1d184199a41198572c8b8f2d"
+    }, 
+    {
+      "act": "ECHO", 
+      "data": "exit", 
+      "term": "246744de1d184199a41198572c8b8f2d"
+    }, 
+    {
+      "act": "READ", 
+      "data": "\r", 
+      "term": "246744de1d184199a41198572c8b8f2d"
+    }, 
+    {
+      "act": "WRITE", 
+      "data": "\r\nUse exit() or Ctrl-D (i.e. EOF) to exit\r\n>>> ", 
+      "term": "246744de1d184199a41198572c8b8f2d"
+    }, 
+    {
+      "act": "ECHO", 
+      "data": "type(exit)", 
+      "term": "246744de1d184199a41198572c8b8f2d"
+    }, 
+    {
+      "act": "READ", 
+      "data": "\r", 
+      "term": "246744de1d184199a41198572c8b8f2d"
+    }, 
+    {
+      "act": "WRITE", 
+      "data": "\r\n<class 'site.setquit.<locals>.Quitter'>\r\n>>> ", 
+      "term": "246744de1d184199a41198572c8b8f2d"
+    }, 
+    {
+      "act": "ECHO", 
+      "data": "import site", 
+      "term": "246744de1d184199a41198572c8b8f2d"
+    }, 
+    {
+      "act": "READ", 
+      "data": "\r", 
+      "term": "246744de1d184199a41198572c8b8f2d"
+    }, 
+    {
+      "act": "WRITE", 
+      "data": "\r\n>>> ", 
+      "term": "246744de1d184199a41198572c8b8f2d"
+    }, 
+    {
+      "act": "ECHO", 
+      "data": "import inspect", 
+      "term": "246744de1d184199a41198572c8b8f2d"
+    }, 
+    {
+      "act": "READ", 
+      "data": "\r", 
+      "term": "246744de1d184199a41198572c8b8f2d"
+    }, 
+    {
+      "act": "WRITE", 
+      "data": "\r\n", 
+      "term": "246744de1d184199a41198572c8b8f2d"
+    }, 
+    {
+      "act": "PAUSE", 
+      "duration": 0.029529809951782227
+    }, 
+    {
+      "act": "WRITE", 
+      "data": ">>> ", 
+      "term": "246744de1d184199a41198572c8b8f2d"
+    }, 
+    {
+      "act": "ECHO", 
+      "data": "print(inst", 
+      "term": "246744de1d184199a41198572c8b8f2d"
+    }, 
+    {
+      "act": "READ", 
+      "data": "\u007f", 
+      "term": "246744de1d184199a41198572c8b8f2d"
+    }, 
+    {
+      "act": "WRITE", 
+      "data": "\b\u001b[K", 
+      "term": "246744de1d184199a41198572c8b8f2d"
+    }, 
+    {
+      "act": "ECHO", 
+      "data": "pect.getsource(site.setgui", 
+      "term": "246744de1d184199a41198572c8b8f2d"
+    }, 
+    {
+      "act": "READ", 
+      "data": "\u007f", 
+      "term": "246744de1d184199a41198572c8b8f2d"
+    }, 
+    {
+      "act": "WRITE", 
+      "data": "\b\u001b[K", 
+      "term": "246744de1d184199a41198572c8b8f2d"
+    }, 
+    {
+      "act": "READ", 
+      "data": "\u007f", 
+      "term": "246744de1d184199a41198572c8b8f2d"
+    }, 
+    {
+      "act": "WRITE", 
+      "data": "\b\u001b[K", 
+      "term": "246744de1d184199a41198572c8b8f2d"
+    }, 
+    {
+      "act": "READ", 
+      "data": "\u007f", 
+      "term": "246744de1d184199a41198572c8b8f2d"
+    }, 
+    {
+      "act": "WRITE", 
+      "data": "\b\u001b[K", 
+      "term": "246744de1d184199a41198572c8b8f2d"
+    }, 
+    {
+      "act": "ECHO", 
+      "data": "quit))", 
+      "term": "246744de1d184199a41198572c8b8f2d"
+    }, 
+    {
+      "act": "READ", 
+      "data": "\r", 
+      "term": "246744de1d184199a41198572c8b8f2d"
+    }, 
+    {
+      "act": "WRITE", 
+      "data": "\r\n", 
+      "term": "246744de1d184199a41198572c8b8f2d"
+    }, 
+    {
+      "act": "PAUSE", 
+      "duration": 0.024281978607177734
+    }, 
+    {
+      "act": "WRITE", 
+      "data": "def setquit():\r\n    \"\"\"Define new builtins 'quit' and 'exit'.\r\n\r\n    These are objects which make the interpreter exit when called.\r\n    The repr of each object contains a hint at how it works.\r\n\r\n    \"\"\"\r\n    if os.sep == ':':\r\n        eof = 'Cmd-Q'\r\n    elif os.sep == '\\\\':\r\n        eof = 'Ctrl-Z plus Return'\r\n    else:\r\n        eof = 'Ctrl-D (i.e. EOF)'\r\n\r\n    class Quitter(object):\r\n        def __init__(self, name):\r\n            self.name = name\r\n        def __repr__(self):\r\n            return 'Use %s() or %s to exit' % (self.name, eof)\r\n        def __call__(self, code=None):\r\n            # Shells like IDLE catch the SystemExit, but listen when their\r\n            # stdin wrapper is closed.\r\n            try:\r\n                sys.stdin.close()\r\n            except:\r\n                pass\r\n            raise SystemExit(code)\r\n    builtins.quit = Quitter('quit')\r\n    builtins.exit = Quitter('exit')\r\n\r\n>>> ", 
+      "term": "246744de1d184199a41198572c8b8f2d"
+    }, 
+    {
+      "act": "ECHO", 
+      "data": "class AutoQuitter:", 
+      "term": "246744de1d184199a41198572c8b8f2d"
+    }, 
+    {
+      "act": "READ", 
+      "data": "\r", 
+      "term": "246744de1d184199a41198572c8b8f2d"
+    }, 
+    {
+      "act": "WRITE", 
+      "data": "\r\n... ", 
+      "term": "246744de1d184199a41198572c8b8f2d"
+    }, 
+    {
+      "act": "ECHO", 
+      "data": "    def __repr__(self):", 
+      "term": "246744de1d184199a41198572c8b8f2d"
+    }, 
+    {
+      "act": "READ", 
+      "data": "\r", 
+      "term": "246744de1d184199a41198572c8b8f2d"
+    }, 
+    {
+      "act": "WRITE", 
+      "data": "\r\n... ", 
+      "term": "246744de1d184199a41198572c8b8f2d"
+    }, 
+    {
+      "act": "ECHO", 
+      "data": "        quit()", 
+      "term": "246744de1d184199a41198572c8b8f2d"
+    }, 
+    {
+      "act": "READ", 
+      "data": "\r", 
+      "term": "246744de1d184199a41198572c8b8f2d"
+    }, 
+    {
+      "act": "WRITE", 
+      "data": "\r\n... ", 
+      "term": "246744de1d184199a41198572c8b8f2d"
+    }, 
+    {
+      "act": "READ", 
+      "data": "\r", 
+      "term": "246744de1d184199a41198572c8b8f2d"
+    }, 
+    {
+      "act": "WRITE", 
+      "data": "\r\n>>> ", 
+      "term": "246744de1d184199a41198572c8b8f2d"
+    }, 
+    {
+      "act": "ECHO", 
+      "data": "globals()", 
+      "term": "246744de1d184199a41198572c8b8f2d"
+    }, 
+    {
+      "act": "READ", 
+      "data": "\r", 
+      "term": "246744de1d184199a41198572c8b8f2d"
+    }, 
+    {
+      "act": "WRITE", 
+      "data": "\r\n{'__doc__': None, 'site': <module 'site' from '/usr/lib64/python3.3/site.py'>, '__package__': None, '__name__': '__main__', '__builtins__': <module 'builtins' (built-in)>, 'inspect': <module 'inspect' from '/usr/lib64/python3.3/inspect.py'>, '__loader__': <class '_frozen_importlib.BuiltinImporter'>, 'AutoQuitter': <class '__main__.AutoQuitter'>}\r\n>>> ", 
+      "term": "246744de1d184199a41198572c8b8f2d"
+    }, 
+    {
+      "act": "ECHO", 
+      "data": "autoquit = AutoQuitter()", 
+      "term": "246744de1d184199a41198572c8b8f2d"
+    }, 
+    {
+      "act": "READ", 
+      "data": "\r", 
+      "term": "246744de1d184199a41198572c8b8f2d"
+    }, 
+    {
+      "act": "WRITE", 
+      "data": "\r\n>>> ", 
+      "term": "246744de1d184199a41198572c8b8f2d"
+    }, 
+    {
+      "act": "ECHO", 
+      "data": "globals()", 
+      "term": "246744de1d184199a41198572c8b8f2d"
+    }, 
+    {
+      "act": "READ", 
+      "data": "\r", 
+      "term": "246744de1d184199a41198572c8b8f2d"
+    }, 
+    {
+      "act": "WRITE", 
+      "data": "\r\n", 
+      "term": "246744de1d184199a41198572c8b8f2d"
+    }, 
+    {
+      "act": "PAUSE", 
+      "duration": 0.0055010318756103516
+    }, 
+    {
+      "act": "WRITE", 
+      "data": "\u001b]0;ncoghlan@lancre:~/devel/py3k\u0007[ncoghlan@lancre py3k]$ ", 
+      "term": "246744de1d184199a41198572c8b8f2d"
+    }, 
+    {
+      "act": "READ", 
+      "data": "\u0004", 
+      "term": "246744de1d184199a41198572c8b8f2d"
+    }, 
+    {
+      "act": "WRITE", 
+      "data": "exit\r\n", 
+      "term": "246744de1d184199a41198572c8b8f2d"
+    }, 
+    {
+      "act": "CLOSE", 
+      "term": "246744de1d184199a41198572c8b8f2d"
+    }
+  ]
+}

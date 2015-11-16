@@ -1,0 +1,258 @@
+{
+  "events": [
+    {
+      "act": "OPEN", 
+      "size": [
+        113, 
+        51
+      ], 
+      "term": "208d3b13f3084b93938a11935fd26799"
+    }, 
+    {
+      "act": "PAUSE", 
+      "duration": 0.4188568592071533
+    }, 
+    {
+      "act": "WRITE", 
+      "data": "\u001b]0;ncoghlan@lancre:~/devel/py34\u0007\u001b[?1034h[ncoghlan@lancre py34]$ ", 
+      "term": "208d3b13f3084b93938a11935fd26799"
+    }, 
+    {
+      "act": "ECHO", 
+      "data": "python3", 
+      "term": "208d3b13f3084b93938a11935fd26799"
+    }, 
+    {
+      "act": "READ", 
+      "data": "\r", 
+      "term": "208d3b13f3084b93938a11935fd26799"
+    }, 
+    {
+      "act": "WRITE", 
+      "data": "\r\n", 
+      "term": "208d3b13f3084b93938a11935fd26799"
+    }, 
+    {
+      "act": "PAUSE", 
+      "duration": 0.07284283638000488
+    }, 
+    {
+      "act": "WRITE", 
+      "data": "Python 3.3.2 (default, Jun 30 2014, 17:20:03) \r\n[GCC 4.8.3 20140624 (Red Hat 4.8.3-1)] on linux\r\nType \"help\", \"copyright\", \"credits\" or \"license\" for more information.\r\n\u001b[?1034h>>> ", 
+      "term": "208d3b13f3084b93938a11935fd26799"
+    }, 
+    {
+      "act": "ECHO", 
+      "data": "this is completely e", 
+      "term": "208d3b13f3084b93938a11935fd26799"
+    }, 
+    {
+      "act": "READ", 
+      "data": "\u007f", 
+      "term": "208d3b13f3084b93938a11935fd26799"
+    }, 
+    {
+      "act": "WRITE", 
+      "data": "\b\u001b[K", 
+      "term": "208d3b13f3084b93938a11935fd26799"
+    }, 
+    {
+      "act": "ECHO", 
+      "data": "illegal", 
+      "term": "208d3b13f3084b93938a11935fd26799"
+    }, 
+    {
+      "act": "READ", 
+      "data": "\r", 
+      "term": "208d3b13f3084b93938a11935fd26799"
+    }, 
+    {
+      "act": "WRITE", 
+      "data": "\r\n", 
+      "term": "208d3b13f3084b93938a11935fd26799"
+    }, 
+    {
+      "act": "PAUSE", 
+      "duration": 0.05833101272583008
+    }, 
+    {
+      "act": "WRITE", 
+      "data": "  File \"<stdin>\", line 1\r\n    this is completely illegal\r\n                             ^\r\nSyntaxError: invalid syntax\r\n>>> ", 
+      "term": "208d3b13f3084b93938a11935fd26799"
+    }, 
+    {
+      "act": "ECHO", 
+      "data": "this is not illegal", 
+      "term": "208d3b13f3084b93938a11935fd26799"
+    }, 
+    {
+      "act": "READ", 
+      "data": "\r", 
+      "term": "208d3b13f3084b93938a11935fd26799"
+    }, 
+    {
+      "act": "WRITE", 
+      "data": "\r\nTraceback (most recent call last):\r\n  File \"<stdin>\", line 1, in <module>\r\nNameError: name 'this' is not defined\r\n>>> ", 
+      "term": "208d3b13f3084b93938a11935fd26799"
+    }, 
+    {
+      "act": "ECHO", 
+      "data": "print \"Hello World!\"", 
+      "term": "208d3b13f3084b93938a11935fd26799"
+    }, 
+    {
+      "act": "READ", 
+      "data": "\r", 
+      "term": "208d3b13f3084b93938a11935fd26799"
+    }, 
+    {
+      "act": "WRITE", 
+      "data": "\r\n  File \"<stdin>\", line 1\r\n    print \"Hello World!\"\r\n                       ^\r\nSyntaxError: invalid syntax\r\n>>> ", 
+      "term": "208d3b13f3084b93938a11935fd26799"
+    }, 
+    {
+      "act": "READ", 
+      "data": "\u0004", 
+      "term": "208d3b13f3084b93938a11935fd26799"
+    }, 
+    {
+      "act": "WRITE", 
+      "data": "\r\n", 
+      "term": "208d3b13f3084b93938a11935fd26799"
+    }, 
+    {
+      "act": "PAUSE", 
+      "duration": 0.009759902954101562
+    }, 
+    {
+      "act": "WRITE", 
+      "data": "\u001b]0;ncoghlan@lancre:~/devel/py34\u0007[ncoghlan@lancre py34]$ ", 
+      "term": "208d3b13f3084b93938a11935fd26799"
+    }, 
+    {
+      "act": "ECHO", 
+      "data": "./python", 
+      "term": "208d3b13f3084b93938a11935fd26799"
+    }, 
+    {
+      "act": "READ", 
+      "data": "\r", 
+      "term": "208d3b13f3084b93938a11935fd26799"
+    }, 
+    {
+      "act": "WRITE", 
+      "data": "\r\n", 
+      "term": "208d3b13f3084b93938a11935fd26799"
+    }, 
+    {
+      "act": "PAUSE", 
+      "duration": 0.08208298683166504
+    }, 
+    {
+      "act": "WRITE", 
+      "data": "Python 3.4.1+ (3.4:a50297e793f9+, Jul 25 2014, 21:35:32) \r\n[GCC 4.8.3 20140624 (Red Hat 4.8.3-1)] on linux\r\nType \"help\", \"copyright\", \"credits\" or \"license\" for more information.\r\n", 
+      "term": "208d3b13f3084b93938a11935fd26799"
+    }, 
+    {
+      "act": "PAUSE", 
+      "duration": 0.009016036987304688
+    }, 
+    {
+      "act": "WRITE", 
+      "data": "\u001b[?1034h>>> ", 
+      "term": "208d3b13f3084b93938a11935fd26799"
+    }, 
+    {
+      "act": "ECHO", 
+      "data": "print \"Hellow W", 
+      "term": "208d3b13f3084b93938a11935fd26799"
+    }, 
+    {
+      "act": "READ", 
+      "data": "\u007f", 
+      "term": "208d3b13f3084b93938a11935fd26799"
+    }, 
+    {
+      "act": "WRITE", 
+      "data": "\b\u001b[K", 
+      "term": "208d3b13f3084b93938a11935fd26799"
+    }, 
+    {
+      "act": "READ", 
+      "data": "\u007f", 
+      "term": "208d3b13f3084b93938a11935fd26799"
+    }, 
+    {
+      "act": "WRITE", 
+      "data": "\b\u001b[K", 
+      "term": "208d3b13f3084b93938a11935fd26799"
+    }, 
+    {
+      "act": "READ", 
+      "data": "\u007f", 
+      "term": "208d3b13f3084b93938a11935fd26799"
+    }, 
+    {
+      "act": "WRITE", 
+      "data": "\b\u001b[K", 
+      "term": "208d3b13f3084b93938a11935fd26799"
+    }, 
+    {
+      "act": "ECHO", 
+      "data": " World!\"", 
+      "term": "208d3b13f3084b93938a11935fd26799"
+    }, 
+    {
+      "act": "READ", 
+      "data": "\r", 
+      "term": "208d3b13f3084b93938a11935fd26799"
+    }, 
+    {
+      "act": "WRITE", 
+      "data": "\r\n  File \"<stdin>\", line 1\r\n    print \"Hello World!\"\r\n                       ^\r\nSyntaxError: Missing parentheses in call to 'print'\r\n>>> ", 
+      "term": "208d3b13f3084b93938a11935fd26799"
+    }, 
+    {
+      "act": "READ", 
+      "data": "\u0004", 
+      "term": "208d3b13f3084b93938a11935fd26799"
+    }, 
+    {
+      "act": "WRITE", 
+      "data": "\r\n", 
+      "term": "208d3b13f3084b93938a11935fd26799"
+    }, 
+    {
+      "act": "PAUSE", 
+      "duration": 0.011782169342041016
+    }, 
+    {
+      "act": "WRITE", 
+      "data": "\u001b]0;ncoghlan@lancre:~/devel/py34\u0007", 
+      "term": "208d3b13f3084b93938a11935fd26799"
+    }, 
+    {
+      "act": "PAUSE", 
+      "duration": 0.00020003318786621094
+    }, 
+    {
+      "act": "WRITE", 
+      "data": "[ncoghlan@lancre py34]$ ", 
+      "term": "208d3b13f3084b93938a11935fd26799"
+    }, 
+    {
+      "act": "READ", 
+      "data": "\u0004", 
+      "term": "208d3b13f3084b93938a11935fd26799"
+    }, 
+    {
+      "act": "WRITE", 
+      "data": "exit\r\n", 
+      "term": "208d3b13f3084b93938a11935fd26799"
+    }, 
+    {
+      "act": "CLOSE", 
+      "term": "208d3b13f3084b93938a11935fd26799"
+    }
+  ]
+}

@@ -1,0 +1,819 @@
+{
+  "events": [
+    {
+      "act": "OPEN", 
+      "size": [
+        113, 
+        51
+      ], 
+      "term": "21874b468f0847fa859c9101bf4d19f7"
+    }, 
+    {
+      "act": "PAUSE", 
+      "duration": 0.4457259178161621
+    }, 
+    {
+      "act": "WRITE", 
+      "data": "\u001b]0;ncoghlan@lancre:~/devel/py34\u0007\u001b[?1034h[ncoghlan@lancre py34]$ ", 
+      "term": "21874b468f0847fa859c9101bf4d19f7"
+    }, 
+    {
+      "act": "ECHO", 
+      "data": "./python", 
+      "term": "21874b468f0847fa859c9101bf4d19f7"
+    }, 
+    {
+      "act": "READ", 
+      "data": "\r", 
+      "term": "21874b468f0847fa859c9101bf4d19f7"
+    }, 
+    {
+      "act": "WRITE", 
+      "data": "\r\n", 
+      "term": "21874b468f0847fa859c9101bf4d19f7"
+    }, 
+    {
+      "act": "PAUSE", 
+      "duration": 0.07952284812927246
+    }, 
+    {
+      "act": "WRITE", 
+      "data": "Python 3.4.1+ (3.4:a50297e793f9+, Jul 25 2014, 21:35:32) \r\n[GCC 4.8.3 20140624 (Red Hat 4.8.3-1)] on linux\r\nType \"help\", \"copyright\", \"credits\" or \"license\" for more information.\r\n\u001b[?1034h>>> ", 
+      "term": "21874b468f0847fa859c9101bf4d19f7"
+    }, 
+    {
+      "act": "ECHO", 
+      "data": "def mydeco(f):", 
+      "term": "21874b468f0847fa859c9101bf4d19f7"
+    }, 
+    {
+      "act": "READ", 
+      "data": "\r", 
+      "term": "21874b468f0847fa859c9101bf4d19f7"
+    }, 
+    {
+      "act": "WRITE", 
+      "data": "\r\n... ", 
+      "term": "21874b468f0847fa859c9101bf4d19f7"
+    }, 
+    {
+      "act": "ECHO", 
+      "data": "    def wrapper():", 
+      "term": "21874b468f0847fa859c9101bf4d19f7"
+    }, 
+    {
+      "act": "READ", 
+      "data": "\r", 
+      "term": "21874b468f0847fa859c9101bf4d19f7"
+    }, 
+    {
+      "act": "WRITE", 
+      "data": "\r\n... ", 
+      "term": "21874b468f0847fa859c9101bf4d19f7"
+    }, 
+    {
+      "act": "ECHO", 
+      "data": "        return f()", 
+      "term": "21874b468f0847fa859c9101bf4d19f7"
+    }, 
+    {
+      "act": "READ", 
+      "data": "\r", 
+      "term": "21874b468f0847fa859c9101bf4d19f7"
+    }, 
+    {
+      "act": "WRITE", 
+      "data": "\r\n... ", 
+      "term": "21874b468f0847fa859c9101bf4d19f7"
+    }, 
+    {
+      "act": "ECHO", 
+      "data": "    return wrapper", 
+      "term": "21874b468f0847fa859c9101bf4d19f7"
+    }, 
+    {
+      "act": "READ", 
+      "data": "\r", 
+      "term": "21874b468f0847fa859c9101bf4d19f7"
+    }, 
+    {
+      "act": "WRITE", 
+      "data": "\r\n... ", 
+      "term": "21874b468f0847fa859c9101bf4d19f7"
+    }, 
+    {
+      "act": "READ", 
+      "data": "\r", 
+      "term": "21874b468f0847fa859c9101bf4d19f7"
+    }, 
+    {
+      "act": "WRITE", 
+      "data": "\r\n>>> ", 
+      "term": "21874b468f0847fa859c9101bf4d19f7"
+    }, 
+    {
+      "act": "ECHO", 
+      "data": "@mydeco", 
+      "term": "21874b468f0847fa859c9101bf4d19f7"
+    }, 
+    {
+      "act": "READ", 
+      "data": "\r", 
+      "term": "21874b468f0847fa859c9101bf4d19f7"
+    }, 
+    {
+      "act": "WRITE", 
+      "data": "\r\n... ", 
+      "term": "21874b468f0847fa859c9101bf4d19f7"
+    }, 
+    {
+      "act": "ECHO", 
+      "data": "def f():", 
+      "term": "21874b468f0847fa859c9101bf4d19f7"
+    }, 
+    {
+      "act": "READ", 
+      "data": "\r", 
+      "term": "21874b468f0847fa859c9101bf4d19f7"
+    }, 
+    {
+      "act": "WRITE", 
+      "data": "\r\n... ", 
+      "term": "21874b468f0847fa859c9101bf4d19f7"
+    }, 
+    {
+      "act": "ECHO", 
+      "data": "    pass", 
+      "term": "21874b468f0847fa859c9101bf4d19f7"
+    }, 
+    {
+      "act": "READ", 
+      "data": "\r", 
+      "term": "21874b468f0847fa859c9101bf4d19f7"
+    }, 
+    {
+      "act": "WRITE", 
+      "data": "\r\n... ", 
+      "term": "21874b468f0847fa859c9101bf4d19f7"
+    }, 
+    {
+      "act": "READ", 
+      "data": "\r", 
+      "term": "21874b468f0847fa859c9101bf4d19f7"
+    }, 
+    {
+      "act": "WRITE", 
+      "data": "\r\n>>> ", 
+      "term": "21874b468f0847fa859c9101bf4d19f7"
+    }, 
+    {
+      "act": "ECHO", 
+      "data": "f.__nae", 
+      "term": "21874b468f0847fa859c9101bf4d19f7"
+    }, 
+    {
+      "act": "READ", 
+      "data": "\u007f", 
+      "term": "21874b468f0847fa859c9101bf4d19f7"
+    }, 
+    {
+      "act": "WRITE", 
+      "data": "\b\u001b[K", 
+      "term": "21874b468f0847fa859c9101bf4d19f7"
+    }, 
+    {
+      "act": "ECHO", 
+      "data": "me__", 
+      "term": "21874b468f0847fa859c9101bf4d19f7"
+    }, 
+    {
+      "act": "READ", 
+      "data": "\r", 
+      "term": "21874b468f0847fa859c9101bf4d19f7"
+    }, 
+    {
+      "act": "WRITE", 
+      "data": "\r\n'wrapper'\r\n>>> ", 
+      "term": "21874b468f0847fa859c9101bf4d19f7"
+    }, 
+    {
+      "act": "ECHO", 
+      "data": "def mydeco(f):", 
+      "term": "21874b468f0847fa859c9101bf4d19f7"
+    }, 
+    {
+      "act": "READ", 
+      "data": "\r", 
+      "term": "21874b468f0847fa859c9101bf4d19f7"
+    }, 
+    {
+      "act": "WRITE", 
+      "data": "\r\n... ", 
+      "term": "21874b468f0847fa859c9101bf4d19f7"
+    }, 
+    {
+      "act": "ECHO", 
+      "data": "    @functools.wrapp", 
+      "term": "21874b468f0847fa859c9101bf4d19f7"
+    }, 
+    {
+      "act": "READ", 
+      "data": "\u007f", 
+      "term": "21874b468f0847fa859c9101bf4d19f7"
+    }, 
+    {
+      "act": "WRITE", 
+      "data": "\b\u001b[K", 
+      "term": "21874b468f0847fa859c9101bf4d19f7"
+    }, 
+    {
+      "act": "ECHO", 
+      "data": "s(f)", 
+      "term": "21874b468f0847fa859c9101bf4d19f7"
+    }, 
+    {
+      "act": "READ", 
+      "data": "\r", 
+      "term": "21874b468f0847fa859c9101bf4d19f7"
+    }, 
+    {
+      "act": "WRITE", 
+      "data": "\r\n... ", 
+      "term": "21874b468f0847fa859c9101bf4d19f7"
+    }, 
+    {
+      "act": "ECHO", 
+      "data": "    def wrapper():", 
+      "term": "21874b468f0847fa859c9101bf4d19f7"
+    }, 
+    {
+      "act": "READ", 
+      "data": "\r", 
+      "term": "21874b468f0847fa859c9101bf4d19f7"
+    }, 
+    {
+      "act": "WRITE", 
+      "data": "\r\n... ", 
+      "term": "21874b468f0847fa859c9101bf4d19f7"
+    }, 
+    {
+      "act": "ECHO", 
+      "data": "        return f()", 
+      "term": "21874b468f0847fa859c9101bf4d19f7"
+    }, 
+    {
+      "act": "READ", 
+      "data": "\r", 
+      "term": "21874b468f0847fa859c9101bf4d19f7"
+    }, 
+    {
+      "act": "WRITE", 
+      "data": "\r\n... ", 
+      "term": "21874b468f0847fa859c9101bf4d19f7"
+    }, 
+    {
+      "act": "ECHO", 
+      "data": "    return wrapper", 
+      "term": "21874b468f0847fa859c9101bf4d19f7"
+    }, 
+    {
+      "act": "READ", 
+      "data": "\r", 
+      "term": "21874b468f0847fa859c9101bf4d19f7"
+    }, 
+    {
+      "act": "WRITE", 
+      "data": "\r\n... ", 
+      "term": "21874b468f0847fa859c9101bf4d19f7"
+    }, 
+    {
+      "act": "READ", 
+      "data": "\r", 
+      "term": "21874b468f0847fa859c9101bf4d19f7"
+    }, 
+    {
+      "act": "WRITE", 
+      "data": "\r\n>>> ", 
+      "term": "21874b468f0847fa859c9101bf4d19f7"
+    }, 
+    {
+      "act": "ECHO", 
+      "data": "@mydeco", 
+      "term": "21874b468f0847fa859c9101bf4d19f7"
+    }, 
+    {
+      "act": "READ", 
+      "data": "\u007f", 
+      "term": "21874b468f0847fa859c9101bf4d19f7"
+    }, 
+    {
+      "act": "WRITE", 
+      "data": "\b\u001b[K", 
+      "term": "21874b468f0847fa859c9101bf4d19f7"
+    }, 
+    {
+      "act": "READ", 
+      "data": "\u007f", 
+      "term": "21874b468f0847fa859c9101bf4d19f7"
+    }, 
+    {
+      "act": "WRITE", 
+      "data": "\b\u001b[K", 
+      "term": "21874b468f0847fa859c9101bf4d19f7"
+    }, 
+    {
+      "act": "READ", 
+      "data": "\u007f", 
+      "term": "21874b468f0847fa859c9101bf4d19f7"
+    }, 
+    {
+      "act": "WRITE", 
+      "data": "\b\u001b[K", 
+      "term": "21874b468f0847fa859c9101bf4d19f7"
+    }, 
+    {
+      "act": "READ", 
+      "data": "\u007f", 
+      "term": "21874b468f0847fa859c9101bf4d19f7"
+    }, 
+    {
+      "act": "WRITE", 
+      "data": "\b\u001b[K", 
+      "term": "21874b468f0847fa859c9101bf4d19f7"
+    }, 
+    {
+      "act": "READ", 
+      "data": "\u007f", 
+      "term": "21874b468f0847fa859c9101bf4d19f7"
+    }, 
+    {
+      "act": "WRITE", 
+      "data": "\b\u001b[K", 
+      "term": "21874b468f0847fa859c9101bf4d19f7"
+    }, 
+    {
+      "act": "READ", 
+      "data": "\u007f", 
+      "term": "21874b468f0847fa859c9101bf4d19f7"
+    }, 
+    {
+      "act": "WRITE", 
+      "data": "\b\u001b[K", 
+      "term": "21874b468f0847fa859c9101bf4d19f7"
+    }, 
+    {
+      "act": "READ", 
+      "data": "\u007f", 
+      "term": "21874b468f0847fa859c9101bf4d19f7"
+    }, 
+    {
+      "act": "WRITE", 
+      "data": "\b\u001b[K", 
+      "term": "21874b468f0847fa859c9101bf4d19f7"
+    }, 
+    {
+      "act": "ECHO", 
+      "data": "import functools", 
+      "term": "21874b468f0847fa859c9101bf4d19f7"
+    }, 
+    {
+      "act": "READ", 
+      "data": "\r", 
+      "term": "21874b468f0847fa859c9101bf4d19f7"
+    }, 
+    {
+      "act": "WRITE", 
+      "data": "\r\n", 
+      "term": "21874b468f0847fa859c9101bf4d19f7"
+    }, 
+    {
+      "act": "PAUSE", 
+      "duration": 0.03922009468078613
+    }, 
+    {
+      "act": "WRITE", 
+      "data": ">>> ", 
+      "term": "21874b468f0847fa859c9101bf4d19f7"
+    }, 
+    {
+      "act": "ECHO", 
+      "data": "@mydeco", 
+      "term": "21874b468f0847fa859c9101bf4d19f7"
+    }, 
+    {
+      "act": "READ", 
+      "data": "\r", 
+      "term": "21874b468f0847fa859c9101bf4d19f7"
+    }, 
+    {
+      "act": "WRITE", 
+      "data": "\r\n... ", 
+      "term": "21874b468f0847fa859c9101bf4d19f7"
+    }, 
+    {
+      "act": "ECHO", 
+      "data": "def f():", 
+      "term": "21874b468f0847fa859c9101bf4d19f7"
+    }, 
+    {
+      "act": "READ", 
+      "data": "\r", 
+      "term": "21874b468f0847fa859c9101bf4d19f7"
+    }, 
+    {
+      "act": "WRITE", 
+      "data": "\r\n... ", 
+      "term": "21874b468f0847fa859c9101bf4d19f7"
+    }, 
+    {
+      "act": "ECHO", 
+      "data": "    pass", 
+      "term": "21874b468f0847fa859c9101bf4d19f7"
+    }, 
+    {
+      "act": "READ", 
+      "data": "\r", 
+      "term": "21874b468f0847fa859c9101bf4d19f7"
+    }, 
+    {
+      "act": "WRITE", 
+      "data": "\r\n... ", 
+      "term": "21874b468f0847fa859c9101bf4d19f7"
+    }, 
+    {
+      "act": "READ", 
+      "data": "\r", 
+      "term": "21874b468f0847fa859c9101bf4d19f7"
+    }, 
+    {
+      "act": "WRITE", 
+      "data": "\r\n>>> ", 
+      "term": "21874b468f0847fa859c9101bf4d19f7"
+    }, 
+    {
+      "act": "ECHO", 
+      "data": "f.__name__", 
+      "term": "21874b468f0847fa859c9101bf4d19f7"
+    }, 
+    {
+      "act": "READ", 
+      "data": "\r", 
+      "term": "21874b468f0847fa859c9101bf4d19f7"
+    }, 
+    {
+      "act": "WRITE", 
+      "data": "\r\n'f'\r\n>>> ", 
+      "term": "21874b468f0847fa859c9101bf4d19f7"
+    }, 
+    {
+      "act": "ECHO", 
+      "data": "import inspect", 
+      "term": "21874b468f0847fa859c9101bf4d19f7"
+    }, 
+    {
+      "act": "READ", 
+      "data": "\r", 
+      "term": "21874b468f0847fa859c9101bf4d19f7"
+    }, 
+    {
+      "act": "WRITE", 
+      "data": "\r\n", 
+      "term": "21874b468f0847fa859c9101bf4d19f7"
+    }, 
+    {
+      "act": "PAUSE", 
+      "duration": 0.19573497772216797
+    }, 
+    {
+      "act": "WRITE", 
+      "data": ">>> ", 
+      "term": "21874b468f0847fa859c9101bf4d19f7"
+    }, 
+    {
+      "act": "ECHO", 
+      "data": "print(inspect.getsource(functools.wraps))", 
+      "term": "21874b468f0847fa859c9101bf4d19f7"
+    }, 
+    {
+      "act": "READ", 
+      "data": "\r", 
+      "term": "21874b468f0847fa859c9101bf4d19f7"
+    }, 
+    {
+      "act": "WRITE", 
+      "data": "\r\n", 
+      "term": "21874b468f0847fa859c9101bf4d19f7"
+    }, 
+    {
+      "act": "PAUSE", 
+      "duration": 0.028939008712768555
+    }, 
+    {
+      "act": "WRITE", 
+      "data": "def wraps(wrapped,\r\n          assigned = WRAPPER_ASSIGNMENTS,\r\n          updated = WRAPPER_UPDATES):\r\n    \"\"\"Decorator factory to apply update_wrapper() to a wrapper function\r\n\r\n       Returns a decorator that invokes update_wrapper() with the decorated\r\n       function as the wrapper argument and the arguments to wraps() as the\r\n       remaining arguments. Default arguments are as for update_wrapper().\r\n       This is a convenience function to simplify applying partial() to\r\n       update_wrapper().\r\n    \"\"\"\r\n    return partial(update_wrapper, wrapped=wrapped,\r\n                   assigned=assigned, updated=updated)\r\n\r\n>>> ", 
+      "term": "21874b468f0847fa859c9101bf4d19f7"
+    }, 
+    {
+      "act": "ECHO", 
+      "data": "print(inspect.getsource(functools.update_wrapper))", 
+      "term": "21874b468f0847fa859c9101bf4d19f7"
+    }, 
+    {
+      "act": "READ", 
+      "data": "\r", 
+      "term": "21874b468f0847fa859c9101bf4d19f7"
+    }, 
+    {
+      "act": "WRITE", 
+      "data": "\r\n", 
+      "term": "21874b468f0847fa859c9101bf4d19f7"
+    }, 
+    {
+      "act": "PAUSE", 
+      "duration": 0.0067059993743896484
+    }, 
+    {
+      "act": "WRITE", 
+      "data": "def update_wrapper(wrapper,\r\n                   wrapped,\r\n                   assigned = WRAPPER_ASSIGNMENTS,\r\n                   updated = WRAPPER_UPDATES):\r\n    \"\"\"Update a wrapper function to look like the wrapped function\r\n\r\n       wrapper is the function to be updated\r\n       wrapped is the original function\r\n       assigned is a tuple naming the attributes assigned directly\r\n       from the wrapped function to the wrapper function (defaults to\r\n       functools.WRAPPER_ASSIGNMENTS)\r\n       updated is a tuple naming the attributes of the wrapper that\r\n       are updated with the corresponding attribute from the wrapped\r\n       function (defaults to functools.WRAPPER_UPDATES)\r\n    \"\"\"\r\n    for attr in assigned:\r\n        try:\r\n            value = getattr(wrapped, attr)\r\n        except AttributeError:\r\n            pass\r\n        else:\r\n            setattr(wrapper, attr, value)\r\n    for attr in updated:\r\n        getattr(wrapper, attr).update(getattr(wrapped, attr, {}))\r\n    # Issue #17482: set __wrapped__ last so we don't inadvertently copy it\r\n    # from the wrapped function when updating __dict__\r\n    wrapper.__wrapped__ = wrapped\r\n    # Return the wrapper so this can be used as a decorator via partial()\r\n    return wrapper\r\n\r\n>>> ", 
+      "term": "21874b468f0847fa859c9101bf4d19f7"
+    }, 
+    {
+      "act": "ECHO", 
+      "data": "print(functools.WRAPPER_ASSIGNMENTS)", 
+      "term": "21874b468f0847fa859c9101bf4d19f7"
+    }, 
+    {
+      "act": "READ", 
+      "data": "\r", 
+      "term": "21874b468f0847fa859c9101bf4d19f7"
+    }, 
+    {
+      "act": "WRITE", 
+      "data": "\r\n('__module__', '__name__', '__qualname__', '__doc__', '__annotations__')\r\n>>> ", 
+      "term": "21874b468f0847fa859c9101bf4d19f7"
+    }, 
+    {
+      "act": "READ", 
+      "data": "\u001b", 
+      "term": "21874b468f0847fa859c9101bf4d19f7"
+    }, 
+    {
+      "act": "READ", 
+      "data": "[", 
+      "term": "21874b468f0847fa859c9101bf4d19f7"
+    }, 
+    {
+      "act": "READ", 
+      "data": "A", 
+      "term": "21874b468f0847fa859c9101bf4d19f7"
+    }, 
+    {
+      "act": "WRITE", 
+      "data": "print(functools.WRAPPER_ASSIGNMENTS)", 
+      "term": "21874b468f0847fa859c9101bf4d19f7"
+    }, 
+    {
+      "act": "READ", 
+      "data": "\u001b", 
+      "term": "21874b468f0847fa859c9101bf4d19f7"
+    }, 
+    {
+      "act": "READ", 
+      "data": "[", 
+      "term": "21874b468f0847fa859c9101bf4d19f7"
+    }, 
+    {
+      "act": "READ", 
+      "data": "D", 
+      "term": "21874b468f0847fa859c9101bf4d19f7"
+    }, 
+    {
+      "act": "WRITE", 
+      "data": "\b", 
+      "term": "21874b468f0847fa859c9101bf4d19f7"
+    }, 
+    {
+      "act": "READ", 
+      "data": "\u007f", 
+      "term": "21874b468f0847fa859c9101bf4d19f7"
+    }, 
+    {
+      "act": "WRITE", 
+      "data": "\b\u001b[1P)\b", 
+      "term": "21874b468f0847fa859c9101bf4d19f7"
+    }, 
+    {
+      "act": "READ", 
+      "data": "\u007f", 
+      "term": "21874b468f0847fa859c9101bf4d19f7"
+    }, 
+    {
+      "act": "WRITE", 
+      "data": "\b\u001b[1P)\b", 
+      "term": "21874b468f0847fa859c9101bf4d19f7"
+    }, 
+    {
+      "act": "READ", 
+      "data": "\u007f", 
+      "term": "21874b468f0847fa859c9101bf4d19f7"
+    }, 
+    {
+      "act": "WRITE", 
+      "data": "\b\u001b[1P)\b", 
+      "term": "21874b468f0847fa859c9101bf4d19f7"
+    }, 
+    {
+      "act": "READ", 
+      "data": "\u007f", 
+      "term": "21874b468f0847fa859c9101bf4d19f7"
+    }, 
+    {
+      "act": "WRITE", 
+      "data": "\b\u001b[1P)\b", 
+      "term": "21874b468f0847fa859c9101bf4d19f7"
+    }, 
+    {
+      "act": "READ", 
+      "data": "\u007f", 
+      "term": "21874b468f0847fa859c9101bf4d19f7"
+    }, 
+    {
+      "act": "WRITE", 
+      "data": "\b\u001b[1P)\b", 
+      "term": "21874b468f0847fa859c9101bf4d19f7"
+    }, 
+    {
+      "act": "READ", 
+      "data": "\u007f", 
+      "term": "21874b468f0847fa859c9101bf4d19f7"
+    }, 
+    {
+      "act": "WRITE", 
+      "data": "\b\u001b[1P)\b", 
+      "term": "21874b468f0847fa859c9101bf4d19f7"
+    }, 
+    {
+      "act": "READ", 
+      "data": "\u007f", 
+      "term": "21874b468f0847fa859c9101bf4d19f7"
+    }, 
+    {
+      "act": "WRITE", 
+      "data": "\b\u001b[1P)\b", 
+      "term": "21874b468f0847fa859c9101bf4d19f7"
+    }, 
+    {
+      "act": "READ", 
+      "data": "\u007f", 
+      "term": "21874b468f0847fa859c9101bf4d19f7"
+    }, 
+    {
+      "act": "WRITE", 
+      "data": "\b\u001b[1P)\b", 
+      "term": "21874b468f0847fa859c9101bf4d19f7"
+    }, 
+    {
+      "act": "READ", 
+      "data": "\u007f", 
+      "term": "21874b468f0847fa859c9101bf4d19f7"
+    }, 
+    {
+      "act": "WRITE", 
+      "data": "\b\u001b[1P)\b", 
+      "term": "21874b468f0847fa859c9101bf4d19f7"
+    }, 
+    {
+      "act": "READ", 
+      "data": "\u007f", 
+      "term": "21874b468f0847fa859c9101bf4d19f7"
+    }, 
+    {
+      "act": "WRITE", 
+      "data": "\b\u001b[1P)\b", 
+      "term": "21874b468f0847fa859c9101bf4d19f7"
+    }, 
+    {
+      "act": "READ", 
+      "data": "\u007f", 
+      "term": "21874b468f0847fa859c9101bf4d19f7"
+    }, 
+    {
+      "act": "WRITE", 
+      "data": "\b\u001b[1P)\b", 
+      "term": "21874b468f0847fa859c9101bf4d19f7"
+    }, 
+    {
+      "act": "READ", 
+      "data": "U", 
+      "term": "21874b468f0847fa859c9101bf4d19f7"
+    }, 
+    {
+      "act": "WRITE", 
+      "data": "U)\b", 
+      "term": "21874b468f0847fa859c9101bf4d19f7"
+    }, 
+    {
+      "act": "READ", 
+      "data": "P", 
+      "term": "21874b468f0847fa859c9101bf4d19f7"
+    }, 
+    {
+      "act": "WRITE", 
+      "data": "P)\b", 
+      "term": "21874b468f0847fa859c9101bf4d19f7"
+    }, 
+    {
+      "act": "READ", 
+      "data": "D", 
+      "term": "21874b468f0847fa859c9101bf4d19f7"
+    }, 
+    {
+      "act": "WRITE", 
+      "data": "D)\b", 
+      "term": "21874b468f0847fa859c9101bf4d19f7"
+    }, 
+    {
+      "act": "READ", 
+      "data": "A", 
+      "term": "21874b468f0847fa859c9101bf4d19f7"
+    }, 
+    {
+      "act": "WRITE", 
+      "data": "A)\b", 
+      "term": "21874b468f0847fa859c9101bf4d19f7"
+    }, 
+    {
+      "act": "READ", 
+      "data": "T", 
+      "term": "21874b468f0847fa859c9101bf4d19f7"
+    }, 
+    {
+      "act": "WRITE", 
+      "data": "T)\b", 
+      "term": "21874b468f0847fa859c9101bf4d19f7"
+    }, 
+    {
+      "act": "READ", 
+      "data": "E", 
+      "term": "21874b468f0847fa859c9101bf4d19f7"
+    }, 
+    {
+      "act": "WRITE", 
+      "data": "E)\b", 
+      "term": "21874b468f0847fa859c9101bf4d19f7"
+    }, 
+    {
+      "act": "READ", 
+      "data": "S", 
+      "term": "21874b468f0847fa859c9101bf4d19f7"
+    }, 
+    {
+      "act": "WRITE", 
+      "data": "S)\b", 
+      "term": "21874b468f0847fa859c9101bf4d19f7"
+    }, 
+    {
+      "act": "READ", 
+      "data": "\r", 
+      "term": "21874b468f0847fa859c9101bf4d19f7"
+    }, 
+    {
+      "act": "WRITE", 
+      "data": "\r\n('__dict__',)\r\n>>> ", 
+      "term": "21874b468f0847fa859c9101bf4d19f7"
+    }, 
+    {
+      "act": "READ", 
+      "data": "\u0004", 
+      "term": "21874b468f0847fa859c9101bf4d19f7"
+    }, 
+    {
+      "act": "WRITE", 
+      "data": "\r\n", 
+      "term": "21874b468f0847fa859c9101bf4d19f7"
+    }, 
+    {
+      "act": "PAUSE", 
+      "duration": 0.028109073638916016
+    }, 
+    {
+      "act": "WRITE", 
+      "data": "\u001b]0;ncoghlan@lancre:~/devel/py34\u0007[ncoghlan@lancre py34]$ ", 
+      "term": "21874b468f0847fa859c9101bf4d19f7"
+    }, 
+    {
+      "act": "READ", 
+      "data": "\u0004", 
+      "term": "21874b468f0847fa859c9101bf4d19f7"
+    }, 
+    {
+      "act": "WRITE", 
+      "data": "exit\r\n", 
+      "term": "21874b468f0847fa859c9101bf4d19f7"
+    }, 
+    {
+      "act": "CLOSE", 
+      "term": "21874b468f0847fa859c9101bf4d19f7"
+    }
+  ]
+}
