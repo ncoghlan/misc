@@ -318,6 +318,34 @@ we're working on the compiler components that are responsible for
 generating the bytecode in the first place - that's the main reason
 the CPython ``Makefile`` includes a ``make pycremoval`` target.
 
+The submodules are added to the package namespace trap
+------------------------------------------------------
+
+Many users will have experienced the issue of trying to use a submodule
+when only importing the package that it is in::
+
+    $ python3
+    >>> import logging
+    >>> logging.config
+    Traceback (most recent call last):
+      File "<stdin>", line 1, in <module>
+    AttributeError: 'module' object has no attribute 'config'
+    
+But it is less common knowledge that when a submodule is loaded *anywhere*
+it is automatically added to the global namespace of the package::
+
+    $ echo "import logging.config" > weirdimport.py
+    $ python3
+    >>> import weirdimport
+    >>> import logging
+    >>> logging.config
+    <module 'logging.config' from '/usr/local/Cellar/python3/3.4.3/Frameworks/Python.framework/Versions/3.4/lib/python3.4/logging/config.py'>
+    
+This is most likely to surprise you when in an ``__init__.py`` and you are
+importing or defining a value that has the same name as a submodule of the
+current package. If the submodule is loaded by *any* module at any point
+after the import or definition of the same name, it will shadow the
+imported or defined name in the ``__init__.py``'s global namespace.
 
 More exotic traps
 -----------------
