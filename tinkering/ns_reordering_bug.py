@@ -35,5 +35,9 @@ wrap_methods(Spam)
 wrapped_attributes = list(Spam.__dict__)
 print(wrapped_attributes)
 
-print("Broken = ", attributes != wrapped_attributes)
+mismatched = attributes != wrapped_attributes
+print("Broken = ", mismatched)
 
+if __name__ == "__main__":
+    import sys
+    sys.exit(mismatched)
