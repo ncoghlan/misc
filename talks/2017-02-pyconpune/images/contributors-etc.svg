@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.0//EN" "http://www.w3.org/TR/2001/PR-SVG-20010719/DTD/svg10.dtd">
+<svg width="17cm" height="12cm" viewBox="335 248 333 223" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+  <g>
+    <line style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" x1="500" y1="289.736" x2="500" y2="430.264"/>
+    <polygon style="fill: #000000" points="500,282.236 505,292.236 500,289.736 495,292.236 "/>
+    <polygon style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" points="500,282.236 505,292.236 500,289.736 495,292.236 "/>
+    <polygon style="fill: #000000" points="500,437.764 495,427.764 500,430.264 505,427.764 "/>
+    <polygon style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" points="500,437.764 495,427.764 500,430.264 505,427.764 "/>
+  </g>
+  <g>
+    <line style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" x1="389.736" y1="360" x2="614.264" y2="360"/>
+    <polygon style="fill: #000000" points="382.236,360 392.236,355 389.736,360 392.236,365 "/>
+    <polygon style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" points="382.236,360 392.236,355 389.736,360 392.236,365 "/>
+    <polygon style="fill: #000000" points="621.764,360 611.764,365 614.264,360 611.764,355 "/>
+    <polygon style="fill: none; fill-opacity:0; stroke-width: 2; stroke: #000000" points="621.764,360 611.764,365 614.264,360 611.764,355 "/>
+  </g>
+  <text font-size="12.7998" style="fill: #000000;text-anchor:end;font-family:sans-serif;font-style:normal;font-weight:normal" x="380" y="356">
+    <tspan x="380" y="356">Global</tspan>
+    <tspan x="380" y="372">Impact</tspan>
+  </text>
+  <text font-size="12.7998" style="fill: #000000;text-anchor:start;font-family:sans-serif;font-style:normal;font-weight:normal" x="624" y="356">
+    <tspan x="624" y="356">Local</tspan>
+    <tspan x="624" y="372">Impact</tspan>
+  </text>
+  <text font-size="12.7998" style="fill: #000000;text-anchor:middle;font-family:sans-serif;font-style:normal;font-weight:normal" x="500" y="260">
+    <tspan x="500" y="260">High time</tspan>
+    <tspan x="500" y="276">commitment</tspan>
+  </text>
+  <text font-size="12.7998" style="fill: #000000;text-anchor:middle;font-family:sans-serif;font-style:normal;font-weight:normal" x="500" y="452">
+    <tspan x="500" y="452">Low time</tspan>
+    <tspan x="500" y="468">commitment</tspan>
+  </text>
+  <text font-size="12.8" style="fill: #000000;text-anchor:middle;font-family:sans-serif;font-style:normal;font-weight:700" x="432" y="400">
+    <tspan x="432" y="400">CONTRIBUTORS</tspan>
+  </text>
+  <text font-size="12.8" style="fill: #000000;text-anchor:middle;font-family:sans-serif;font-style:normal;font-weight:700" x="440" y="328">
+    <tspan x="440" y="328">COLLEAGUES</tspan>
+  </text>
+  <text font-size="12.8" style="fill: #000000;text-anchor:middle;font-family:sans-serif;font-style:normal;font-weight:700" x="560" y="328">
+    <tspan x="560" y="328">CLIENTS</tspan>
+  </text>
+  <text font-size="12.8" style="fill: #000000;text-anchor:middle;font-family:sans-serif;font-style:normal;font-weight:700" x="560" y="400">
+    <tspan x="560" y="400">CUSTOMERS</tspan>
+  </text>
+</svg>
