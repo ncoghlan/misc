@@ -1,0 +1,1 @@
+which python && which pip
