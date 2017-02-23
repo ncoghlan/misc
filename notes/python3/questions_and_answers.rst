@@ -2,7 +2,7 @@ Python 3 Q & A
 ==============
 
 :Published:    29th June, 2012
-:Last Updated: 21st August, 2015
+:Last Updated: 10th December, 2016
 
 With the long transition to "Python 3 by default" still in progress, the
 question is occasionally raised as to whether or not the core Python
@@ -11,7 +11,8 @@ an entirely appropriate question, as Python 3 introduces backwards
 incompatible changes that more obviously benefit future users of
 the language than they do current users, so existing users (especially
 library and framework developers) are being asked to devote time and effort
-to a transition that may not benefit them directly for years to come.
+to a transition that will cost them more in time and energy than it will save
+them for years to come.
 
 Since I've seen variants of these questions several times over the years,
 I now keep this as an intermittently updated record of my thoughts on the
@@ -28,7 +29,7 @@ motivation in creating Python 3, none of them has raised any objections
 to specific points or the document in general.
 
 I am also not writing on behalf of the Python Software Foundation (of which
-I am a nominated member) nor on behalf of Red Hat (my current employer).
+I am a nominated Fellow) nor on behalf of Red Hat (my current employer).
 However, I do use several Red Hat specific examples when discussing
 enterprise perception and adoption of the Python platform - effectively
 bridging that gap between early adopters and the vast majority of prospective
@@ -41,7 +42,11 @@ transition at PyCon US 2014 in Montreal, starting at the language summit,
 and continuing throughout the conference. These helped clarify many of the
 remaining points of contention, and resulted in a range of changes to Python
 3.5, Python 2.7, and the available tools to support forward migration from
-Python 2 to Python 3.
+Python 2 to Python 3. These discussions didn't stop, but have rather continued
+over the course of Python 3.6 development, and can be expected to continue
+for as long as folks are developing software that either fits into the common
+subset of Python 2 & 3, or else are having to maintain software that continues
+to run solely under Python 2.
 
 .. note::
 
@@ -395,6 +400,10 @@ for dealing with them.
 
 Why not just assume UTF-8 and avoid having to decode at system boundaries?
 --------------------------------------------------------------------------
+
+.. note:: Starting with Python 3.6, CPython on Windows actually does assume
+   that binary data passed to operating system interfaces is in UTF-8 and
+   transcodes it to UTF-16-LE
 
 The design decision to go with a fixed width Unicode representation both
 externally and internally has a long history in Python, going all the way
