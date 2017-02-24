@@ -41,6 +41,28 @@ This has changed in Python 3.3: now any directory on ``sys.path`` with a name
 that matches the package name being looked for will be recognised as
 contributing modules and subpackages to that package.
 
+Consider this directory layout::
+
+    project/
+        example/
+            foo.py
+
+Where ``foo.py`` contains the source code::
+
+    print("Hello from ", __name__)
+
+With that layout and the current working directory being ``project``, Python 2.7 gives the
+following behaviour::
+
+    $ python2 -c "import example.foo"
+    Traceback (most recent call last):
+      File "<string>", line 1, in <module>
+    ImportError: No module named example.foo
+
+While Python 3.3+ is able to import the submodule without any problems::
+
+    $ python3 -c "import example.foo"
+    Hello from  example.foo
 
 The __init__.py trap
 --------------------
@@ -56,6 +78,39 @@ This happens *even if* there are other preceding subdirectories on
 ``sys.path`` that match the desired package name, but do not include an
 ``__init__.py`` file.
 
+Let's take the preceding layout, and add a second project that *also* has
+an ``example`` directory, but includes an ``__init__.py`` file in it,
+as well as a ``bar.py`` file with the same contents as ``foo.py``::
+
+    project/
+        example/
+            foo.py
+    project2/
+        example/
+            __init__.py
+            bar.py
+
+If we explicitly add the second project to ``PYTHONPATH``, we find that
+Python 3.3+ can't find ``example.foo`` either, as the directory containing
+``__init__.py`` file prevents the creation of a multi-directory namespace
+package::
+
+    $ PYTHONPATH=../project2 python3 -c "import example.bar"
+    Hello from  example.bar
+    $ PYTHONPATH=../project2 python3 -c "import example.foo"
+    Traceback (most recent call last):
+      File "<string>", line 1, in <module>
+    ImportError: No module named 'example.foo'
+
+However, if we remove the offending ``__init__.py`` file, Python 3.3+ will
+automatically create a namespace package and be able to see both submodules::
+
+    $ rm ../project2/example/__init__.py 
+    $ PYTHONPATH=../project2 python3 -c "import example.bar"
+    Hello from  example.bar
+    $ PYTHONPATH=../project2 python3 -c "import example.foo"
+    Hello from  example.foo
+
 This complexity is primarily forced on us by backwards compatibility
 constraints - without it, some existing code would have broken when Python
 3.3 made the presence of ``__init__.py`` files in packages optional.
@@ -64,8 +119,9 @@ However, it is also useful in that it makes it possible to explicitly
 declare that a package is closed to additional contributions. All of
 the standard library currently works that way, although some packages
 may open up their namespaces to third party contributions in future
-releases (specifically, it is almost certain the ``encodings`` package
-will be open to additions in Python 3.4).
+releases (the key challenge with that idea is that namespace packages
+can't offer any package level functionality, which creates a major
+backwards compatibility problem for existing standard library packages).
 
 
 The double import trap
@@ -81,13 +137,13 @@ now potentially accessible under two different names: as a top level module
 package (if the higher level directory containing the package itself is
 also on ``sys.path``).
 
-As an example, Django (up to and including version 1.3) is guilty of setting
+As an example, Django (up to and including version 1.3) used to be guilty of setting
 up exactly this situation for site-specific applications - the application
 ends up being accessible as both ``app`` and ``site.app`` in the module
 namespace, and these are actually two *different* copies of the module. This
 is a recipe for confusion if there is any meaningful mutable module level
-state, so this behaviour has been eliminated from the default project layout
-in version 1.4 (site-specific apps will always need to be fully qualified
+state, so this behaviour was eliminated from the default project layout
+in version 1.4 (site-specific apps now always need to be fully qualified
 with the site name, as described in the `release notes`_).
 
 .. _release notes: https://docs.djangoproject.com/en/dev/releases/1.4/#updated-default-project-layout-and-manage-py
@@ -96,7 +152,7 @@ Unfortunately, this is still a *really* easy guideline to violate, as it
 happens automatically if you attempt to run a module inside a package from
 the command line by filename rather than using the ``-m`` switch.
 
-Consider a simple package layout like the following (I typically use package
+Consider a project & package layout like the following (I typically use package
 layouts along these lines in my own projects - a lot of people hate nesting
 tests inside package directories like this, and prefer a parallel hierarchy,
 but I favour the ability to use explicit relative imports to keep module
@@ -201,7 +257,7 @@ guideline exists, and the fact that the interpreter itself doesn't follow
 it when determining ``sys.path[0]`` is the root cause of all sorts of grief.
 
 However, even if there are improvements in this area in future versions of
-Python (see PEP 395), this trap will still exist in all current versions.
+Python, this trap will still exist in all current versions.
 
 
 Executing the main module twice
