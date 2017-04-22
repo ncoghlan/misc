@@ -2,21 +2,23 @@ Python 3 Q & A
 ==============
 
 :Published:    29th June, 2012
-:Last Updated: 10th December, 2016
+:Last Updated: 22nd April, 2017
 
-With the long transition to "Python 3 by default" still in progress, the
-question is occasionally raised as to whether or not the core Python
-developers are acting as reasonable stewards of the Python language. It's
-an entirely appropriate question, as Python 3 introduces backwards
-incompatible changes that more obviously benefit future users of
-the language than they do current users, so existing users (especially
-library and framework developers) are being asked to devote time and effort
-to a transition that will cost them more in time and energy than it will save
-them for years to come.
+Throughout the long transition to "Python 3 by default" in the Python ecosystem,
+the question was occasionally raised as to whether or not the core Python
+developers were acting as reasonable stewards of the Python language.
 
-Since I've seen variants of these questions several times over the years,
-I now keep this as an intermittently updated record of my thoughts on the
-topic (updates are generally prompted by new iterations of the questions).
+While it largely stopped being a concern after the release of Python 3.5 in
+September 2015, it was an entirely appropriate question prior to that, as
+Python 3 introduced backwards incompatible changes that more obviously helped
+future users of the language than they did current users, so existing users
+(especially library and framework developers) were being asked to devote time
+and effort to a transition that would cost them more in time and energy in the
+near term than it would save them for years to come.
+
+Since I had seen variants of these questions several times over the years,
+I started this FAQ as an intermittently updated record of my thoughts on the
+topic, with updates generally being prompted by new iterations of the questions.
 You can see the full history of changes in the `source repo`_.
 
 The views expressed below are my own. While many of them are shared by
@@ -43,7 +45,7 @@ and continuing throughout the conference. These helped clarify many of the
 remaining points of contention, and resulted in a range of changes to Python
 3.5, Python 2.7, and the available tools to support forward migration from
 Python 2 to Python 3. These discussions didn't stop, but have rather continued
-over the course of Python 3.6 development, and can be expected to continue
+over the course of Python development, and can be expected to continue
 for as long as folks are developing software that either fits into the common
 subset of Python 2 & 3, or else are having to maintain software that continues
 to run solely under Python 2.
@@ -51,11 +53,11 @@ to run solely under Python 2.
 .. note::
 
    If anyone is interested in writing about these issues in more formal
-   media, please get in touch to check if particular answers are still up
-   to date. As noted above this article is only *intermittently* updated,
-   so some of the more time-specific references may need updating.
-   Alternatively, just note that the answers below reflect snapshots as of
-   the "Last Updated" date given above.
+   media, please get in touch to check if particular answers are still
+   accurate. Not only have the updates over the years been intermittent,
+   they've also been less than completely comprehensive, so some answers may
+   refer out to experiments that ultimately proved unininteresting or
+   unsuccessful, or otherwise be out of date.
 
 As with all essays on these pages, feedback is welcome via the
 `issue tracker`_ or `Twitter`_.
@@ -68,23 +70,23 @@ As with all essays on these pages, feedback is welcome via the
 TL;DR Version
 -------------
 
-* Yes, we know this migration is disruptive.
-* Yes, we know that some sections of the community have never personally
+* Yes, we know this migration was/is disruptive.
+* Yes, we know that some sections of the community had never personally
   experienced the problems with the Python 2 Unicode model that this
-  migration is designed to eliminate, or otherwise prefer the closer
+  migration was designed to eliminate, or otherwise preferred the closer
   alignment between the Python 2 text model and the POSIX text model.
 * Yes, we know that many of those problems had already been solved by
   some sections of the community to their own satisfaction.
 * Yes, we know that by attempting to fix these problems in the core Unicode
-  model we have broken many of the workarounds that had been put in place
+  model we broke many of the workarounds that had been put in place
   to deal with the limitations of the old model
 * Yes, we are trying to ensure there is a smooth migration path from Python
   2 to Python 3 to minimise the inevitable disruption
-* Yes, we know some members of the community would like the migration to
-  move faster and find the "gently, gently, there's no rush" approach of the
+* Yes, we know some members of the community would have liked the migration to
+  move faster and found the "gently, gently, there's no rush" approach of the
   core development team frustrating
 * No, we did not do this lightly
-* No, we do not see any other way to ensure Python remains a viable
+* No, we did not see any other way to ensure Python remained a viable
   development platform as developer communities grow in locations
   where English is not the primary spoken language. It should be at least
   possible for users to start learning the basics of Python without having
@@ -194,13 +196,13 @@ Unicode handling bugs in the Python 2 standard library that have not been,
 and will not be, fixed, as fixing them within the constraints of the Python
 2 text model is considered too hard to be worth the effort (to put that
 effort into context: if you judge the core development team by our *actions*
-it is clear that we consider that creating and promoting Python 3 is an
+it is clear that we consider that creating and promoting Python 3 was an
 *easier* and *more pleasant* alternative to attempting to fix those issues
 while abiding by Python 2's backwards compatibility requirements).
 
 The revised text model in Python 3 also means that the *primary* string
 type is now fully Unicode capable. This brings Python closer to the model
-used in the JVM, .NET CLR and other Unicode capable Windows APIs. One
+used in the JVM, Android, .NET CLR, and Unicode capable Windows APIs. One
 key consequence of this is that the interpreter core in Python 3 is far
 more tolerant of paths that contain Unicode characters on Windows (so,
 for example, having a non-ASCII character in your username should no
@@ -222,7 +224,7 @@ Python 3 also embeds Unicode support more deeply into the language itself.
 With the primary string type handling the full Unicode range, it became
 practical to make UTF-8 the default source encoding (instead of ASCII) and
 adjust many parts of the language that were previously restricted to ASCII
-text (such as identifiers) now permit a much wider range of Unicode
+text (such as identifiers) to now permit a much wider range of Unicode
 characters. This permits developers with a native language other than English
 to use names in their own language rather than being forced to use names
 that fit within the ASCII character set. Some areas of the interpreter that
@@ -314,18 +316,19 @@ this model pervasive in Python 3:
   and the associated decoding and encoding operations are fully under the
   control of the application. In Python 3, the interpreter aims to handle
   these operations automatically, but in releases up to and including
-  Python 3.4 it needs to rely on the default settings in the OS provided
+  Python 3.6 it needs to rely on the default settings in the OS provided
   locale module to handle the conversion, making it potentially sensitive to
   configuration issues that many Python 2 applications could ignore. Most
   notably, if the OS erroneously claims that "ascii" is a suitable encoding
   to use for operating system interfaces (as happens by default in a number
   of cases, due to the formal definition of the ANSI C locale predating the
   invention of UTF-8 by a few years), the Python 3 interpreter will believe
-  it, and will complain if asked to handle non-ASCII data. A future version
-  of Python 3 may be able to address this limitation, but it isn't a trivial
-  fix due to the phase of the interpreter startup sequence where the problem
-  occurs. (Thanks go to Armin Ronacher for clearly articulating many of
-  these details - see his write-up in the
+  it, and will complain if asked to handle non-ASCII data. :pep:`538` and
+  :pep:`540` offer some possible improvements in this area (by assuming UTF-8
+  as the preferred text encoding when running in the default ``C`` locale), but
+  it isn't a trivial fix due to the phase of the interpreter startup sequence
+  where the problem occurs. (Thanks go to Armin Ronacher for clearly
+  articulating many of these details - see his write-up in the
   `click <http://click.pocoo.org/python3/>`__ documentation)
 * when migrating libraries and frameworks from Python 2 to Python 3 that
   handle boundary API problems, the lack of the hybrid "might be text, might
@@ -343,11 +346,12 @@ this model pervasive in Python 3:
   frameworks may need to account for that rather than forcing a particular
   answer for all users.
 * in the initial Python 3 design, interpolation of variables into a format
-  string was treated solely as a text domain operation. While :pep:`461` has
-  partially reversed that decision for Python 3.5 (by adopting printf-style
-  formatting as a binary interpolation format as well), the lack of this
-  feature can sometimes be an irritation when working extensively in Python
-  3 with wire protocols and file formats that include ASCII compatible
+  string was treated solely as a text domain operation. While this proved to be
+  a reasonable design decision for the flexible Python-specific `str.format`
+  operation, :pep:`461` restored printf-style interpolation for ASCII
+  compatible segments in binary data in Python 3.5. Prior to that change, the
+  lack of this feature could sometimes be an irritation when working extensively
+  in Python 3 with wire protocols and file formats that include ASCII compatible
   segments.
 * while the API design of the ``str`` type in Python 3 was based directly on
   the ``unicode`` type in Python 2, the ``bytes`` type doesn't have such a
@@ -377,12 +381,12 @@ this model pervasive in Python 3:
   within the constraints of Python's normal Python deprecation processes.
 
 These changes are a key source of friction when it comes to Python 3 between
-the Python core developers and other experts that have fully mastered the
+the Python core developers and other experts that had fully mastered the
 Python 2 text model, especially those that focus on targeting POSIX
 platforms rather than Windows or the JVM, as well as those that focus on
 writing boundary code, such as networking libraries, web frameworks and
-file format parsers and generators. These developers bear a lot of the
-burden of adjusting to these changes on behalf of their users, while
+file format parsers and generators. These developers bore a lot of the
+burden of adjusting to these changes on behalf of their users, often while
 gaining few or none of the benefits.
 
 That said, while these issues certainly aren't ideal, they also won't impact
@@ -401,10 +405,6 @@ for dealing with them.
 Why not just assume UTF-8 and avoid having to decode at system boundaries?
 --------------------------------------------------------------------------
 
-.. note:: Starting with Python 3.6, CPython on Windows actually does assume
-   that binary data passed to operating system interfaces is in UTF-8 and
-   transcodes it to UTF-16-LE
-
 The design decision to go with a fixed width Unicode representation both
 externally and internally has a long history in Python, going all the way
 back to the addition of Python's original Unicode support in Python 2.0.
@@ -414,7 +414,7 @@ could be shared between the original 8-bit ``str`` type and the new
 approach predates my own involvement in CPython core development - as with
 many other aspects of CPython's text handling support, it's something I've
 learned about while helping with the transition to pervasive Unicode support
-in the standard library for Python 3).
+in the standard library and elsewhere for Python 3).
 
 That design meant that, historically, CPython builds had to choose what size
 to use for the internal representation of Unicode text. We always chose to
@@ -474,8 +474,8 @@ closest (hence the wording of this question), but it still poses risks of
 silent data corruption on Linux if you don't explicitly transcode data at
 system boundaries (particularly if the actual encoding of metadata provided
 by the system is ASCII incompatible, as can happen in East Asian countries
-using encodings like Shift-JIS and ISO-2022) and still requires transcoding
-between UTF-16 and UTF-8 on Windows (the bytes-oriented APIs on Windows are
+using encodings like Shift-JIS and GB-18030) and still requires transcoding
+between UTF-16-LE and UTF-8 on Windows (the bytes-oriented APIs on Windows are
 generally restricted to the ``mbcs`` encoding, making them effectively
 useless for proper Unicode handling - it's necessary to switch to the
 Windows specific UTF-16 based APIs to make things work properly).
@@ -517,6 +517,17 @@ offered by the latter approach can be seen in Python's own ``io.StringIO``
 implementation - in Python 3.4+, that aims to delay creation of a full string
 object for as long as possible, an optimisation that could be implemented
 transparently due to the file-like API that type exports.
+
+.. note:: Python 3 does assume UTF-8 at system boundaries on Mac OS X, since
+   that OS ensures that the assumption will almost always be correct. Starting
+   with Python 3.6, CPython on Windows also assumes that binary data passed to
+   operating system interfaces is in UTF-8 and transcodes it to UTF-16-LE before
+   passing it to the relevant Windows APIs.
+
+   For Python 3.7, :pep:`538` and :pep:`540` are likely to extend the UTF-8
+   assumption to the default ``C`` locale more generally (so other system
+   encodings will still be supported through the locale system, but the
+   problematic ASCII default will be largely ignored).
 
 
 OK, that explains Unicode, but what about all the other incompatible changes?
@@ -633,14 +644,8 @@ What are (or were) some of the key dates in the Python 3 transition?
    * IPython Python 3 support
    * Cython Python 3 support
    * SWIG Python 3 support
-   * inclusion of Python 3 stacks in Linux distributions
-   * links for the availability of commercially supported Python 3 stacks
-     (Canonical and Red Hat are already listed, need to add ActiveState &
-     Continuum Analytics. I've also been told SLES 12 will likely include
-     a supported release of Python 3, but that doesn't have an official
-     release date yet)
-   * links for the Ubuntu and Fedora "Python 3 as default" migration plans
-     (openSUSE doesn't appear to have a clear migration plan that I can find)
+   * links for the Ubuntu, Fedora and openSUSE "Python 3 as default" migration
+     plans
    * SQL Alchemy Python 3 support
    * pytz Python 3 support
    * PyOpenSSL support
@@ -654,17 +659,19 @@ What are (or were) some of the key dates in the Python 3 transition?
    * pyside Python 3 support (first Python 3.x Qt bindings)
    * pygtk and/or pygobject Python support
    * wxPython phoenix project
+   * VTK Python 3 support in August 2015 (blocked Mayavi, which blocked Canopy)
    * cx-Freeze Python 3 support
    * setuptools and pip Python 3 support
    * Pillow (PIL fork) Python 3 support
    * greenlet Python 3 support
    * pylint Python 3 support
-   * Editor/IDE support for Python 3 in: PyDev,
+   * Editor/IDE support for Python 3 in: PyDev, Spyder,
      Python Tools for Visual Studio, PyCharm, WingIDE, Komodo (others?)
    * Embedded Python 3 support in: Blender, Kate, vim, gdb, gcc, LibreOffice
      (others?)
-   * heck, the day any bar on https://python3wos.appspot.com/ or
-     wedge on http://py3readiness.org/ turns green is potentially
+   * version availability in services like Google DataLab and Azure Notebooks
+   * the day any bar on https://python3wos.appspot.com/ or
+     wedge on http://py3readiness.org/ turned green was potentially
      a significant step for some subsection of the community :)
 
 
@@ -712,6 +719,11 @@ well for small data sets, but was entirely impractical for handling
 realistic workloads on the CPython reference interpreter. (Python 3.0
 received a single maintenance release, but was otherwise entirely
 superceded by the release of Python 3.1)
+
+ActiveState became the first company I am aware of to start offering
+commercial Python 3 support by shipping ActivePython 3.0 almost immediately
+after the upstream release was published. They have subsequently continued this
+trend of closely following upstream Python 3 releases.
 
 **March 2009**: The first alpha release of Python 3.1, with an updated
 C accelerated IO stack, was published. :pep:`375` covers the details of the
@@ -796,15 +808,22 @@ new features in maintenance releases. Significantly, this allows the
 Python 2.7 IDLE to be brought more into line with the features of the Python
 3.x version.
 
-**September 2013**: Red Hat published "Red Hat Software Collections 1.0",
-providing commercial support for both Python 2.7 and Python 3.3 on Red
-Hat Enterprise Linux systems.
+Continuum Analytics offer commercial support for cross-platform Python 3.3+
+environments through their "Anaconda" Python distributions.
 
 **August 2013**: The first alpha of Python 3.4 was published. :pep:`429`
 covers the details of the Python 3.4 release cycle. Amongst other changes,
 Python 3.4 restored full support for the binary and text transform codecs
 that were reinstated in Python 3.2, while maintaining the "text encodings
 only" restriction for the convenience methods on the builtin types.
+
+**September 2013**: Red Hat published "Red Hat Software Collections 1.0",
+providing commercial support for both Python 2.7 and Python 3.3 on Red
+Hat Enterprise Linux systems.
+
+**December 2013**: The initial development of MicroPython, a variant of Python
+3 specifically for microcontrollers, was successfully crowdfunded on
+Kickstarter.
 
 **March 2014**: Python 3.4 final was published as the second Python 3
 release without a corresponding Python 2 release. It includes several
@@ -855,36 +874,142 @@ boto v2.32.0 released with Python 3 support for most modules.
 nltk 3.0b1 released with Python 3 support and the NLTK book switched over to
 covering Python 3 by default.
 
+**October 2014**: SUSE Linux Enterprise Server 12 released, containing
+supported Python 3.4 RPMs
+
+**March 2015**: Microsoft Azure App Service launches with both Python 2.7 and
+Python 3.4 support.
+
 **August 2015**: At the Fedora community's annual Flock conference, Denise
 Dumas (Red Hat's VP of Platform Engineering), explicitly states that it is an
 engineering goal to include only Python 3 in the next major version of Red Hat
 Enterprise Linux (previously this had been implied by Red Hat's work on
 migrating Fedora and its infrastructure to Python 3, but not explicitly stated)
 
-**October 2015**: (anticipated) Ubuntu 15.10 and Fedora 23 ship with only
-Python 3 in their default images for all variants.
+**September 2015**: Python 3.5 final was released, bringing native syntactic
+support for asynchronous coroutines and a matrix multiplication operator, as
+well as the typing module for static type hints. Applications, libraries and
+frameworks wishing to take advantage of the new syntactic features need to
+reconsider whether or not to continue supporting Python 2.7.
 
-**July? 2020**: Anticipated date for Python 2.7 to switch to security
+Twisted 15.4 was released, the first version to included
+a Python 3 compatible version of the "Twisted Trial" test runner. This allowed
+the Twisted project to start running its test suite under Python 3, leading to
+steadily increasing Python 3 compatibility in subsequent Twisted releases.
+
+**October 2015**: Fedora 23 ships with only Python 3 in the LiveCD and all
+default images other than the Server edition.
+
+MicroPython support for the BBC micro:bit project is
+publicly announced, ensuring first class Python 3 support in a significant
+educational initiative.
+
+PyInstaller 3.0 was released, supporting Python 2.7, and 3.3+.
+
+**March 2016**: gevent 1.1 was released, supporting Python 2.6, 2.7, and 3.3+.
+
+**May 2016**: Several key projects in the Scientific Python community publish
+the `Python 3 Statement <http://www.python3statement.org/>`, explicitly
+declaring their intent to end Python 2 support in line with the reference
+interpreter's anticipated 2020 date for the end of free community support.
+
+**August 2016**: Google App Engine added official Python 3.4(!) support to their
+Flexible Environments
+
+Microsoft Azure published instructions on how to select a particular Python
+version using
+`App Service Site Extensions <https://blogs.msdn.microsoft.com/pythonengineering/2016/08/04/upgrading-python-on-azure-app-service/>`__.
+
+Initial release of Enthought Deployment Manager, with support for Python 2.7
+and 3.5.
+
+Mozilla provided the PyPy project with a
+`development grant <https://morepypy.blogspot.com.au/2016/08/pypy-gets-funding-from-mozilla-for.html>`__
+to bring their PyPy3 variant up to full compatibility with Python 3.5.
+
+**December 2016**: Python 3.6 final was released, bringing further syntactic
+enhancements for asynchronous coroutines and static type hints, as well as a
+new compiler assisted string formatting syntax that manages to be both more
+readable (due to the use of inline interpolation expressions) and faster (due
+to the compiler assisted format parsing) than previous string formatting
+options. Through :pep:`528` and :pep:`529`, this release also featured
+significant improvements to the Windows compatibility of bytes-centric
+POSIX applications, and the Windows-specific `py` launched started using Python
+3 by default when both Python 2.x and 3.x are available on the system.
+
+**March 2017**: The first beta release of PyPy3 largely compatible with
+Python 3.5 was
+`published <https://morepypy.blogspot.com.au/2017/03/pypy27-and-pypy35-v57-two-in-one-release.html>`__
+(including support for the Python 3.6 f-string syntax).
+
+Enthought Canopy 2.0.0 available, supporting Python 2.7 and 3.5 (official
+binary release date TBD - as of April 2017, the download page still offers
+Canopy 1.7.4)
+
+**April 2017**: AWS Lambda added official Python 3.6 support
+
+IPython 6.0 was released, the first feature release to require
+Python 3. The IPython 5.x series remains in maintenance mode as the last
+version supporting Python 2.7 (and Python 3 based variants of IPython retain
+full support for running and interacting with Python 2 language kernels using
+Project Jupyter's language independent notebook protocol).
+
+.. note:: At time of writing, the events below are in the future, and hence
+   speculative as to their exact nature and timing. However, they reflect
+   currently available information based on the stated intentions of developers
+   and distributors.
+
+**April 2018**: Anticipated date for Ubuntu and Fedora to have finished
+migrating default components of their respective server editions to
+Python 3 (some common Linux components, most notably the Samba protocol server,
+proved challenging to migrate, so the stateful server variants of these
+distributions ended up taking longer to migrate to Python 3 than other variants
+that omitted those components from their default package set)
+
+**January? 2020**: Anticipated date for Python 2.7 to switch to security
 fix only mode, ending roughly thirteen years of parallel maintenance of
 Python 2 and 3 by the core development team for the reference interpreter.
 
-**June? 2024**: Anticipated date for Red Hat Enterprise Linux 7 to go end of
+**April 2021**: Anticipated date for Ubuntu LTS 16.04 to go end of life, the
+first potential end date for commercial Python 2 support from Canonical (if
+Python 2.7 is successfully migrated to the community supported repositories for
+the Ubuntu 18.04 LTS release)
+
+**April 2024**: Anticipated date for Ubuntu LTS 18.04 to go end of life, the
+second potential end date for commercial Python 2 support from Canonical (if it
+proves necessary to keep Python 2.7 in the commercially supported repositories
+as a dependency for the Ubuntu 18.04 LTS release)
+
+**June 2024**: Anticipated date for Red Hat Enterprise Linux 7 to go end of
 life, also anticipated to be the last commercially supported redistribution of
 the Python 2 series.
 
 
-When will(/did) Python 3 become the obvious choice for new projects?
---------------------------------------------------------------------
+When did Python 3 become the obvious choice for new projects?
+-------------------------------------------------------------
 
 I put the date for this as the release of Python 3.5, in September 2015. This
-release brings with it two major syntactic enhancemens (one giving Python's
+release brought with it two major syntactic enhancemens (one giving Python's
 coroutine support its own dedicated syntax, distinct from generators, and
-another providing a binary operator for matrix multiplication), and restores
+another providing a binary operator for matrix multiplication), and restored
 a key feature that had been missing relative to Python 2 (printf-style binary
 interpolation support). It also incorporates a couple of key reliability and
 maintainability enhancements, in the form of automated handling of EINTR
 signals, and the inclusion of a gradual typing framework in the standard
 library.
+
+Others may place the boundary at the release of Python 3.6, in December 2016,
+as the new "f-string" syntax provides a form of compiler-assisted string
+interpolation that is both faster and more readable than its predecessors::
+
+    print("Hello %s!" % name)        # All versions
+    print("Hello {0}!".format(name)) # Since Python 2.6 & 3.0
+    print("Hello {}!".format(name))  # Since Python 2.7 & 3.2
+    print(f"Hello {name}!")          # Since Python 3.6
+
+Python 3.6 also provides further enhancements to the native coroutine syntax,
+as well as full syntactic support for annotating variables with static type
+hints.
 
 Going in to this transition process, my personal estimate was that
 it would take roughly 5 years to get from the first production ready release
@@ -893,9 +1018,11 @@ it to be recommended unreservedly for all *new* Python projects.
 
 Since 3.0 turned out to be a false start due to its IO stack being unusably
 slow, I start that counter from the release of 3.1: June 27, 2009.
-With Python 3.5 being released a little over 6 years after 3.1, that means we
-clearly missed that original goal - the text model changes in particular
-proved to be a larger barrier to migration than expected.
+With Python 3.5 being released a little over 6 years after 3.1 and 3.6 a little
+more than a year after that, that means we clearly missed that original goal -
+the text model changes in particular proved to be a larger barrier to migration
+than expected, which slowed adoption by existing library and framework
+developers.
 
 However, despite those challenges, key parts of the ecosystem were able to
 successfully add Python 3 support well before the 3.5 release. NumPy and the
@@ -907,28 +1034,32 @@ repackaging project to a full development fork also brought PIL support to
 Python 3.
 
 nltk supports Python 3 as of nltk 3.0, and the NLTK book has switched to be
-based on on Python 3 by default.
+based on Python 3 by default.
 
 For AWS users, most ``boto`` modules became available on Python 3 as of
 `http://boto.readthedocs.org/en/latest/releasenotes/v2.32.0.html <boto
 v2.32.0>`__.
 
-This means that Twisted, gevent and PyInstaller are the main critical
-dependencies that don't support Python 3 as of August 2015, but solid progress
-has been made in all three cases. The gevent 1.1 beta releases support Python
-3, and the Twisted 15.4 release brings Python 3 support to Twisted's main test
-runner (Trial), greatly simplifying the task of completing porting of that
-ecosystem. PyInstaller hasn't made any releases with Python 3 support, but
-their python3 branch is under active development.
+PyInstaller is a popular option for creating native system installers for Python
+applications, and it has support Python 3 since the 3.0 release in October 2015.
+
+gevent is a popular alternative to writing natively asynchronous code, and it
+became generally available for Python 3 with the 1.1 release in March 2016.
+
+As of April 2017, porting the full Twisted networking framework to Python 3 is
+still a work in progress, but many parts of it are already fully operational,
+and for new projects, native asyncio-based alternatives are often going to be
+available in Python 3 (especially for common protocols like HTTPS).
 
 I think Python 3.5 is a superior language to 2.7 in almost every way (with
-the error reporting improvements being the ones I miss most in my day job
-working on a Python 2.6 application). There are a few concepts like
-functions, iterables and Unicode that need to be introduced earlier than
-was needed in Python 2, and there are still a couple of rough edges in
-adapting between the POSIX text model and the Python 3 one (in particular,
-support for direct interpolation into binary data formats that contain ASCII
-compatible text segments is now expected to return in Python 3.5).
+the error reporting improvements being the ones I missed most when my day job
+involved working on a Python 2.6 application).
+
+For educational purposes, there are a few concepts like functions, iterables
+and Unicode that need to be introduced earlier than was needed in Python 2, and
+there are still a few rough edges in adapting between the POSIX text model and
+the Python 3 one, but these are more than compensated for through improved
+default behaviours and more helpful error messages.
 
 While students in enterprise environments may still need to learn Python 2 for
 a few more years, there are some significant benefits in learning Python 3
@@ -940,19 +1071,26 @@ advantage of the backports and other support modules on PyPI to bring their
 Python 2.x usage as close to writing Python 3 code as is practical.
 
 Support in enterprise Linux distributions is also a key point for uptake
-of Python 3. Canonical have already shipped long term support for two
-versions of Python 3 (Python 3.2 in Ubuntu 12.04 LTS and 3.4 in 14.04 LTS)
-and are `in the process of eliminating`_ Python 2 from the installation
-images. A Python 3 stack has existed in Fedora since Fedora 13 and has been
-growing over time, and there is now a stated goal to remove Python 2 from
-the live install CDs by `late 2015`_ (Fedora 23). Red Hat also now ship a
-fully supported Python 3.3 and 3.4 runtimes as part of our
-`Red Hat Software Collections`_ product and the OpenShift Enterprise
-self-hosted Platform-as-a-Service offering (and I assume we'll see 3.5
-added to that mix some time in late 2015 or early 2016). At Fedora's Flock
-conference in August 2015, Denise Dumas (VP of Platform Engineering) indicated
-that Red Hat aimed to have the next major version of Red Hat Enterprise Linux
-ship Python 3 only.
+of Python 3. Canonical have already shipped long term support for three
+versions of Python 3 (Python 3.2 in Ubuntu 12.04 LTS, 3.4 in 14.04 LTS, and
+3.5 in 14.04 LTS) and are continuing with `the process of eliminating`_
+Python 2 from the installation images.
+
+A Python 3 stack has existed in Fedora since Fedora 13 and has been
+growing over time, with Python 2 successfully removed from the live install CDs
+in `late 2015`_ (Fedora 23). Red Hat also now ship fully supported Python 3.x
+runtimes as part of the `Red Hat Software Collections`_ product and the
+OpenShift Enterprise self-hosted Platform-as-a-Service offering (with new 3.x
+versions typically becoming commercially available within 6-12 months of the
+upstream release, and then remaining supported for 3 years from that point).
+
+At Fedora's annual Flock conference in August 2015, Denise Dumas (VP of Platform
+Engineering) also indicated that Red Hat aimed to have the next major version of
+Red Hat Enterprise Linux ship only Python 3 in the base operating system, with
+Python 2 available solely through the Software Collections model (inverting the
+current situation, where Python 2 is available in both Software Collections and
+the base operating system, while Python 3 is only commercially available through
+Software Collections and the Software Collections based OpenShift environments).
 
 The Arch Linux team have gone even further, making Python 3 the
 `default Python`_ on Arch installations. I am `dubious`_ as to the wisdom
@@ -965,12 +1103,12 @@ the Linux distro aggregations, is also in the process of migrating from Python
 `status tracking <https://wiki.openstack.org/wiki/Python3>`__
 page for the migration.
 
-Outside the Linux ecosystem, other Python redistributors like ActiveState
-and Continuum Analytics provide both Python 2 and Python 3 releases.
+Outside the Linux ecosystem, other Python redistributors like ActiveState,
+Enthought, and Continuum Analytics provide both Python 2 and Python 3 releases.
 
 
 .. _Python 2 or Python 3: http://wiki.python.org/moin/Python2orPython3
-.. _in the process of eliminating: https://wiki.ubuntu.com/Python/3
+.. _the process of eliminating: https://wiki.ubuntu.com/Python/3
 .. _late 2015: https://fedoraproject.org/wiki/Changes/Python_3_as_Default
 .. _Red Hat Software Collections: http://developerblog.redhat.com/2013/09/12/rhscl1-ga/
 .. _default Python: https://www.archlinux.org/news/python-is-now-python-3/
@@ -981,18 +1119,19 @@ When can we expect Python 2 to be a purely historical relic?
 ------------------------------------------------------------
 
 Python 2 is still a good language. While I think Python 3 is a *better*
-language (especially when it comes to the text model, error reporting and the
-new native coroutine syntax in Python 3.5), we've deliberately designed the
-migration plan so users can update on *their* timetable rather than ours (at
-least within a window of several years), and we expect commercial
-redistributors to extend that timeline even further.
+language (especially when it comes to the text model, error reporting, the
+native coroutine syntax in Python 3.5, and the string formatting syntax in
+Python 3.6), we've deliberately designed the migration plan so users can update
+on *their* timetable rather than ours (at least within a window of several
+years), and we expect commercial redistributors to extend that timeline even
+further.
 
 I personally expect Python 2.7 to remain a reasonably common deployment
 platform until mid 2024. Red Hat Enterprise Linux 7 (released in June 2014)
 uses Python 2.7 as the system Python, and many library, framework and
 application developers base their minimum supported version of Python on the
 system Python in RHEL (especially since that also becomes the system Python in
-downstream rebuilds like CentOS and Scientific Linux). While we're actively
+downstream rebuilds like CentOS and Scientific Linux). While Red Hat's actively
 trying to change that slow update cycle by encouraging application developers
 to target the Software Collections runtimes rather than the system Python, that
 change in itself is a significant cultural shift for the RHEL/CentOS user base.
@@ -1002,16 +1141,25 @@ Python support (specifically Scribus, InkScape and AutoDesk tools like
 Maya and MotionBuilder) are happy enough with Python 2.7. GIS tools similarly
 currently still use Python 2.7. This actually makes a fair bit of sense,
 especially for the commercial tools, since the Python support in these tools is
-there primarily to manipulate the application data model and there aren't any
-major improvements in Python 3 for that kind of use case as yet, but still
-some risk of breaking existing scripts if the application updates to Python 3.
+there primarily to manipulate the application data model and there arguably
+aren't any major improvements in Python 3 for that kind of use case as yet, but
+still some risk of breaking existing scripts if the application updates to
+Python 3.
 
-Providing additional incentives, and removing additional barriers to migration
-for that embedded scripting engine use case is something I'd like to improve
-as part of the Python 3.6 release, through proposals like PEP 432 (which makes
-Python embedding both easier and more configurable) and Ed Schofield's proposal
-to provide additional tools that allow embedders to provide additional
-compatibility options.
+For the open source applications when Python 2 is currently seen as a
+"good enough" scripting engine, the likely main driver for Python 3 scripting
+support is likely to be commercial distribution vendors looking to drop
+commercial Python 2 runtime support - the up front investment in application
+level Python 3 support would be intended to pay off in the form of reduced long
+term sustaining engineering costs at the language runtime level.
+
+That said, the Python 3 reference interpreter also offers quite a few new low
+level configuration options that let embedding applications control the memory
+allocators used, monitor and control all bytecode execution, and various
+other improvements to the runtime embedding functionality, so the natural
+incentives for application developers to migrate are starting to accumulate, so
+we may see more activity on that front as the 2020 date for the end of community
+support of the Python 2 series gets closer.
 
 
 .. _slow-uptake:
@@ -1019,9 +1167,11 @@ compatibility options.
 But uptake is so slow, doesn't this mean Python 3 is failing as a platform?
 ---------------------------------------------------------------------------
 
-A common thread I have seen running through such declarations of "failure" is
-people not quite understanding the key questions where the transition plan is
-aiming to change the answers. These are the three key questions:
+While the frequency with which this question is asked has declined markedly
+since 2015 or so, a common thread I saw running through such declarations of
+"failure" was people not quite understanding the key questions where the
+transition plan was aiming to change the answers. These are the three key
+questions:
 
 * "I am interested in learning Python. Should I learn Python 2 or Python 3?"
 * "I am teaching a Python class. Should I teach Python 2 or Python 3?"
@@ -1029,56 +1179,50 @@ aiming to change the answers. These are the three key questions:
   use Python 2 or Python 3?"
 
 At the start of the migration, the answer to all of those questions was
-*obviously* "Python 2". Right now (August 2015), I believe the answer is
+*obviously* "Python 2". By August 2015, I considered the answer to be
 "Python 3.4, unless you have a compelling reason to choose Python 2 instead".
-Possible compelling reasons include "I am using existing course material
+Possible compelling reasons included "I am using existing course material
 that was written for Python 2", "I am teaching the course to maintainers
 of an existing Python 2 code base", "We have a large in-house collection of
 existing Python 2 only support libraries we want to reuse" and "I only use
 the version of Python provided by my Linux distro vendor and they currently
-only support Python 2" (although that last is also changing on the *vendor*
-side - Red Hat now supports Python 3.3 & 3.4 through both Red Hat Software
-Collections and as part of OpenShift Enterprise, and Canonical have
-supported Python 3.2 since 12.04 LTS. SUSE don't support Python 3 yet, but
-I'm told that support is expected to arrive as part of SLES 12).
+only support Python 2" (in regards to that last point, we realised early that
+the correct place to tackle it was on the *vendor* side, and by late 2014,
+all of Canonical, Red Hat, and SUSE had commercial Python 3 offerings
+available).
 
 Note the question that *isn't* on the list: "I have a large Python 2
 application which is working well for me. Should I migrate it to Python 3?".
 
-While OpenStack and some key Linux distributions have answered "Yes", it makes
-sense for the answer to *that* question to remain "No" for the
-time being while companies like Canonical, Red Hat, Facebook, Google, Dropbox,
-and others work to migrate their own systems, and publish the related migration
-tools (such as the ``pylint --py3k`` option, or the working going into the
-``mypy`` and ``typeshed`` projects to allow Python 3 type analysis to be
+While OpenStack and some key Linux distributions have answered "Yes", for most
+organisations the answer to *that* question remained "No" for several years
+while companies like Canonical, Red Hat, Facebook, Google, Dropbox, and others
+worked to migrate their own systems, and published the related migration
+tools (such as the ``pylint --py3k`` option, and the work that has gone into the
+``mypy`` and ``typeshed`` projects to allow Python 3 static type analysis to be
 applied to Python 2 programs prior to attempting to migrate them).
 
-While it is likely that platform effects will eventually
-shift even the answer to that question to "Yes" for the majority of users
-(and Python 2 will have a much nicer exit strategy to a newer language than
-COBOL ever did), the time frame for *that* change is a lot longer than the
-five years that was projected for changing the default choice of Python
-version for green field projects. That said, reducing or eliminating any
-major remaining barriers to migration was an explicit design goal for
-Python 3.5, in those cases where the change was also judged to be an
-internal improvement within Python 3 (for example, the restoration
-of binary interpolation support was motivated not just by making it easier
-to migrate from Python 2, but also to make certain kinds of network
-programming and other stream processing code easier to write in Python 3).
+While platform effects are starting to shift even the answer to that question
+towards "Maybe" for the majority of users (and Python 3 gives Python 2 a much
+nicer exit strategy to a newer language than COBOL ever did), the time frame
+for *that* change is a lot longer than the five years that was projected for
+changing the default choice of Python version for green field projects.
 
-We're also happy enough if an application that *embeds* Python continues to
-embed Python 2.7 for now rather than switching to embedding Python 3 - many
-embedding use cases are primarily about using Python's basic procedural
-programming support to manipulate the application data model, and those kinds
-of operation haven't seen substantial changes in the Python 3 upgrade (in these
-cases, the most significant change would likely be the one to make true
-division on integers return a floating point result).
+That said, reducing or eliminating any major remaining barriers to migration
+is an ongoing design goal for Python 3.x releases, at least in those cases
+where the change is also judged to be an internal improvement within Python 3
+(for example, the restoration of binary interpolation support in Python 3.5 was
+motivated not just by making it easier to migrate from Python 2, but also to
+make certain kinds of network programming and other stream processing code
+easier to write in Python 3).
 
-Several of the actions taken by the core development team were actually
-deliberately designed to keep conservative users *away* from Python 3 as a
-way of providing time for the ecosystem to mature. Now, if Python 3 failed
-to offer a desirable platform, nobody would have cared about this in the
-slightest. Instead, what we saw was the following:
+In the earlier days of the Python 3 series, several of the actions taken by
+the core development team were actually deliberately designed to keep
+conservative users *away* from Python 3 as a way of providing time for the
+ecosystem to mature.
+
+Now, if Python 3 had failed to offer a desirable platform, nobody would have
+cared about this in the slightest. Instead, what we saw was the following:
 
 * people coming up with great migration guides and utilities *independently*
   of the core development team. While `six`_ was created by a core
@@ -1090,13 +1234,13 @@ slightest. Instead, what we saw was the following:
   Python 3 <http://python3porting.com/>`__
 * Linux distributions aiming to make Python 2 an optional download and
   have only Python 3 installed by default
-* commercial Python redistributors ensuring that Python 3 is included as
+* commercial Python redistributors ensuring that Python 3 was included as
   one of their supported offerings
 * customers approaching operating system vendors and asking for assistance
   in migrating large proprietary code bases from Python 2 to Python 3
 * more constrained plugin ecosystems that use an embedded Python interpreter
-  (like Blender, gcc, gdb and the Kate editor either adding Python 3
-  support, or else migrating entirely from Python 2 to 3)
+  (like Blender, gcc, and gdb) either adding Python 3 support, or else
+  migrating entirely from Python 2 to 3
 * developers lamenting the fact that they *wanted* to use Python 3, but were
   being blocked by various dependencies being missing, or because they
   previously used Python 2, and needed to justify the cost of migration to
@@ -1116,58 +1260,67 @@ slightest. Instead, what we saw was the following:
 That last case only appeared around 2014 (~5 years into the migration), and
 the difference in perspective appears to be an instance of the classic early
 adopter/early majority divide in platform adoption. The deliberately gentle
-migration plan is for the benefit of the late adopters that drive Python's
-overall popularity, not the early adopters that make up both the open source
-development community and the (slightly) broader software development blogging
-community.
+migration plan was (and is) for the benefit of the late adopters that drive
+Python's overall popularity, not the early adopters that make up both the open
+source development community and the (slightly) broader software development
+blogging community.
 
 It's important to keep in mind that Python 2.6 (released October 2008) has long
 stood as one of the most widely deployed versions of Python, purely through
 being the system Python in Red Hat Enterprise Linux 6 and its derivatives,
-and usage of Python 2.4 (released November 2004) is non-trivial for the
-same reason with respect to Red Hat Enterprise Linux 5. I expect there is a
-similar effect from stable versions of Debian, Ubuntu LTS releases and SUSE
-Linux Enterprise releases, but (by some strange coincidence) I'm not as
-familiar with the Python versions and end-of-support dates for those as I
-am with those for the products sold by my employer ;)
+and usage of Python 2.4 (released November 2004) remained non-trivial through to
+at least March 2017 for the same reason with respect to Red Hat Enterprise
+Linux 5.
+
+I expect there is a similar effect from stable versions of Debian, Ubuntu LTS
+releases and SUSE Linux Enterprise releases, but (by some strange coincidence)
+I'm not as familiar with the Python versions and end-of-support dates for those
+as I am with those for the products sold by my employer ;)
 
 If we weren't getting complaints from the early adopter crowd about the pace
-of the migration, *then* I'd be worried (because it would indicate they had
-abandoned Python entirely and moved on to something else).
+of the migration, *then* I would have been worried (as it would have indicated
+they had abandoned Python entirely and moved on to something else).
 
-The other key point to keep in mind is that the available metrics on Python
-3 adoption are quite limited. The three main quantitative options are to
-analyse user agents on the Python Package Index, declarations of Python 3
-support on PyPI and binary installer downloads for Mac OS X and Windows
-from python.org.
+The final key point to keep in mind is that the available metrics on Python
+3 adoption are quite limited, and that remains true regardless of whether we
+think the migration is going well or going poorly. The three main quantitative
+options are to analyse user agents on the Python Package Index, declarations
+of Python 3 support on PyPI and binary installer downloads for Mac OS X and
+Windows from python.org.
 
-The first of those is heavily dominated by *existing* Python 2 users, but
-the trend in Python 3 usage is still upwards.
+The first of those remains heavily dominated by *existing* Python 2 users, but
+the trend in Python 3 usage is still upwards. These metrics are stored as a
+public data set in Google Big Query, and
+`this post <https://langui.sh/2016/12/09/data-driven-decisions/>`__ goes over
+some of the queries that are possible with the available data. The records
+are incomplete prior to June 2016, but running the query in April 2017 shows
+downloads from Python 3 clients increasing from around 7% of approximately 7
+million downloads in June 2016 to around 12% of approximately 720 million
+downloads in March 2017.
 
-The second is based on manually recorded metadata rather than automated
-version compatibility checking, but the stats as of January 2014 show
-38.8k packages total, 26.5k claiming compatibility with *any* version of
-Python and 3.5k claiming compatibility with Python 3. Of the top 200 most
-downloaded packages, ~70% offer Python 3 support, with several of those
-that are Python 2 only (such as sentry, graphite-web and supervisord)
-typically being run as standalone services rather than as imported modules
-that necessarily need to be using the same version of Python. Again, the
-trend is upwards - I'm not aware of anyone *adding* Python 3 support, and
-then removing it as imposing too much maintenance overhead (if using a
-single source approach, as is now recommended for code that needs to support
-both Python 2 and Python 3 simultaneously, the ongoing maintenance
-requirement amounts to testing across multiple Python versions).
+The second is based on publisher provided package metadata rather than automated
+version compatibility checking.
 
-Over 2013, the last metric reached the point where Python 3 downloads outnumber
-Python 2 downloads (54% vs 46%).
+Of the top 360 `most downloaded packages <http://py3readiness.org/>`__, ~94%
+offer Python 3 support, with several of those that are Python 2 only (such as
+graphite-web and supervisord) typically being run as standalone services rather
+than as imported modules that necessarily need to be using the same version of
+Python. Again, the trend is upwards (the number in 2014 was closer to 70%),
+and I'm not aware of anyone *adding* Python 3 support, and then removing it as
+imposing too much maintenance overhead.
+
+The last metric reached the point where Python 3 downloads outnumbered Python 2
+downloads (54% vs 46%) back in 2013. Those stats needs to be collected manully
+from the `www.python.org` server logs, so I don't have anything more recent than
+that.
 
 The Python 3 ecosystem is definitely still the smaller of the two at this point
-in time (by a significant margin), but users that start with Python 3 should
-be able to move to Python 2 easily enough if the need arises, and hopefully
-with a clear idea of which parts of Python 2 are the modern recommended parts
-that survived the transition to Python 3, and which parts are the legacy
-cruft that only survives in the latest Python 2.x releases due to backwards
-compatibility concerns.
+in time (by a non-trivial margin), but users that start with Python 3 are able
+to move parts of their applications and services to Python 2 readily enough if
+the need arises, and hopefully with a clear idea of which parts of Python 2 are
+the modern recommended parts that survived the transition to Python 3, and which
+parts are the legacy cruft that only survives in the latest Python 2.x releases
+due to backwards compatibility concerns.
 
 For the inverse question relating to the concern that the existing migration
 plan is too *aggressive*, see :ref:`abandoning-users`.
@@ -1178,12 +1331,13 @@ Is the ultimate success of Python 3 as a platform assured?
 
 Yes, its place as the natural successor to the already dominant Python 2
 platform is now assured. Commercial support has long been available from
-multiple independent vendors, the majority of the core components from the
-Python 2 ecosystem are becoming available, and the combination of the Python
-3.5 release and Python's uptake in the education and data analysis sectors
-provides assurance of a steady supply of both Python developers, and work for
-those developers (in IEEE's survey of programming languages, Python was 5th,
-trailing only the big 4 of Java, C, C++ and C#).
+multiple independent vendors, the vast majority of the core components from the
+Python 2 ecosystem are already available, and the combination of the Python
+3.5+ releases and Python's uptake in the education and data analysis sectors
+provide assurance of a steady supply of both Python developers, and work for
+those developers (in the 2016 edition of IEEE's survey of programming languages,
+Python was 3rd, trailing only Java and C, overtaking C++ relative to its
+2015 position, and both C++ and C# relative to initial 2014 survey).
 
 For me, with my Linux-and-infrastructure-software bias, the
 tipping point has been Ubuntu and Fedora successfully making the transition
@@ -1198,19 +1352,25 @@ to be used as the chosen language variant for Python utility scripts, and hence
 increase the attractiveness of supporting Python 3 for library and framework
 developers.
 
-I also see the `ongoing migration
+A significant milestone only attained over 2016 and 2017 has been the three
+largest public cloud providers (Amazon Web Services, Microsoft Azure, and
+Google Cloud Platform) ensuring that Python 3 is a fully supported development
+option on their respective platforms, adding to the support already previously
+available in platforms like Heroku and OpenShift Online.
+
+Specifically in the context of infrastructure, I also see the `ongoing migration
 <https://wiki.openstack.org/wiki/Python3>`__ of OpenStack components from
 being Python 2 only applications to being Python 3 compatible as highly
 significant, as OpenStack is arguably one of the most notable Python
 projects currently in existence in terms of spreading awareness outside
 the traditional open source and academic environs. In particular, if
-OpenStack becomes a Python 3 application, then the plethora of cloud
+OpenStack becomes a Python 3 application, then the plethora of regional cloud
 provider developers and hardware vendor plugin developers employed
 to work on it will all be learning Python 3 rather than Python 2.
 
-The third notable milestone has been the education community's staunch
-advocacy for the wider Python community to catch up with them in adopting
-Python 3 wholesale, rather than confusing their students with occasional
+A notable early contribution to adoption has been the education community's
+staunch advocacy for the wider Python community to catch up with them in
+embracing Python 3, rather than confusing their students with occasional
 recommendations to learn Python 2 directly, rather than learning Python 3
 first.
 
@@ -1228,52 +1388,53 @@ directly with binary data in Python 3. However, even in the face of these
 issues, the major modern Python web frameworks, libraries and database
 interfaces *do* support Python 3, and the return of binary interpolation
 support in Python 3.5 addressed some of the key concerns raised by the
-developers of the Twisted networking library. The adoption of ``asyncio``
-as *the* standard framework for asynchronous IO may also help the web
-development community resolve a long standing issue with a lack of a
-standard way for web servers and web frameworks to communicate regarding
-long lived client connections (such as those needed for WebSockets support)
-- Victor Stinner's backport to Python 2 of the core callback based APIs may
-help with that, even though the coroutine interface is different.
+developers of the Twisted networking library.
 
-In the web space, I believe the main thing to watch is the availability of
-Python 3 support for hosted application development. To take the three PaaS
-providers that first come to mind, Heroku already supports Python 3.4, while
-OpenShift Online has provided Python 3 support since Python 3.3. Google App
-Engine currently offers only Python 2.7, and has not revealed any plans to
-offer Python 3 to their users.
+The adoption of ``asyncio`` as *the* standard framework for asynchronous IO and
+the subsequence incorporation of first class syntactic support for coroutines
+have also helped the web development community resolve a long standing issue
+with a lack of a standard way for web servers and web frameworks to communicate
+regarding long lived client connections (such as those needed for WebSockets
+support), providing a clear incentive for migration to Python 3.4+ that
+didn't exist with earlier Python 3 versions.
 
 
 Python 3 is meant to make Unicode easier, so why is <X> harder?
 ---------------------------------------------------------------
 
-At this point, the Python community as a whole has had more than 15 years
-to get used to the Python 2 way of handling Unicode. For Python 3,
-we've only had a production ready release available for just under 5 years,
+As of 2015, the Python community as a whole had had more than 15 years
+to get used to the Python 2 way of handling Unicode. By contrast, for Python 3,
+we'd only had a production ready release available for just over 5 years,
 and since some of the heaviest users of Unicode are the web
-framework developers, and they've only had a stable WSGI target since the
-release of 3.2, you can drop that down to just over 5 years of intensive
+framework developers, and they'd only had a stable WSGI target since the
+release of 3.2, you could drop that down to just under 5 years of intensive
 use by a wide range of developers with extensive practical experiencing
 in handling Unicode (we have some *excellent* Unicode developers in the
 core team, but feedback from a variety of sources is invaluable for a
 change of this magnitude).
 
 That feedback has already resulted in major improvements in the Unicode
-support for the Python 3.2, 3.3, 3.4, and 3.5 releases. With the
+support for the Python 3.2, 3.3, 3.4, 3.5, and 3.6 releases. With the
 ``codecs`` and ``email`` modules being brought into line, the Python 3.4
 release was the first one where the transition felt close to
 being "done" to me in terms of coping with the full implications of a
 strictly enforced distinction between binary and text data in the standard
 library, while Python 3.5 revisited some of the earlier design decisions of
 the Python 3 series and changed some of them based on several years of
-additional experience. I expect that feedback process will continue
-throughout the 3.x series, since "mostly done" and "done" aren't quite the
-same thing, and attempting to closely integrate with POSIX systems that
-may be using ASCII incompatible encodings while using a text model with
-strict binary/text separation hasn't really been done before at Python's
-scale (the JVM is UTF-16 based, but bypasses most OS provided services,
-while other tools often choose the approach of just assuming that all bytes
-are UTF-8 encoded, regardless of what the underlying OS claims).
+additional experience. Python 3.6 brought some major changes to the way
+binary system APIs are handled on Windows, and changes of similar scope are
+anticipated for 3.7 on non-Windows systems.
+
+While I'm optimistic that the system boundary handling changes proposed for
+Python 3.7 will resolve the last of the major issues, I nevertheless expect
+that feedback process will continue throughout the 3.x series, since "mostly
+done" and "done" aren't quite the same thing, and attempting to closely
+integrate with POSIX systems that may be using ASCII incompatible encodings
+while using a text model with strict binary/text separation hasn't really
+been done before at Python's scale (the JVM is UTF-16 based, but bypasses
+most OS provided services, while other tools often choose the approach of
+just assuming that all bytes are UTF-8 encoded, regardless of what the
+underlying OS claims).
 
 In addition to the cases where blurring the binary/text distinction really
 did make things simpler in Python 2, we're also forcing even developers in
@@ -1283,7 +1444,9 @@ that Python 2 users that may have previously been able to ignore Unicode
 issues may need to account for them properly when migrating to Python 3.
 
 I've written more extensively on both of these topics in
-:ref:`binary-protocols` and :ref:`py3k-text-files`.
+:ref:`binary-protocols` and :ref:`py3k-text-files`, while :pep:`538` and
+:pep:`540` go into detail on the system boundary changes now being proposed
+for Python 3.7.
 
 
 Python 3 is meant to fix Unicode, so why is <X> still broken?
@@ -1328,6 +1491,13 @@ easier to start with Python 3, and then learn Python 2 (and the relevant
 parts of C) in terms of the differences from Python 3 rather than
 learning Python 2 directly and having to learn all those legacy details
 at the same time as learning to program in the first place.
+
+.. note:: This answer was written for Python 3.5. For Python 3.6, other
+   potential benefits in teaching beginners include the new f-string
+   formatting syntax, the secrets module, the ability to include underscores
+   to improve the readability of long numeric literals, and the ordering of
+   arbitrary function keyword arguments reliably matching the order in which
+   they're supplied to the function call.
 
 As noted above, Python 2 has some interesting quirks due to its C heritage
 and the way the language has evolved since Guido first created Python in
@@ -1524,7 +1694,7 @@ compatible and didn't rely on other Python 3 only changes like the new,
 more Unicode friendly, IO stack).
 
 I'll give several examples below of how the above behaviours have changed in
-Python 3 releases, up to and including Python 3.4 (since that's the currently
+Python 3 releases, up to and including Python 3.6 (since that's the currently
 released version).
 
 In Python 3, the codec related builtin convenience methods are *strictly*
@@ -1541,7 +1711,7 @@ method::
       File "<stdin>", line 1, in <module>
     AttributeError: 'bytes' object has no attribute 'encode'
 
-In addition to the above changes, Python 3.4 includes `additional changes
+In addition to the above changes, Python 3.4 included `additional changes
 to the codec system
 <http://docs.python.org/dev/whatsnew/3.4.html#codec-handling-improvements>`__
 to help with more gently easing users into the idea that there are different
@@ -1725,8 +1895,14 @@ to be made in favour of doing the work).
 
 There are some other notable changes in Python 3 that are of substantial
 benefit when teaching new users (as well as for old hands), that technically
-*could* be included in a Python 2.8 release if someone chose to create one,
-but in practice such a release is unlikely to happen.
+*could* be included in a Python 2.8 release if the core development chose to
+create one, but in practice such a release isn't going to happen. However,
+folks interested in that idea may want to check out the `Tauthon project`_,
+which is a Python 2/3 hybrid language that maintains full Python 2.7
+compatibility while backporting backwards compatible enhancement from the
+Python 3 series.
+
+.. _Tauthon project: https://github.com/naftaliharris/tauthon
 
 :pep:`3151` means that Python 3.3+ has a significantly more sensible system
 for catching particular kinds of operating system errors. Here's the race
@@ -1764,9 +1940,9 @@ Another common complaint with Python 2 is the requirement to use empty
 complexity of splitting a package definition across multiple directories.
 By contrast, here's an example of how to split a package across multiple
 directories in Python 3.3+ (note the lack of ``__init__.py`` files). While
-technically this could be backported, the implementation depends on the new
+technically this can be backported, the implementation depends on the new
 pure Python implementation of the import system, which in turn depends on
-the Unicode friendly IO stack in Python 3, so backporting it would be far
+the Unicode friendly IO stack in Python 3, so backporting it is far
 from trivial::
 
     $ mkdir -p dir1/nspkg
@@ -1801,7 +1977,7 @@ module. That is fixed in Python 3::
     Imported submodule A
     Traceback (most recent call last):
       File "<string>", line 1, in <module>
-    ImportError: No module named 'nspkg.b'
+    ModuleNotFoundError: No module named 'nspkg.b'
 
 That said: Eric Snow *has* now backported the Python 3.4 import system
 to Python 2.7 as `importlib2 <https://pypi.python.org/pypi/importlib2>`__.
@@ -1846,6 +2022,12 @@ comprehensive coverage.
 
 While I've tried to just hit some highlights in this list, it's still rather
 long. The full What's New documents are substantially longer.
+
+.. note:: This answer was written for Python 3.5. For Python 3.6, some other
+   notable enhancements include the new f-string formatting syntax, the secrets
+   module, the ability to include underscores to improve the readability of
+   long string literals, changes to preserve the order of class namespaces
+   and function keyword arguments, type hints for named variables, and more.
 
 Some changes that are likely to affect most projects are error handling
 related:
@@ -2278,10 +2460,11 @@ The WSGI 1.1 spec is definitely a case of a "good enough" solution winning
 a battle of attrition. I'm actually hugely appreciative of the web
 development folks that put their time and energy both into creating the
 WSGI 1.1 specification *and* into updating their tools to support it. Like
-the Python core developers, most of the web development folks aren't in
-a position to use Python 3 professionally, but *unlike* most of the core
-developers, the kind of code they write falls squarely into the ASCII
-compatible binary protocol space where Python 3 still has some significant
+the Python core developers, most of the web development folks weren't in
+a position to use Python 3 professionally during the early years of its
+development, but *unlike* most of the core developers, the kind of code they
+write falls squarely into the ASCII
+compatible binary protocol space where Python 3 still had some significant
 ground to make up relative to Python 2 in terms of usability (although
 we've also converted our share of such code, just in bringing the standard
 library up to scratch).
@@ -2291,6 +2474,9 @@ library up to scratch).
 
 What's up with POSIX systems in Python 3?
 -----------------------------------------
+
+.. note:: This answer was written for Python 3.5. See :pep:`538` and :pep:`540`
+   for discussion of some key changes now being considered for Python 3.7.
 
 The fact that the Python 2 text model was essentially the POSIX text model
 with Unicode support bolted on to the side meant that interoperability
@@ -2457,7 +2643,7 @@ for details).
 What future changes in Python 3 are expected to further simplify migration?
 ---------------------------------------------------------------------------
 
-Most of the changes designed to further simplify migration landed in Pyton 3.5.
+Most of the changes designed to further simplify migration landed in Python 3.5.
 
 One less obviously migration related aspect of those changes is that the new
 gradual typing system is designed to allow Python 2 applications to be
@@ -2520,9 +2706,16 @@ of the major alternative implementations to support Python 3 (with the
 initial release of their PyPy3 runtime in June 2014). The initial PyPy3
 release targeted Python 3.2 compatibility, but the changes needed to catch
 up on subsequent Python 3 releases are relatively minor compared to the
-changes between Python 2 and Python 3. Work also continues on another major
-compatibility project for PyPy, numpypy, which aims to integrate PyPy with
-the various components of the scientific Python stack.
+changes between Python 2 and Python 3, and the PyPy team received a funded
+development grant from Mozilla to bring PyPy3 at least up to Python 3.5
+compatibility. Work also continues on another major compatibility project
+for PyPy, numpypy, which aims to integrate PyPy with the various components
+of the scientific Python stack.
+
+.. note:: The info below on Jython and IronPython is currently quite dated.
+   This section should also be updated to mention the new Python 3 only
+   bytecode-focused implementations targeting the JVM (PyBeeware's VOC), and
+   JavaScript runtimes (PyBeeware's Batavia)
 
 Jython's development efforts are currently still focused on getting their
 currently-in-beta Python 2.7 support to a full release, and there is also
@@ -2623,10 +2816,11 @@ What would it take to make you change your minds about the current plan?
 ------------------------------------------------------------------------
 
 With both the Debian/Ubuntu and Fedora/RHEL/CentOS ecosystems well
-advanced in their migration plans, major commercial end users like
-Facebook, Google and Dropbox migrating, and the PSF's own major services like
-python.org and the Python Package Index switching to Python 3, the short
-answer here is "That's not going to happen".
+advanced in their migration plans, public cloud providers offering Python 3
+in addition to Python 2, major commercial end users like Facebook, Google and
+Dropbox migrating, and the PSF's own major services like python.org and the
+Python Package Index switching to Python 3, the short answer here is "That's
+not going to happen".
 
 While a crash in general Python adoption might have made us change our minds,
 Python ended up working its way into more and more niches *despite* the
@@ -2639,9 +2833,9 @@ the Python 3 text model is in a much better position to serve as a bridge
 between the POSIX text model and the JVM and CLR text models than the Python 2
 model ever was).
 
-Another alternative that would have made us seriously question our current
+Another scenario that would have made us seriously question our current
 strategy is if professional educators had told us that Python 2 was a better
-teaching language, but that didn't happen -they're amongst Python 3's more
+teaching language, but that didn't happen - they're amongst Python 3's more
 vocal advocates, encouraging the rest of the community to "just upgrade
 already".
 
@@ -2674,7 +2868,7 @@ the restoration of Unicode literals in 3.3 to help with migration from Python
 If we hadn't considered Python 3.2 to be at least back to parity with
 Python 2.7, *that* is when we would have decided to continue on to do a
 Python 2.8 release. We're even less inclined to do so now that Python 3
-has an additional 5 years of feature development under its belt relative to
+has several additional years of feature development under its belt relative to
 the Python 2 series.
 
 There *are* parts of the Python 3 standard library that are also useful in
@@ -2682,7 +2876,12 @@ Python 2. In those cases, they're frequently available as backports on
 the Python Package Index (including even a backport of the new asynchronous
 IO infrastructure).
 
-I think the other aspect that is often missed in these discussions is that
+There are also various language level changes that are backwards compatible
+with Python 2.7, and the `Tauthon project`_ was started specifically
+to create a hybrid runtime implementation that expanded the "common subset"
+of Python 2 & 3 to include those additional features.
+
+However, I think a key point that is often missed in these discussions is that
 the adoption cycles for new versions of the core Python runtime have *always*
 been measured in years due to the impact of stable platforms like Red Hat
 Enterprise Linux.
@@ -2704,10 +2903,10 @@ modification dates on the tagged INSTALL file):
 * 10.2 dropped Python 2.4 (Windows) in November 2010
 * 12.0 dropped Python 2.4 (non-Windows) in February 2012
 * 12.2 dropped Python 2.5 in August 2012
-* 15.4 will likely drop Python 2.6 in September 2015
+* 15.4 dropped Python 2.6 in September 2015
 
-Python 2.6 compatibility is still required more than 7 years after its
-original release, and isn't getting dropped until well after the first CentOS 7
+Python 2.6 compatibility was still required more than 7 years after its
+original release, and didn't get dropped until well after the first CentOS 7
 release was available (not to mention the earlier release of a Python 2.7
 SCL).
 
@@ -2725,7 +2924,8 @@ PSF has helped fund the migration of some key libraries. Barry Warsaw drove
 a fair amount of Python 3 migration work for Ubuntu at Canonical. Victor
 Stinner is working hard to encourage and support the OpenStack migration. I
 have been offering advice and encouragement to Bohuslav Kabrda (the main
-instigator of Fedora's migration to Python 3), as well as helping out with
+instigator of Fedora's migration to Python 3), Petr Viktorin, and other members
+of Red Hat's Python maintenance team, as well as helping out with
 Fedora policy recommendations on supporting parallel Python 2 and 3 stacks (I
 have actually had very little to do with Red Hat's efforts to support Python
 3 overall, as I haven't needed to. Things like Python 3 support in Red Hat
@@ -2755,7 +2955,7 @@ Certainly - a change of this magnitude is sufficiently disruptive that
 many members of the Python community are legitimately upset at the impact
 it has had on them.
 
-This is particularly the case for users that have never personally been
+This is particularly the case for users that had never personally been
 bitten by the broken Python 2 Unicode model, either because they work
 in an environment where almost all data is encoded as ASCII text
 (increasingly uncommon, but still not all that unusual in English speaking
@@ -2768,10 +2968,11 @@ Another category of users are upset that we chose to stop adding new
 features to the Python 2 series, and have been `quite emphatic`_ that attempts
 to backport features (other than via PyPI modules like ``unittest2``,
 ``contextlib2`` and ``configparser``) are unlikely to receive significant
-support from python-dev.  We're not *opposed* to such efforts - it's merely the
-case that (outside a few specific exceptions like :pep:`466`) we aren't
-interested in doing them ourselves, and are unlikely to devote significant
-amounts of time to assisting those that *are* interested.
+support from python-dev.  As long as they don't attempt to present themselves
+as providing official Python releases, we're not *opposed* to such efforts -
+it's merely the case that (outside a few specific exceptions like :pep:`466`)
+we aren't interested in doing them ourselves, and are unlikely to devote
+significant amounts of time to assisting those that *are* interested.
 
 A third category of user negatively affected by the change are those users
 that deal regularly with binary data formats and had mastered the
@@ -2811,8 +3012,9 @@ thus remain available to Python 2 users. For other cases, such as ``unittest``
 or ``configparser``, the respective standard library maintainer also maintains
 a PyPI backport.
 
-The fourth choice seems rather unlikely, since it would be a lot more work
-then updating even a relatively large application to run on Python 3.
+The fourth choice exists as the `Tauthon project`_, so it will be interesting
+to see if that gains significant traction with developers and platform
+providers.
 
 The final choice would be unfortunate, but we've done what we can to make
 the other alternatives (especially the first three) more attractive.
@@ -2850,10 +3052,9 @@ Programmatic deprecation is now reserved for cases where an API or feature
 is considered so fundamentally flawed that using it is very likely to cause
 bugs in user code. An example of this is the deeply flawed
 ``contextlib.nested`` API which encouraged a programming style that would
-fail to correctly close resources on failure. For Python 3.3, it has finally
-been replaced with a superior incremental ``contextlib.ExitStack`` API which
-should support similar functionality without being anywhere near as error
-prone.
+fail to correctly close resources on failure. For Python 3.3, it was finally
+replaced with a superior incremental ``contextlib.ExitStack`` API which
+supports similar functionality without being anywhere near as error prone.
 
 Secondly, code level deprecation warnings are now silenced by default. The
 expectation is that test frameworks and test suites will enable them (so
@@ -2920,9 +3121,9 @@ what's coming down the pipe in the future, it's all
 But <name> says Python 3 was a waste of time/didn't help/made things worse!
 ---------------------------------------------------------------------------
 
-One popular approach to saying why Python 2 should be used over Python 3
-even for *new* projects is to appeal to the authority of someone like Armin
-Ronacher (creator of Jinja2, Flask, Click, etc) or Greg Wilson (creator
+One previously popular approach to saying why Python 2 should be used over
+Python 3 even for *new* projects was to appeal to the authority of someone like
+Armin Ronacher (creator of Jinja2, Flask, Click, etc) or Greg Wilson (creator
 of Software Carpentry).
 
 The piece missing from that puzzle is the fact that Guido van Rossum, the
@@ -2941,10 +3142,10 @@ unreadable mess that isn't optimised for anything. In many of those cases,
 we were trading problems we considered unfixable for ones that could at least
 be solved in theory, even if they haven't been solved *yet*.
 
-In Armin's case, the disconnect is that his primary interest is in writing
+In Armin's case, the disconnect was that his primary interest is in writing
 server components for POSIX systems, and cross-platform command clients for
 those applications. This runs into issues, because Python 3's operating
-system integration can currently get confused in a few situations:
+system integration could get confused in a few situations:
 
 * on POSIX systems (other than Mac OS X), in the default C locale
 * on POSIX systems (other than Mac OS X), when ssh environment forwarding
@@ -2968,12 +3169,12 @@ decide between cross-platform consistency (i.e. assuming UTF-8 everywhere),
 and attempting to integrate correctly with the encoding assumptions of other
 applications on the same system. We opted for the latter approach, primarily
 due to the dominance of ASCII incompatible encodings in East Asian countries
-(ShiftJIS, ISO-2022, various CJK codecs, etc). For ordinary user space
-applications, including the IPython Notebook, this works fine. For other
-code, we're discussing our options with platform developers to help improve
-the integration experience (and that may include switching our assumptions
-to "UTF-8 everywhere" in the 3.6 time frame - that will be a far more viable
-assumption in 2016 than it was in 2008).
+(ShiftJIS, ISO-2022, GB-18030, various CJK codecs, etc). For ordinary user space
+applications, including the IPython Notebook, this already works fine. For other
+code, we're now working through the process of assuming UTF-8 as the default
+binary encoding when the operating system presents us with dubious encoding
+recommendations (that will be a far more viable assumption in 2016 than it was
+in 2008).
 
 For anyone that would like to use Python 3, but is concerned by Armin
 Ronacher's comments, the best advice I can offer is to *use his libraries*
@@ -2983,14 +3184,13 @@ problems. It offers a fine developer experience, regardless of which version
 of Python you're using. His complaints are about the fact that *writing those
 libraries* became more difficult in Python 3 in some respects, but he gained
 the insight needed to comprehensively document those concerns the hard way:
-by porting his code. Making that kind of code easier to write again is
-certainly on the todo list for the core dev team, but most users don't need
-to wait for that: the libraries needed to deal with it already exist today,
-just as many libraries provide tools for dealing with the Unicode issues that
-exist in Python 2.
+by porting his code. His feedback on the topic was cogent and constructive
+enough that it was cited as one of the reasons he received a Python Software
+Foundation Community Service Award in
+`October 2014 <https://www.python.org/community/awards/psf-awards/#october-2014>`__.
 
 The complaints from the Software Carpentry folks (specifically Greg Wilson)
-are different. Those are more about the fact that we haven't done a very
+were different. Those were more about the fact that we hadn't done a very
 good job of explaining the problems that the Python 3 transition was
 designed to fix. This is an example of something Greg himself calls "the
 curse of knowledge": experts don't necessarily know what other people
@@ -3015,7 +3215,7 @@ Greg say that Python 3 is no harder to learn than Python 2 for English
 speakers, as we took some of the more advanced concepts from Python 2 and
 made them *no longer optional* when designing Python 3. The Python 3
 "Hello World!" now introduces users to string literals, builtins, function
-calls and expression statements, rather than just to string literas and a
+calls and expression statements, rather than just to string literals and a
 single dedicated print statement. Iterators arrive much earlier in the
 curriculum than they used to, as does Unicode. The chained exceptions that
 are essential for improving the experience of debugging obscure production
@@ -3085,6 +3285,11 @@ moved out to its own :ref:`article <multicore-python>`.
 
 Well, why not just add JIT compilation, then?
 ---------------------------------------------
+
+.. note:: This answer was written for Python 3.5. While CPython 3.6 still
+   doesn't ship with a JIT compiler by default, it *does* ship with a dynamic
+   `frame evaluation hook <https://docs.python.org/3/whatsnew/3.6.html#pep-523-adding-a-frame-evaluation-api-to-cpython>`__
+   that allows third party method JITs like Pyjion to be enabled at runtime.
 
 This is another one of those changes which is significantly easier said
 than done - the problem is with the "just", not the "add JIT compilation".
@@ -3189,10 +3394,10 @@ reliability and support. For these users, the question isn't necessarily
 "Why would I start using Python 3?", it is more likely to be
 "Why would I stop using Python 2?".
 
-The efforts of the first five years of Python 3 deployment have been about
+The efforts of the first several years of Python 3 deployment were about
 positioning it to start crossing that gap between early adopters and more
-conservative users. Those pieces are starting to fall into place,
-especially as enterprise Linux vendors start bringing supported Python 3
+conservative users. Around 2014, those pieces started falling into place,
+especially as more enterprise Linux vendors brought supported Python 3
 offerings to market.
 
 This means that while conservative users that are *already* using Python are
