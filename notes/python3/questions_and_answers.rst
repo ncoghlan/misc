@@ -347,7 +347,7 @@ this model pervasive in Python 3:
   answer for all users.
 * in the initial Python 3 design, interpolation of variables into a format
   string was treated solely as a text domain operation. While this proved to be
-  a reasonable design decision for the flexible Python-specific `str.format`
+  a reasonable design decision for the flexible Python-specific ``str.format``
   operation, :pep:`461` restored printf-style interpolation for ASCII
   compatible segments in binary data in Python 3.5. Prior to that change, the
   lack of this feature could sometimes be an irritation when working extensively
@@ -636,7 +636,9 @@ What are (or were) some of the key dates in the Python 3 transition?
 
    This list is rather incomplete and I'm unlikely to find the time to
    complete it - if anyone is curious enough to put together a more
-   comprehensive timeline, feel free to use this answer as a starting point.
+   comprehensive timeline, feel free to use this answer as a starting point,
+   or else just send a PR to add more entries to this list.
+
    At least the following events should be included in a more complete list:
 
    * NumpPy 1.5.0 and SciPy 0.9.0 (these added Python 3 support)
@@ -665,11 +667,16 @@ What are (or were) some of the key dates in the Python 3 transition?
    * Pillow (PIL fork) Python 3 support
    * greenlet Python 3 support
    * pylint Python 3 support
+   * nose2 Python 3 support
+   * pytest Python 3 support
    * Editor/IDE support for Python 3 in: PyDev, Spyder,
      Python Tools for Visual Studio, PyCharm, WingIDE, Komodo (others?)
    * Embedded Python 3 support in: Blender, Kate, vim, gdb, gcc, LibreOffice
      (others?)
    * version availability in services like Google DataLab and Azure Notebooks
+   * Python 3 availability in Heroku
+   * availability in the major Chinese public cloud platforms (Alibaba/Aliyun,
+     Tencent Qcloud, Huawei Enterprise Cloud, etc)
    * the day any bar on https://python3wos.appspot.com/ or
      wedge on http://py3readiness.org/ turned green was potentially
      a significant step for some subsection of the community :)
@@ -709,9 +716,9 @@ Python 2.6 and 3.0 are covered in :pep:`361`.
 compatible features defined for Python 3.0, along with a number of
 ``__future__`` imports and the ``-3`` switch to help make it practical
 to add Python 3 support to existing Python 2 software (or to migrate
-entirely from Python 2 to Python 3). (Python 2.6 received its final
-security update in October 2013, however, support remains available
-through commercial redistributors)
+entirely from Python 2 to Python 3). While Python 2.6 received its final
+upstream security update in October 2013, maintenance & support remains
+available through some commercial redistributors.
 
 **December 2008**: In a fit of misguided optimism, Python 3.0 was published
 with an unusably slow pure Python IO implementation - it worked tolerably
@@ -731,8 +738,8 @@ Python 3.1 release cycle.
 
 **June 2009**: Python 3.1 final was published, providing the first version
 of the Python 3 runtime that was genuinely usable for realistic workloads.
-Python 3.1 is currently still receiving security updates, and will continue
-to do so until June 2014.
+Python 3.1 received its final security update in April 2012, and even commercial
+support for this version is no longer available.
 
 **October 2009**: :pep:`3003` was published, declaring a moraratorium on
 language level changes in Python 2.7 and Python 3.2. This was done to
@@ -746,12 +753,12 @@ covers the details of the Python 2.7 release cycle.
 **July 2010**: Python 2.7 final was published, providing many of the
 backwards compatible features added in the Python 3.1 and 3.2 releases.
 Python 2.7 is currently still fully supported by the core development team
-and will continue receiving maintenance releases until at least July 2015,
-and security updates for a not yet specified period beyond that.
+and will continue receiving maintenance & security updates until at least
+January 2020.
 
 Once the Python 2.7 maintenance branch was created, the py3k development
 branch was retired: for the first time, the default branch in the main
-CPython repo was the upcoming version or Python 3.
+CPython repo was the upcoming version of Python 3.
 
 **August 2010**: The first alpha of Python 3.2 was published. :pep:`392`
 covers the details of the Python 3.2 release cycle. Python 3.2 restored
@@ -763,8 +770,8 @@ compatible version of the Python Web Server Gateway Interface.
 
 **February 2011**: Python 3.2 final was published, providing the first
 version of Python 3 with support for the Web Server Gateway Interface.
-Python 3.2 is currently still receiving security updates, and an end date
-for further updates has not yet been set.
+Python 3.2 received its final security update in February 2016, and even
+commercial support for this version is no longer available.
 
 **March 2011**: After Arch Linux updated their Python symlink to
 refer to Python 3 (breaking many scripts that expected it to refer to
@@ -780,7 +787,7 @@ This ended more than two years of managing parallel updates of four active
 branches using ``svnmerge`` rather than a modern DVCS.
 
 **November 2011**: :pep:`404` (the Python 2.8 Un-release Schedule) was
-published to make it crystal clear that the core development has no plans
+published to make it crystal clear that the core development team had no plans
 to make a third parallel release in the Python 2.x series.
 
 **March 2012**: The first alpha of Python 3.3 was published. :pep:`398`
@@ -790,12 +797,15 @@ Ronacher and other web framework developers pointed out that this was one
 change that the web frameworks couldn't handle on behalf of their users.
 :pep:`414` covers the detailed rationale for that change.
 
-**April 2012**: Canonical publishes Ubuntu 12.04 LTS, including commercial
+**April 2012**: Canonical published Ubuntu 12.04 LTS, including commercial
 support for both Python 2.7 and Python 3.2.
 
 **September 2012**: Six and half years after the inauguration of the Python
 3000 project, Python 3.3 final was published as the first Python
-3 release without a corresponding Python 2 feature release.
+3 release without a corresponding Python 2 feature release. This release
+introduced the :pep:`380` ``yield from`` syntax that was used heavily in the
+``asyncio`` coroutine framework provisionally introduced to the standard library
+in Python 3.4, and subsequently declared stable in Python 3.6.
 
 **October 2012**: :pep:`430` was published, and the `online Python
 documentation <http://docs.python.org>`__ updated to present the Python 3
@@ -804,12 +814,12 @@ continue to be interpreted as referring to the Python 2.7 documentation.
 
 **March 2013**: :pep:`434` redefined IDLE as an application shipped with
 Python rather than part of the standard library, allowing the addition of
-new features in maintenance releases. Significantly, this allows the
+new features in maintenance releases. Significantly, this allowed the
 Python 2.7 IDLE to be brought more into line with the features of the Python
 3.x version.
 
-Continuum Analytics offer commercial support for cross-platform Python 3.3+
-environments through their "Anaconda" Python distributions.
+Continuum Analytics started offering commercial support for cross-platform
+Python 3.3+ environments through their "Anaconda" Python distributions.
 
 **August 2013**: The first alpha of Python 3.4 was published. :pep:`429`
 covers the details of the Python 3.4 release cycle. Amongst other changes,
@@ -819,14 +829,15 @@ only" restriction for the convenience methods on the builtin types.
 
 **September 2013**: Red Hat published "Red Hat Software Collections 1.0",
 providing commercial support for both Python 2.7 and Python 3.3 on Red
-Hat Enterprise Linux systems.
+Hat Enterprise Linux systems, with later editions adding support for
+additional 3.x releases.
 
 **December 2013**: The initial development of MicroPython, a variant of Python
 3 specifically for microcontrollers, was successfully crowdfunded on
 Kickstarter.
 
 **March 2014**: Python 3.4 final was published as the second Python 3
-release without a corresponding Python 2 release. It includes several
+release without a corresponding Python 2 release. It included several
 features designed to provide a better starting experience for newcomers
 to Python, such as bundling the "pip" installer by default, and including
 a rich asynchronous IO library.
@@ -844,8 +855,15 @@ applications using newer (or older!) language, database and web server
 runtimes, without interfering with the versions of those runtimes integrated
 directly into the operating system.
 
-**May 2014**: Python 2.7.7, the first Python 2.7 maintenance release to
-incorporate additional security enhancement features as described in
+.. note::
+
+   With the original "5 years for migration to Python 3" target date
+   approaching, April 2014 is also when Guido van Rossum amended the
+   :pep:`Python 2.7 release PEP <373>` to move the expected end-of-life date
+   for Python 2.7 out to 2020.
+
+**May 2014**: Python 2.7.7 was published, the first Python 2.7 maintenance
+release to incorporate additional security enhancement features as described in
 :pep:`466`. Also the first release where Microsoft contributed developer
 time to the creation of the Windows installers.
 
@@ -861,10 +879,11 @@ lifecycle).
 
 .. note::
 
-   June also marks 5 years after the first production capable
-   Python 3.x release, Python 3.1.
+   June 2014 also marked 5 years after the first production capable
+   Python 3.x release (Python 3.1), and the original target date for
+   completion of the Python 3 migration.
 
-**July 2014**: CentOS 7 released, providing a community distro based on
+**July 2014**: CentOS 7 was released, providing a community distro based on
 Red Hat Enterprise Linux 7, and marking the beginning of the end of the Python
 2.7 rollout (the CentOS system Python is a key dependency for many Python
 users).
@@ -874,17 +893,25 @@ boto v2.32.0 released with Python 3 support for most modules.
 nltk 3.0b1 released with Python 3 support and the NLTK book switched over to
 covering Python 3 by default.
 
-**October 2014**: SUSE Linux Enterprise Server 12 released, containing
-supported Python 3.4 RPMs
+**February 2015**: The first alpha of Python 3.5 was published. :pep:`478`
+covers the details of the Python 3.4 release cycle. Amongst other changes,
+:pep:`461` restored support for printf-style interpolation of binary data,
+addressing a significant usability regression in Python 3 relative to Python 2.
 
-**March 2015**: Microsoft Azure App Service launches with both Python 2.7 and
-Python 3.4 support.
+**October 2014**: SUSE Linux Enterprise Server 12 was released, containing
+supported Python 3.4 RPMs, adding SUSE to the list of commercial Python 3
+redistributors.
+
+**March 2015**: Microsoft Azure App Service launched with both Python 2.7 and
+Python 3.4 support, adding Microsoft to the list of commercial Python
+redistributors for the first time.
 
 **August 2015**: At the Fedora community's annual Flock conference, Denise
 Dumas (Red Hat's VP of Platform Engineering), explicitly states that it is an
-engineering goal to include only Python 3 in the next major version of Red Hat
-Enterprise Linux (previously this had been implied by Red Hat's work on
-migrating Fedora and its infrastructure to Python 3, but not explicitly stated)
+engineering goal to include only Python 3 in the base operating system for the
+next major version of Red Hat Enterprise Linux (previously this had been implied
+by Red Hat's work on migrating Fedora and its infrastructure to Python 3, but
+not explicitly stated in a public venue)
 
 **September 2015**: Python 3.5 final was released, bringing native syntactic
 support for asynchronous coroutines and a matrix multiplication operator, as
@@ -892,10 +919,10 @@ well as the typing module for static type hints. Applications, libraries and
 frameworks wishing to take advantage of the new syntactic features need to
 reconsider whether or not to continue supporting Python 2.7.
 
-Twisted 15.4 was released, the first version to included
-a Python 3 compatible version of the "Twisted Trial" test runner. This allowed
-the Twisted project to start running its test suite under Python 3, leading to
-steadily increasing Python 3 compatibility in subsequent Twisted releases.
+Twisted 15.4 was released, the first version to include a Python 3 compatible
+version of the "Twisted Trial" test runner. This allowed the Twisted project
+to start running its test suite under Python 3, leading to steadily increasing
+Python 3 compatibility in subsequent Twisted releases.
 
 **October 2015**: Fedora 23 ships with only Python 3 in the LiveCD and all
 default images other than the Server edition.
@@ -914,10 +941,11 @@ declaring their intent to end Python 2 support in line with the reference
 interpreter's anticipated 2020 date for the end of free community support.
 
 **August 2016**: Google App Engine added official Python 3.4(!) support to their
-Flexible Environments
+Flexible Environments (Python 3.5 support followed not long after, but the
+original announcement was for Python 3.4).
 
-Microsoft Azure published instructions on how to select a particular Python
-version using
+As part of rolling out Python 3.5 support, Microsoft Azure published
+instructions on how to select a particular Python version using
 `App Service Site Extensions <https://blogs.msdn.microsoft.com/pythonengineering/2016/08/04/upgrading-python-on-azure-app-service/>`__.
 
 Initial release of Enthought Deployment Manager, with support for Python 2.7
@@ -946,7 +974,9 @@ Enthought Canopy 2.0.0 available, supporting Python 2.7 and 3.5 (official
 binary release date TBD - as of April 2017, the download page still offers
 Canopy 1.7.4)
 
-**April 2017**: AWS Lambda added official Python 3.6 support
+**April 2017**: AWS Lambda added official Python 3.6 support, making Python 3
+available by default through the 3 largest public cloud providers (Amazon,
+Microsoft, Google).
 
 IPython 6.0 was released, the first feature release to require
 Python 3. The IPython 5.x series remains in maintenance mode as the last
@@ -958,6 +988,9 @@ Project Jupyter's language independent notebook protocol).
    speculative as to their exact nature and timing. However, they reflect
    currently available information based on the stated intentions of developers
    and distributors.
+
+**December 2017**: Anticipated date for the Django 2.0 release, which is
+expected to be the first version of Django to drop support for Python 2.7.
 
 **April 2018**: Anticipated date for Ubuntu and Fedora to have finished
 migrating default components of their respective server editions to
@@ -993,7 +1026,7 @@ release brought with it two major syntactic enhancemens (one giving Python's
 coroutine support its own dedicated syntax, distinct from generators, and
 another providing a binary operator for matrix multiplication), and restored
 a key feature that had been missing relative to Python 2 (printf-style binary
-interpolation support). It also incorporates a couple of key reliability and
+interpolation support). It also incorporated a couple of key reliability and
 maintainability enhancements, in the form of automated handling of EINTR
 signals, and the inclusion of a gradual typing framework in the standard
 library.
@@ -1026,22 +1059,24 @@ developers.
 
 However, despite those challenges, key parts of the ecosystem were able to
 successfully add Python 3 support well before the 3.5 release. NumPy and the
-rest of the scientific Python stack supports both versions, as do several GUI
-frameworks (including PyGame). The Pyramid, Django and Flask web frameworks
-support both versions, as does the mod_wsgi Python application server, and the
-py2exe, py2app and cx-Freeze binary creators. The upgrade of Pillow from a
-repackaging project to a full development fork also brought PIL support to
-Python 3.
+rest of the scientific Python stack supported both versions by 2015, as did
+several GUI frameworks (including PyGame).
 
-nltk supports Python 3 as of nltk 3.0, and the NLTK book has switched to be
-based on Python 3 by default.
+The Pyramid, Django and Flask web frameworks supported both versions, as did
+the mod_wsgi Python application server, and the py2exe, py2app and cx-Freeze
+binary creators. The upgrade of Pillow from a repackaging project to a full
+development fork also brought PIL support to Python 3.
+
+nltk supported Python 3 as of nltk 3.0, and the NLTK bookswitched to be based
+on Python 3 at the same time.
 
 For AWS users, most ``boto`` modules became available on Python 3 as of
 `http://boto.readthedocs.org/en/latest/releasenotes/v2.32.0.html <boto
 v2.32.0>`__.
 
 PyInstaller is a popular option for creating native system installers for Python
-applications, and it has support Python 3 since the 3.0 release in October 2015.
+applications, and it has supported Python 3 since the 3.0 release in October
+2015.
 
 gevent is a popular alternative to writing natively asynchronous code, and it
 became generally available for Python 3 with the 1.1 release in March 2016.
@@ -1104,7 +1139,9 @@ the Linux distro aggregations, is also in the process of migrating from Python
 page for the migration.
 
 Outside the Linux ecosystem, other Python redistributors like ActiveState,
-Enthought, and Continuum Analytics provide both Python 2 and Python 3 releases.
+Enthought, and Continuum Analytics provide both Python 2 and Python 3 releases,
+and Python 3 environments are also available through the major public cloud
+platforms.
 
 
 .. _Python 2 or Python 3: http://wiki.python.org/moin/Python2orPython3
@@ -1126,9 +1163,13 @@ on *their* timetable rather than ours (at least within a window of several
 years), and we expect commercial redistributors to extend that timeline even
 further.
 
-I personally expect Python 2.7 to remain a reasonably common deployment
+The PyPy project have also stated their intention to continue providing a
+Python 2.7 compatible runtime indefinitely, since the RPython language used
+to implement PyPy is a subset of Python 2 rather than of Python 3.
+
+I personally expect CPython 2.7 to remain a reasonably common deployment
 platform until mid 2024. Red Hat Enterprise Linux 7 (released in June 2014)
-uses Python 2.7 as the system Python, and many library, framework and
+uses CPython 2.7 as the system Python, and many library, framework and
 application developers base their minimum supported version of Python on the
 system Python in RHEL (especially since that also becomes the system Python in
 downstream rebuilds like CentOS and Scientific Linux). While Red Hat's actively
@@ -1157,9 +1198,9 @@ That said, the Python 3 reference interpreter also offers quite a few new low
 level configuration options that let embedding applications control the memory
 allocators used, monitor and control all bytecode execution, and various
 other improvements to the runtime embedding functionality, so the natural
-incentives for application developers to migrate are starting to accumulate, so
-we may see more activity on that front as the 2020 date for the end of community
-support of the Python 2 series gets closer.
+incentives for application developers to migrate are starting to accumulate,
+which means we may see more activity on that front as the 2020 date for the
+end of community support of the Python 2 series gets closer.
 
 
 .. _slow-uptake:
@@ -1226,7 +1267,7 @@ cared about this in the slightest. Instead, what we saw was the following:
 
 * people coming up with great migration guides and utilities *independently*
   of the core development team. While `six`_ was created by a core
-  developer (Benjamin Peterson), and `lib2to3` and the main porting guides
+  developer (Benjamin Peterson), and ``lib2to3`` and the main porting guides
   are published by the core development team, `python-modernize`_ was created
   by Armin Ronacher (creator of Jinja2 and Flask), while `python-future`_
   was created by Ed Schofield based on that earlier work. Lennart Regebro
@@ -1234,8 +1275,8 @@ cared about this in the slightest. Instead, what we saw was the following:
   Python 3 <http://python3porting.com/>`__
 * Linux distributions aiming to make Python 2 an optional download and
   have only Python 3 installed by default
-* commercial Python redistributors ensuring that Python 3 was included as
-  one of their supported offerings
+* commercial Python redistributors and public cloud providers ensuring that
+  Python 3 was included as one of their supported offerings
 * customers approaching operating system vendors and asking for assistance
   in migrating large proprietary code bases from Python 2 to Python 3
 * more constrained plugin ecosystems that use an embedded Python interpreter
@@ -1294,7 +1335,7 @@ public data set in Google Big Query, and
 `this post <https://langui.sh/2016/12/09/data-driven-decisions/>`__ goes over
 some of the queries that are possible with the available data. The records
 are incomplete prior to June 2016, but running the query in April 2017 shows
-downloads from Python 3 clients increasing from around 7% of approximately 7
+downloads from Python 3 clients increasing from around 7% of approximately 430
 million downloads in June 2016 to around 12% of approximately 720 million
 downloads in March 2017.
 
@@ -1311,11 +1352,11 @@ imposing too much maintenance overhead.
 
 The last metric reached the point where Python 3 downloads outnumbered Python 2
 downloads (54% vs 46%) back in 2013. Those stats needs to be collected manully
-from the `www.python.org` server logs, so I don't have anything more recent than
-that.
+from the ``www.python.org`` server access logs, so I don't have anything more
+recent than that.
 
-The Python 3 ecosystem is definitely still the smaller of the two at this point
-in time (by a non-trivial margin), but users that start with Python 3 are able
+The Python 3 ecosystem is definitely still the smaller of the two as of April
+2017 (by a non-trivial margin), but users that start with Python 3 are able
 to move parts of their applications and services to Python 2 readily enough if
 the need arises, and hopefully with a clear idea of which parts of Python 2 are
 the modern recommended parts that survived the transition to Python 3, and which
@@ -1337,7 +1378,7 @@ Python 2 ecosystem are already available, and the combination of the Python
 provide assurance of a steady supply of both Python developers, and work for
 those developers (in the 2016 edition of IEEE's survey of programming languages,
 Python was 3rd, trailing only Java and C, overtaking C++ relative to its
-2015 position, and both C++ and C# relative to initial 2014 survey).
+2015 position, and both C++ and C# relative to the initial 2014 survey).
 
 For me, with my Linux-and-infrastructure-software bias, the
 tipping point has been Ubuntu and Fedora successfully making the transition
@@ -1363,7 +1404,7 @@ Specifically in the context of infrastructure, I also see the `ongoing migration
 being Python 2 only applications to being Python 3 compatible as highly
 significant, as OpenStack is arguably one of the most notable Python
 projects currently in existence in terms of spreading awareness outside
-the traditional open source and academic environs. In particular, if
+the traditional open source and academic environs. In particular, as
 OpenStack becomes a Python 3 application, then the plethora of regional cloud
 provider developers and hardware vendor plugin developers employed
 to work on it will all be learning Python 3 rather than Python 2.
@@ -1391,11 +1432,11 @@ support in Python 3.5 addressed some of the key concerns raised by the
 developers of the Twisted networking library.
 
 The adoption of ``asyncio`` as *the* standard framework for asynchronous IO and
-the subsequence incorporation of first class syntactic support for coroutines
+the subsequent incorporation of first class syntactic support for coroutines
 have also helped the web development community resolve a long standing issue
 with a lack of a standard way for web servers and web frameworks to communicate
 regarding long lived client connections (such as those needed for WebSockets
-support), providing a clear incentive for migration to Python 3.4+ that
+support), providing a clear incentive for migration to Python 3.3+ that
 didn't exist with earlier Python 3 versions.
 
 
