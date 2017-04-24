@@ -681,6 +681,8 @@ What are (or were) some of the key dates in the Python 3 transition?
      wedge on http://py3readiness.org/ turned green was potentially
      a significant step for some subsection of the community :)
 
+2006
+^^^^
 
 **March 2006**: Guido van Rossum (the original creator of Python and
 hence Python's Benevolent Dictator for Life), with financial support
@@ -706,7 +708,13 @@ declared out of scope of the Python 3000 project.
 At this point in time, Python 2 and Python 3 started being developed in
 parallel by the core development team for the reference interpreter.
 
+2007
+^^^^
+
 **August 2007**: The first alpha release of Python 3.0 was published.
+
+2008
+^^^^
 
 **February 2008**: The first alpha release of Python 2.6 was published
 alongside the third alpha of Python 3.0. The release schedules for both
@@ -732,6 +740,9 @@ commercial Python 3 support by shipping ActivePython 3.0 almost immediately
 after the upstream release was published. They have subsequently continued this
 trend of closely following upstream Python 3 releases.
 
+2009
+^^^^
+
 **March 2009**: The first alpha release of Python 3.1, with an updated
 C accelerated IO stack, was published. :pep:`375` covers the details of the
 Python 3.1 release cycle.
@@ -750,6 +761,9 @@ as some improvements to the builtin types).
 **December 2009**: The first alpha of Python 2.7 was published. :pep:`373`
 covers the details of the Python 2.7 release cycle.
 
+2010
+^^^^
+
 **July 2010**: Python 2.7 final was published, providing many of the
 backwards compatible features added in the Python 3.1 and 3.2 releases.
 Python 2.7 is currently still fully supported by the core development team
@@ -767,6 +781,9 @@ been removed in Python 3.0.
 
 **October 2010**: :pep:`3333` was published to define WSGI 1.1, a Python 3
 compatible version of the Python Web Server Gateway Interface.
+
+2011
+^^^^
 
 **February 2011**: Python 3.2 final was published, providing the first
 version of Python 3 with support for the Web Server Gateway Interface.
@@ -790,6 +807,9 @@ branches using ``svnmerge`` rather than a modern DVCS.
 published to make it crystal clear that the core development team had no plans
 to make a third parallel release in the Python 2.x series.
 
+2012
+^^^^
+
 **March 2012**: The first alpha of Python 3.3 was published. :pep:`398`
 covers the details of the Python 3.3 release cycle. Notably, Python
 3.3 restored support for Python 2 style Unicode literals after Armin
@@ -811,6 +831,9 @@ in Python 3.4, and subsequently declared stable in Python 3.6.
 documentation <http://docs.python.org>`__ updated to present the Python 3
 documentation by default. In order to preserve existing links, deep links
 continue to be interpreted as referring to the Python 2.7 documentation.
+
+2013
+^^^^
 
 **March 2013**: :pep:`434` redefined IDLE as an application shipped with
 Python rather than part of the standard library, allowing the addition of
@@ -835,6 +858,9 @@ additional 3.x releases.
 **December 2013**: The initial development of MicroPython, a variant of Python
 3 specifically for microcontrollers, was successfully crowdfunded on
 Kickstarter.
+
+2014
+^^^^
 
 **March 2014**: Python 3.4 final was published as the second Python 3
 release without a corresponding Python 2 release. It included several
@@ -893,6 +919,9 @@ boto v2.32.0 released with Python 3 support for most modules.
 nltk 3.0b1 released with Python 3 support and the NLTK book switched over to
 covering Python 3 by default.
 
+2015
+^^^^
+
 **February 2015**: The first alpha of Python 3.5 was published. :pep:`478`
 covers the details of the Python 3.4 release cycle. Amongst other changes,
 :pep:`461` restored support for printf-style interpolation of binary data,
@@ -933,6 +962,9 @@ educational initiative.
 
 PyInstaller 3.0 was released, supporting Python 2.7, and 3.3+.
 
+2016
+^^^^
+
 **March 2016**: gevent 1.1 was released, supporting Python 2.6, 2.7, and 3.3+.
 
 **May 2016**: Several key projects in the Scientific Python community publish
@@ -965,6 +997,9 @@ significant improvements to the Windows compatibility of bytes-centric
 POSIX applications, and the Windows-specific `py` launcher started using Python
 3 by default when both Python 2.x and 3.x are available on the system.
 
+2017
+^^^^
+
 **March 2017**: The first beta release of PyPy3 largely compatible with
 Python 3.5 was
 `published <https://morepypy.blogspot.com.au/2017/03/pypy27-and-pypy35-v57-two-in-one-release.html>`__
@@ -983,6 +1018,9 @@ Python 3. The IPython 5.x series remains in maintenance mode as the last
 version supporting Python 2.7 (and Python 3 based variants of IPython retain
 full support for running and interacting with Python 2 language kernels using
 Project Jupyter's language independent notebook protocol).
+
+Future
+^^^^^^
 
 .. note:: At time of writing, the events below are in the future, and hence
    speculative as to their exact nature and timing. However, they reflect
