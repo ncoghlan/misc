@@ -681,6 +681,8 @@ What are (or were) some of the key dates in the Python 3 transition?
      wedge on http://py3readiness.org/ turned green was potentially
      a significant step for some subsection of the community :)
 
+.. _timeline-2006:
+
 2006
 ^^^^
 
@@ -708,10 +710,14 @@ declared out of scope of the Python 3000 project.
 At this point in time, Python 2 and Python 3 started being developed in
 parallel by the core development team for the reference interpreter.
 
+.. _timeline-2007:
+
 2007
 ^^^^
 
 **August 2007**: The first alpha release of Python 3.0 was published.
+
+.. _timeline-2008:
 
 2008
 ^^^^
@@ -740,6 +746,8 @@ commercial Python 3 support by shipping ActivePython 3.0 almost immediately
 after the upstream release was published. They have subsequently continued this
 trend of closely following upstream Python 3 releases.
 
+.. _timeline-2009:
+
 2009
 ^^^^
 
@@ -761,6 +769,8 @@ as some improvements to the builtin types).
 **December 2009**: The first alpha of Python 2.7 was published. :pep:`373`
 covers the details of the Python 2.7 release cycle.
 
+.. _timeline-2010:
+
 2010
 ^^^^
 
@@ -781,6 +791,8 @@ been removed in Python 3.0.
 
 **October 2010**: :pep:`3333` was published to define WSGI 1.1, a Python 3
 compatible version of the Python Web Server Gateway Interface.
+
+.. _timeline-2011:
 
 2011
 ^^^^
@@ -807,6 +819,8 @@ branches using ``svnmerge`` rather than a modern DVCS.
 published to make it crystal clear that the core development team had no plans
 to make a third parallel release in the Python 2.x series.
 
+.. _timeline-2012:
+
 2012
 ^^^^
 
@@ -831,6 +845,8 @@ in Python 3.4, and subsequently declared stable in Python 3.6.
 documentation <http://docs.python.org>`__ updated to present the Python 3
 documentation by default. In order to preserve existing links, deep links
 continue to be interpreted as referring to the Python 2.7 documentation.
+
+.. _timeline-2013:
 
 2013
 ^^^^
@@ -858,6 +874,8 @@ additional 3.x releases.
 **December 2013**: The initial development of MicroPython, a variant of Python
 3 specifically for microcontrollers, was successfully crowdfunded on
 Kickstarter.
+
+.. _timeline-2014:
 
 2014
 ^^^^
@@ -919,6 +937,8 @@ boto v2.32.0 released with Python 3 support for most modules.
 nltk 3.0b1 released with Python 3 support and the NLTK book switched over to
 covering Python 3 by default.
 
+.. _timeline-2015:
+
 2015
 ^^^^
 
@@ -962,6 +982,8 @@ educational initiative.
 
 PyInstaller 3.0 was released, supporting Python 2.7, and 3.3+.
 
+.. _timeline-2016:
+
 2016
 ^^^^
 
@@ -997,6 +1019,8 @@ significant improvements to the Windows compatibility of bytes-centric
 POSIX applications, and the Windows-specific `py` launcher started using Python
 3 by default when both Python 2.x and 3.x are available on the system.
 
+.. _timeline-2017:
+
 2017
 ^^^^
 
@@ -1019,6 +1043,8 @@ version supporting Python 2.7 (and Python 3 based variants of IPython retain
 full support for running and interacting with Python 2 language kernels using
 Project Jupyter's language independent notebook protocol).
 
+.. _timeline-future:
+
 Future
 ^^^^^^
 
@@ -1030,7 +1056,7 @@ Future
 **December 2017**: Anticipated date for the Django 2.0 release, which is
 expected to be the first version of Django to drop support for Python 2.7.
 
-**April 2018**: Anticipated date for Ubuntu and Fedora to have finished
+**April 2018**: Revised anticipated date for Ubuntu and Fedora to have finished
 migrating default components of their respective server editions to
 Python 3 (some common Linux components, most notably the Samba protocol server,
 proved challenging to migrate, so the stateful server variants of these
