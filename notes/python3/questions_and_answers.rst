@@ -936,7 +936,7 @@ PyInstaller 3.0 was released, supporting Python 2.7, and 3.3+.
 **March 2016**: gevent 1.1 was released, supporting Python 2.6, 2.7, and 3.3+.
 
 **May 2016**: Several key projects in the Scientific Python community publish
-the `Python 3 Statement <http://www.python3statement.org/>`, explicitly
+the `Python 3 Statement <http://www.python3statement.org/>`_, explicitly
 declaring their intent to end Python 2 support in line with the reference
 interpreter's anticipated 2020 date for the end of free community support.
 
