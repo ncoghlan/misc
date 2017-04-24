@@ -962,7 +962,7 @@ readable (due to the use of inline interpolation expressions) and faster (due
 to the compiler assisted format parsing) than previous string formatting
 options. Through :pep:`528` and :pep:`529`, this release also featured
 significant improvements to the Windows compatibility of bytes-centric
-POSIX applications, and the Windows-specific `py` launched started using Python
+POSIX applications, and the Windows-specific `py` launcher started using Python
 3 by default when both Python 2.x and 3.x are available on the system.
 
 **March 2017**: The first beta release of PyPy3 largely compatible with
