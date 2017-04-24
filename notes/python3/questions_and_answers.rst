@@ -943,7 +943,7 @@ covering Python 3 by default.
 ^^^^
 
 **February 2015**: The first alpha of Python 3.5 was published. :pep:`478`
-covers the details of the Python 3.4 release cycle. Amongst other changes,
+covers the details of the Python 3.5 release cycle. Amongst other changes,
 :pep:`461` restored support for printf-style interpolation of binary data,
 addressing a significant usability regression in Python 3 relative to Python 2.
 
