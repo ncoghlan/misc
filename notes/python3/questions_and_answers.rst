@@ -2819,8 +2819,8 @@ of the scientific Python stack.
 
 .. note:: The info below on Jython and IronPython is currently quite dated.
    This section should also be updated to mention the new Python 3 only
-   bytecode-focused implementations targeting the JVM (PyBeeware's VOC), and
-   JavaScript runtimes (PyBeeware's Batavia)
+   bytecode-focused implementations targeting the JVM (BeeWare's VOC), and
+   JavaScript runtimes (BeeWare's Batavia)
 
 Jython's development efforts are currently still focused on getting their
 currently-in-beta Python 2.7 support to a full release, and there is also
