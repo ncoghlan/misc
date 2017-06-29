@@ -1,0 +1,4 @@
+Vagrant.configure("2") do |config|
+  config.vm.box = "freebsd/FreeBSD-10.3-RELEASE"
+  config.ssh.shell = "sh"
+end
