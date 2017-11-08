@@ -176,6 +176,9 @@ Note:
 * I mostly just look for existing tests that call into the code I'm intending
   to change, and fit my new test case in there
 * Almost all of the tests are written in Python
+* It can be helpful to post your draft test case to whatever issue you're
+  trying to fix, in order to get feedback on whether or not it actually
+  specifies the desired behaviour
 
 ---
 
@@ -183,9 +186,6 @@ Note:
 
 Note:
 
-* It can be helpful to post your draft test case to whatever issue you're
-  trying to fix, in order to get feedback on whether or not it actually
-  specifies the desired behaviour
 * Regardless of whether or you do that or not, the next step is to actually
   make the change
 * The pure Python code for the standard library is all in the Lib subdirectory
