@@ -21,9 +21,7 @@ Kenneth Reitz's famous `requests`_ module :)
     the refactored 1.0 release, that support has been moved out to a separate
     `requests-kerberos`_ project.
 
-All examples in this document are from a Python 2 interactive session. As far
-as I know, there is not yet a Python 3 compatible version of the `kerberos`_
-module available.
+All examples in this document are from a Python 2 interactive session.
 
 .. _Pulp: http://pulpproject.org
 .. _kerberos: http://pypi.python.org/pypi/kerberos
