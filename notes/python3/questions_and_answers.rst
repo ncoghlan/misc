@@ -433,7 +433,7 @@ related to incorrect handling of code points greater than 65,535 in code that
 assumed a one-to-one correspondence between Python code points and Unicode
 code points. This wasn't generally a big deal when code points in common use
 all tended to fit in the BMP, but started to become more problematic as
-things like mathematical and musical notation, ancient langages, emoticons
+things like mathematical and musical notation, ancient languages, emoticons
 and additional CJK ideographs were added. Given the choice between greater
 memory efficiency and correctness, the Linux distributions chose correctness,
 imposing a non-trivial memory usage penalty on Unicode heavy applications
