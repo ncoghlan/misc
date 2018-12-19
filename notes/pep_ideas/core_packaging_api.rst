@@ -10,7 +10,7 @@ Incremental Plans to Improve Python Packaging
 
    For more recent information, refer to the Python Packaging Authority's
    `Python Packaging User Guide
-   <https://python-packaging-user-guide.readthedocs.org/en/latest/future.html>`__.
+   <https://packaging.python.org/>`__.
 
 As of March 2013, the Python packaging ecosystem is currently in a rather
 confusing state. If you're starting a new Python project, should you use the
@@ -56,7 +56,7 @@ deployed.
 
    This section is outdated. For more recent information, refer to the
    Python Packaging Authority's `Python Packaging User Guide
-   <https://python-packaging-user-guide.readthedocs.org/en/latest/current.html>`__.
+   <https://packaging.python.org/>`__.
 
 If all you're after is clear, simple advice for right now, today, as of
 March 2013, this is as clear as it gets:
@@ -80,7 +80,7 @@ March 2013, this is as clear as it gets:
   an old Perl tool).
 
 .. _distribute: http://pythonhosted.org/distribute/
-.. _Python Package Index: https://pypi.python.org
+.. _Python Package Index: https://pypi.org
 .. _pip: http://www.pip-installer.org/en/latest/
 .. _virtualenv: http://www.virtualenv.org/en/1.9.X/
 .. _zc.buildout: http://www.buildout.org/
@@ -500,7 +500,7 @@ These issues led to the creation of the ``distutils2`` project, as a way to
 start migrating to an updated packaging infrastructure. As the core
 development team largely wasn't concerned about cross platform packaging
 issues, the burden of guiding the packaging improvement effort landed on a
-small number of heads (mostly Tarek ZiadÃ© and Ã‰ric Araujo, and they became
+small number of heads (mostly Tarek Ziadé and Éric Araujo, and they became
 core developers in large part *because* they were working on packaging and
 the rest of us were just happy that someone else had volunteered to handle
 the job).
@@ -518,13 +518,13 @@ for the creation of the standard installation database format defined in
 support uninstallation of previously installed distributions.
 
 At the PyCon 2011 language summit, the decision was made to adopt distutils2
-wholesale into Python 3.3 as the ``packaging`` package. At `Ã‰ric Araujo's
+wholesale into Python 3.3 as the ``packaging`` package. At `Éric Araujo's
 recommendation`_, that decision was reversed late in the Python 3.3 release
 cycle, as he felt the distutils2 code, and the PEPs it was based on simply
 weren't ready as the systematic fix that was needed to convince the
 community as a whole to migrate to the new packaging infrastructure.
 
-.. _Ã‰ric Araujo's recommendation: http://mail.python.org/pipermail/python-dev/2012-June/120430.html
+.. _Éric Araujo's recommendation: http://mail.python.org/pipermail/python-dev/2012-June/120430.html
 
 In the ensuing discussion, many good points were raised. This essay started
 as my attempt to take a step back and *clearly define the problem that needs
