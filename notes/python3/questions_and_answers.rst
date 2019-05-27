@@ -131,7 +131,7 @@ even in Python 3).
 
    For a more complete version of this answer that places it in the wider
    industry context of Unicode adoption, see this article of mine on the Red
-   Hat Developer Blog: `The Transition to Multilingual Programming with Python <http://developerblog.redhat.com/2014/09/09/transition-to-multilingual-programming-python/>`__
+   Hat Developer Blog: `The Transition to Multilingual Programming with Python <https://developers.redhat.com/blog/2014/09/09/transition-to-multilingual-programming-python/>`__
 
    I also gave a presentation on the topic at Python Australia 2015, which is
    available online `here <https://www.youtube.com/watch?v=TeZZ9q8pqjQ>`__
