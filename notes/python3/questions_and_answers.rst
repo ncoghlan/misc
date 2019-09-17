@@ -1047,6 +1047,36 @@ version supporting Python 2.7 (and Python 3 based variants of IPython retain
 full support for running and interacting with Python 2 language kernels using
 Project Jupyter's language independent notebook protocol).
 
+**December 2017**: Django `released Django 2.0
+<https://www.djangoproject.com/weblog/2017/dec/02/django-20-released/>`__,
+the first version of Django to `drop support for Python 2.7
+<https://docs.djangoproject.com/en/2.2/releases/2.0/>`__.
+
+.. _timeline-2018:
+
+2018
+^^^^
+
+**March 2018**: Guido van Rossum `clarified
+<https://mail.python.org/archives/list/python-dev@python.org/message/JIVZVIGYTW3EZZDDDRN3O3XQFX7FIVE7/>`__
+that "The way I see the situation for 2.7 is that EOL is January 1st,
+2020, and there will be no updates, not even source-only security
+patches, after that date. Support (from the core devs, the PSF, and
+python.org) stops completely on that date. If you want support for 2.7
+beyond that day you will have to pay a commercial vendor."
+
+.. _timeline-2019:
+
+2019
+^^^^
+
+**August 2019**: The entirety of http://py3readiness.org/ `turned
+green
+<https://twitter.com/py3readiness/status/1158663735436894208>`__,
+indicating Python 3 support for the 360 most downloaded packages on
+PyPI.
+
+
 .. _timeline-future:
 
 Future
@@ -1057,8 +1087,6 @@ Future
    currently available information based on the stated intentions of developers
    and distributors.
 
-**December 2017**: Anticipated date for the Django 2.0 release, which is
-expected to be the first version of Django to drop support for Python 2.7.
 
 **April 2018**: Revised anticipated date for Ubuntu and Fedora to have finished
 migrating default components of their respective server editions to
