@@ -2,7 +2,7 @@ Python 3 Q & A
 ==============
 
 :Published:    29th June, 2012
-:Last Updated: 22nd April, 2017
+:Last Updated: 17th September, 2019
 
 Throughout the long transition to "Python 3 by default" in the Python ecosystem,
 the question was occasionally raised as to whether or not the core Python
@@ -16,10 +16,14 @@ future users of the language than they did current users, so existing users
 and effort to a transition that would cost them more in time and energy in the
 near term than it would save them for years to come.
 
-Since I had seen variants of these questions several times over the years,
-I started this FAQ as an intermittently updated record of my thoughts on the
-topic, with updates generally being prompted by new iterations of the questions.
-You can see the full history of changes in the `source repo`_.
+Since I had seen variants of these questions several times over the
+years, I started this FAQ as an intermittently updated record of my
+thoughts on the topic, with updates generally being prompted by new
+iterations of the questions. I gave Sumana Harihareswara co-maintainer
+access in September 2019 so she could aid in updating it, but for
+simplicity's sake will retain the first-person singular ("I")
+throughout. You can see the full history of changes in the `source
+repo`_.
 
 The views expressed below are my own. While many of them are shared by
 other core developers, and I use "we" in several places where I believe
