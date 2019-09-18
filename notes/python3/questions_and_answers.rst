@@ -646,7 +646,6 @@ What are (or were) some of the key dates in the Python 3 transition?
    At least the following events should be included in a more complete list:
 
    * NumpPy 1.5.0 and SciPy 0.9.0 (these added Python 3 support)
-   * matplotlib Python 3 support
    * IPython Python 3 support
    * Cython Python 3 support
    * SWIG Python 3 support
@@ -1064,6 +1063,10 @@ that "The way I see the situation for 2.7 is that EOL is January 1st,
 patches, after that date. Support (from the core devs, the PSF, and
 python.org) stops completely on that date. If you want support for 2.7
 beyond that day you will have to pay a commercial vendor."
+
+**September 2018**: matplotlib `released 3.0.0
+<https://pypi.org/project/matplotlib/3.0.0/>`__, the first release to
+drop support for Python 2.x.
 
 .. _timeline-2019:
 
