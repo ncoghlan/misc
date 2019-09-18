@@ -2344,7 +2344,7 @@ Other quality of life improvements include:
 * :mod:`enum` for creating enumeration types
 * :mod:`ipaddress` for working with both IPv4 and IPv6 addresses
 * :mod:`pathlib` for a higher level filesystem abstraction than the low
-  level interface provided by
+  level interface provided by ``os.path``
 * :mod:`statistics` for a simple high school level statistics library
   (mean, median, mode, variance, standard deviation, etc)
 * :meth:`datetime.timestamp` makes it easy to convert a datetime object to a
