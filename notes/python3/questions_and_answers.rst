@@ -34,14 +34,16 @@ time, and aside from Guido noting that I was incorrect about his initial
 motivation in creating Python 3, none of them has raised any objections
 to specific points or the document in general.
 
-I am also not writing on behalf of the Python Software Foundation (of which
-I am a nominated Fellow) nor on behalf of Red Hat (my current employer).
+I am also not writing on behalf of the Python Software Foundation (of
+which I am a nominated Fellow), nor on behalf of Python's Steering
+Council (of whom I am a member), nor on behalf of Red Hat (my previous
+employer, for whom I worked for much of the time I maintained this).
 However, I do use several Red Hat specific examples when discussing
-enterprise perception and adoption of the Python platform - effectively
-bridging that gap between early adopters and the vast majority of prospective
-platform users is kinda what Red Hat specialises in, so I consider them an
-important measure of the inroads Python 3 is making into more conservative
-development communities.
+enterprise perception and adoption of the Python platform -
+effectively bridging that gap between early adopters and the vast
+majority of prospective platform users is kinda what Red Hat
+specialises in, so I consider them an important measure of the inroads
+Python 3 is making into more conservative development communities.
 
 There were several extensive discussions of the state of the Python 3
 transition at PyCon US 2014 in Montreal, starting at the language summit,
@@ -141,7 +143,7 @@ even in Python 3).
    available online `here <https://www.youtube.com/watch?v=TeZZ9q8pqjQ>`__
 
 The core Unicode support in the Python 2 series has the honour of being
-documented in PEP 100.
+documented in :pep:`100`.
 It was created as `Misc/unicode.txt`_ in March 2000 (before the
 PEP process even existed) to integrate Unicode 3.0 support into Python 2.0.
 Once the PEP process was defined, it was deemed more appropriate to capture
@@ -958,12 +960,13 @@ redistributors.
 Python 3.4 support, adding Microsoft to the list of commercial Python
 redistributors for the first time.
 
-**August 2015**: At the Fedora community's annual Flock conference, Denise
-Dumas (Red Hat's VP of Platform Engineering), explicitly states that it is an
-engineering goal to include only Python 3 in the base operating system for the
-next major version of Red Hat Enterprise Linux (previously this had been implied
-by Red Hat's work on migrating Fedora and its infrastructure to Python 3, but
-not explicitly stated in a public venue)
+**August 2015**: At the Fedora community's annual Flock conference,
+Denise Dumas (Red Hat's VP of Platform Engineering), explicitly stated
+that it would be an engineering goal to include only Python 3 in the
+base operating system for the next major version of Red Hat Enterprise
+Linux (previously this had been implied by Red Hat's work on migrating
+Fedora and its infrastructure to Python 3, but not explicitly stated
+in a public venue)
 
 **September 2015**: Python 3.5 final was released, bringing native syntactic
 support for asynchronous coroutines and a matrix multiplication operator, as
@@ -976,10 +979,10 @@ version of the "Twisted Trial" test runner. This allowed the Twisted project
 to start running its test suite under Python 3, leading to steadily increasing
 Python 3 compatibility in subsequent Twisted releases.
 
-**October 2015**: Fedora 23 ships with only Python 3 in the LiveCD and all
+**October 2015**: Fedora 23 shipped with only Python 3 in the LiveCD and all
 default images other than the Server edition.
 
-MicroPython support for the BBC micro:bit project is
+MicroPython support for the BBC micro:bit project was
 publicly announced, ensuring first class Python 3 support in a significant
 educational initiative.
 
@@ -992,7 +995,7 @@ PyInstaller 3.0 was released, supporting Python 2.7, and 3.3+.
 
 **March 2016**: gevent 1.1 was released, supporting Python 2.6, 2.7, and 3.3+.
 
-**May 2016**: Several key projects in the Scientific Python community publish
+**May 2016**: Several key projects in the Scientific Python community published
 the `Python 3 Statement <http://www.python3statement.org/>`_, explicitly
 declaring their intent to end Python 2 support in line with the reference
 interpreter's anticipated 2020 date for the end of free community support.
