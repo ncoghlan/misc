@@ -2,7 +2,7 @@ Python 3 Q & A
 ==============
 
 :Published:    29th June, 2012
-:Last Updated: 17th September, 2019
+:Last Updated: 22nd September, 2019
 
 Throughout the long transition to "Python 3 by default" in the Python ecosystem,
 the question was occasionally raised as to whether or not the core Python
@@ -1066,6 +1066,13 @@ that "The way I see the situation for 2.7 is that EOL is January 1st,
 patches, after that date. Support (from the core devs, the PSF, and
 python.org) stops completely on that date. If you want support for 2.7
 beyond that day you will have to pay a commercial vendor."
+
+**June 2018**: `Python 3.7.0 final was released
+<https://www.python.org/downloads/release/python-370/>`__, bringing
+`improvements <https://docs.python.org/3/whatsnew/3.7.html>`__ such as
+the new built-in ``breakpoint()`` function defined by :pep:`553`,
+``time`` functions with nanosecond resolution per :pep:`564`, and more
+streamlined Python documentation translations.
 
 **September 2018**: matplotlib `released 3.0.0
 <https://pypi.org/project/matplotlib/3.0.0/>`__, the first release to
