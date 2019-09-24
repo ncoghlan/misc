@@ -2,7 +2,7 @@ Python 3 Q & A
 ==============
 
 :Published:    29th June, 2012
-:Last Updated: 22nd September, 2019
+:Last Updated: 23rd September, 2019
 
 Throughout the long transition to "Python 3 by default" in the Python ecosystem,
 the question was occasionally raised as to whether or not the core Python
@@ -634,6 +634,21 @@ Python 2 (even when they're technically backwards compatible):
 * using the new IO model (with automatic encoding and decoding support) by
   default
 
+When is the last release of Python 2.7 coming out?
+--------------------------------------------------
+
+Python 2.7.18 is planned for release during PyCon North America in
+April 2020, per :pep:`373`. The "End of Life/sunset" will be January
+1, 2020, meaning that on that date the release manager for Python
+2.7.x is planning to stop development and freeze the codebase to new
+changes (see `python-dev discussion
+<https://mail.python.org/archives/list/python-dev@python.org/thread/APWHFYQDKNVYQAK3HZMBGQIZHAVRHCV2/?sort=date>`__),
+and starting on January 1st, there will be no backports into 2.7.18
+from Python 3. We're allowing ourselves the flexibility to make
+exceptions in that code freeze if someone writes a patch to fix a
+newly-found dire security issue introduced since the 2.7.17
+release. But that's flexibility to potentially do that -- not a
+guarantee.
 
 What are (or were) some of the key dates in the Python 3 transition?
 --------------------------------------------------------------------
