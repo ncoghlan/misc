@@ -1098,12 +1098,29 @@ drop support for Python 2.x.
 2019
 ^^^^
 
+**May 2019**: The `release of Red Hat Enterprise Linux 8
+<https://developers.redhat.com/blog/2019/05/07/red-hat-enterprise-linux-8-now-generally-available/>`__. RHEL
+8 `does not come with Python 2 or Python 3 already installed and
+usable by default
+<https://developers.redhat.com/blog/2019/05/07/what-no-python-in-red-hat-enterprise-linux-8/>`__. Red
+Hat recommended users choose Python 3, and `the platform Python for
+use by system tools in RHEL 8 is Python 3.6
+<https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/8/html-single/configuring_basic_system_settings/index#using-python3_configuring-basic-system-settings>`__.
+
+
 **August 2019**: The entirety of http://py3readiness.org/ `turned
 green
 <https://twitter.com/py3readiness/status/1158663735436894208>`__,
 indicating Python 3 support for the 360 most downloaded packages on
 PyPI.
 
+**September 2019**: The release of `CentOS 7
+<https://wiki.centos.org/Manuals/ReleaseNotes/CentOS7.1908#head-15a98690d8f7f5aeb60b7bd0acb9a13b799d0177>`__
+(in which Python 3 is available) and `CentOS 8
+<https://lists.centos.org/pipermail/centos-announce/2019-September/023449.html>`__
+(which `follows RHEL 8
+<https://wiki.centos.org/Manuals/ReleaseNotes/CentOS8.1905?action=show&redirect=Manuals%2FReleaseNotes%2FCentOSLinux8#head-45f030ea18abdace20915c9249057c45511da3c3>`__
+in its approach to Python).
 
 .. _timeline-future:
 
