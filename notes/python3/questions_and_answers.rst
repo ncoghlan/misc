@@ -662,7 +662,7 @@ What are (or were) some of the key dates in the Python 3 transition?
 
    At least the following events should be included in a more complete list:
 
-   * NumpPy 1.5.0 and SciPy 0.9.0 (these added Python 3 support)
+   * NumPy 1.5.0 and SciPy 0.9.0 (these added Python 3 support)
    * IPython Python 3 support
    * Cython Python 3 support
    * SWIG Python 3 support
@@ -1107,7 +1107,6 @@ Hat recommended users choose Python 3, and `the platform Python for
 use by system tools in RHEL 8 is Python 3.6
 <https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/8/html-single/configuring_basic_system_settings/index#using-python3_configuring-basic-system-settings>`__.
 
-
 **August 2019**: The entirety of http://py3readiness.org/ `turned
 green
 <https://twitter.com/py3readiness/status/1158663735436894208>`__,
@@ -1204,7 +1203,7 @@ rest of the scientific Python stack supported both versions by 2015, as did
 several GUI frameworks (including PyGame).
 
 The Pyramid, Django and Flask web frameworks supported both versions, as did
-the mod_wsgi Python application server, and the py2exe, py2app and cx-Freeze
+the ``mod_wsgi`` Python application server, and the py2exe, py2app and cx-Freeze
 binary creators. The upgrade of Pillow from a repackaging project to a full
 development fork also brought PIL support to Python 3.
 
@@ -1327,6 +1326,14 @@ there primarily to manipulate the application data model and there arguably
 aren't any major improvements in Python 3 for that kind of use case as yet, but
 still some risk of breaking existing scripts if the application updates to
 Python 3.
+
+From a web security perspective, Python 2's standard library is
+already a relic. Anyone doing web programming in Python 2 that touches
+the public internet should *not* be relying solely on the standard
+library, since it's too old, and instead should be relying more on
+third party modules from PyPI. For example, instead of the SSL module,
+use `Requests
+<https://2.python-requests.org/en/master/community/faq/#python-3-support>`__.
 
 For the open source applications when Python 2 is currently seen as a
 "good enough" scripting engine, the likely main driver for Python 3 scripting
@@ -1492,7 +1499,7 @@ and I'm not aware of anyone *adding* Python 3 support, and then removing it as
 imposing too much maintenance overhead.
 
 The last metric reached the point where Python 3 downloads outnumbered Python 2
-downloads (54% vs 46%) back in 2013. Those stats needs to be collected manully
+downloads (54% vs 46%) back in 2013. Those stats needs to be collected manually
 from the ``www.python.org`` server access logs, so I don't have anything more
 recent than that.
 
