@@ -2,7 +2,7 @@ Python 3 Q & A
 ==============
 
 :Published:    29th June, 2012
-:Last Updated: 23rd September, 2019
+:Last Updated: 26th September, 2019
 
 Throughout the long transition to "Python 3 by default" in the Python ecosystem,
 the question was occasionally raised as to whether or not the core Python
@@ -139,7 +139,7 @@ even in Python 3).
    industry context of Unicode adoption, see this article of mine on the Red
    Hat Developer Blog: `The Transition to Multilingual Programming with Python <https://developers.redhat.com/blog/2014/09/09/transition-to-multilingual-programming-python/>`__
 
-   I also gave a presentation on the topic at Python Australia 2015, which is
+   I also gave a presentation on the topic at PyCon Australia 2015, which is
    available online `here <https://www.youtube.com/watch?v=TeZZ9q8pqjQ>`__
 
 The core Unicode support in the Python 2 series has the honour of being
@@ -1295,13 +1295,16 @@ platforms.
 When can we expect Python 2 to be a purely historical relic?
 ------------------------------------------------------------
 
-Python 2 is still a good language. While I think Python 3 is a *better*
-language (especially when it comes to the text model, error reporting, the
-native coroutine syntax in Python 3.5, and the string formatting syntax in
-Python 3.6), we've deliberately designed the migration plan so users can update
-on *their* timetable rather than ours (at least within a window of several
-years), and we expect commercial redistributors to extend that timeline even
-further.
+The short answer is: 2024, four years after CPython support ends
+in 2020.
+
+Python 2 is still a good language. While I think Python 3 is a
+*better* language (especially when it comes to the text model, error
+reporting, the native coroutine syntax in Python 3.5, and the string
+formatting syntax in Python 3.6), we've deliberately designed the
+migration plan so users could update on *their* timetable rather than
+ours (at least within a window of several years), and we expect
+commercial redistributors to extend that timeline even further.
 
 The PyPy project have also stated their intention to continue providing a
 Python 2.7 compatible runtime indefinitely, since the RPython language used
@@ -1317,15 +1320,39 @@ trying to change that slow update cycle by encouraging application developers
 to target the Software Collections runtimes rather than the system Python, that
 change in itself is a significant cultural shift for the RHEL/CentOS user base.
 
-Aside from Blender, it appears most publishing and animation tools with
-Python support (specifically Scribus, InkScape and AutoDesk tools like
-Maya and MotionBuilder) are happy enough with Python 2.7. GIS tools similarly
-currently still use Python 2.7. This actually makes a fair bit of sense,
-especially for the commercial tools, since the Python support in these tools is
-there primarily to manipulate the application data model and there arguably
-aren't any major improvements in Python 3 for that kind of use case as yet, but
-still some risk of breaking existing scripts if the application updates to
-Python 3.
+Aside from Blender, it appears many publishing and animation tools
+with Python support are happy enough with Python 2.7 that they aren't
+quickly moving to Python 3. `Scribus
+<https://bugs.scribus.net/view.php?id=15030>`__, and some AutoDesk
+tools like `3ds Max
+<https://area.autodesk.com/blogs/the-3ds-max-blog/3ds-max-20202-and-public-road-map/>`__,
+`Maya
+<https://forums.autodesk.com/t5/maya-ideas/upgrade-to-python-3-x/idi-p/7963375>`__
+and MotionBuilder, support Python 2.7 and are only slowly moving to
+support Python 3. But some have made stronger commitments. `Inkscape's
+LTS 0.92.x line aims to continue supporting Python 2.7
+<https://bugs.launchpad.net/ubuntu/+source/inkscape/+bug/1735363>`__
+but `0.92.5 will also support Python 3
+<http://wiki.inkscape.org/wiki/index.php/Release_notes/0.92.5>`__, and
+`the 1.0 line will drop support for Python 2
+<http://wiki.inkscape.org/wiki/index.php/Release_notes/1.0>`__. And
+the `VFX Reference Platform
+<http://vfxplatform.com/#footnote-python3>`__ (tracked by AutoDesk
+etc.) is moving to Python 3.7 in calendar year 2020: "Python 3 in
+CY2020 is a firm commitment, it will be a required upgrade as Python 2
+will no longer be supported beyond 2020."
+
+Many GIS tools similarly currently still use Python 2.7. This actually
+makes a fair bit of sense, especially for the commercial tools, since
+the Python support in these tools is there primarily to manipulate the
+application data model and there arguably aren't any major
+improvements in Python 3 for that kind of use case as yet, but still
+some risk of breaking existing scripts if the application updates to
+Python 3. However, `ESRi's ArcGIS has handled the migration problem
+<https://pro.arcgis.com/en/pro-app/arcpy/get-started/python-migration-for-arcgis-pro.htm>`__
+by switching to Python 3 in the new ArcGIS product line, sticking with
+Python 2 in the ArcGIS Desktop/Server/Engine product lines, and
+providing tools to assist with migration between them.
 
 From a web security perspective, Python 2's standard library is
 already a relic. Anyone doing web programming in Python 2 that touches
@@ -1490,12 +1517,10 @@ downloads in March 2017.
 The second is based on publisher provided package metadata rather than automated
 version compatibility checking.
 
-Of the top 360 `most downloaded packages <http://py3readiness.org/>`__, ~94%
-offer Python 3 support, with several of those that are Python 2 only (such as
-graphite-web and supervisord) typically being run as standalone services rather
-than as imported modules that necessarily need to be using the same version of
-Python. Again, the trend is upwards (the number in 2014 was closer to 70%),
-and I'm not aware of anyone *adding* Python 3 support, and then removing it as
+Of the top 360 `most downloaded packages
+<http://py3readiness.org/>`__, 100% offer Python 3 support. Again, the
+trend is upwards (the number in 2014 was closer to 70%), and I'm not
+aware of anyone *adding* Python 3 support, and then removing it as
 imposing too much maintenance overhead.
 
 The last metric reached the point where Python 3 downloads outnumbered Python 2
@@ -1602,17 +1627,18 @@ in handling Unicode (we have some *excellent* Unicode developers in the
 core team, but feedback from a variety of sources is invaluable for a
 change of this magnitude).
 
-That feedback has already resulted in major improvements in the Unicode
-support for the Python 3.2, 3.3, 3.4, 3.5, and 3.6 releases. With the
-``codecs`` and ``email`` modules being brought into line, the Python 3.4
-release was the first one where the transition felt close to
-being "done" to me in terms of coping with the full implications of a
-strictly enforced distinction between binary and text data in the standard
-library, while Python 3.5 revisited some of the earlier design decisions of
-the Python 3 series and changed some of them based on several years of
-additional experience. Python 3.6 brought some major changes to the way
-binary system APIs are handled on Windows, and changes of similar scope are
-anticipated for 3.7 on non-Windows systems.
+That feedback has already resulted in major improvements in the
+Unicode support for the Python 3.2, 3.3, 3.4, 3.5, 3.6, and 3.7
+releases. With the ``codecs`` and ``email`` modules being brought into
+line, the Python 3.4 release was the first one where the transition
+felt close to being "done" to me in terms of coping with the full
+implications of a strictly enforced distinction between binary and
+text data in the standard library, while Python 3.5 revisited some of
+the earlier design decisions of the Python 3 series and changed some
+of them based on several years of additional experience. Python 3.6
+brought some major changes to the way binary system APIs are handled
+on Windows, and changes of similar scope in 3.7 improved support on
+non-Windows systems.
 
 While I'm optimistic that the system boundary handling changes proposed for
 Python 3.7 will resolve the last of the major issues, I nevertheless expect
@@ -1649,16 +1675,14 @@ similarly limited character sets than they are with the full flexibility of
 human languages, even the subset that has been pinned down to a particular
 binary representation thanks to the efforts of the Unicode Consortium.
 
-While the changes to the core text model in Python 3 *did* implicitly address
-many of the Unicode issues affecting Python 2, there are still plenty of
-Unicode handling issues that require their own independent updates. For
-example, the interactive console on Windows poses some particular challenges
-that have `yet to be satisfactorily resolved
-<http://bugs.python.org/issue1602>`__. One recurring problem is that many
-of these are relatively easy to work around (such as by using a graphical
-environment rather than the default interactive interpreter to avoid the
-command line limitations on Windows), but comparatively hard to fix properly
-(and then get agreement that the proposed fix is a suitable one).
+While the changes to the core text model in Python 3 *did* implicitly
+address many of the Unicode issues affecting Python 2, there are still
+plenty of Unicode handling issues that require their own independent
+updates. One recurring problem is that many of these are relatively
+easy to work around (such as by using a graphical environment rather
+than the default interactive interpreter to avoid the command line
+limitations on Windows), but comparatively hard to fix properly (and
+then get agreement that the proposed fix is a suitable one).
 
 The are also more specific questions covering the state of the :ref:`WSGI
 middleware interface <wsgi-status>` for web services, and the issues that
@@ -2363,6 +2387,7 @@ Security improvements include:
   providing reasonable security for use over the public internet, rather
   maximising interoperability (but potentially allowing operation in no
   longer secure modes)
+* the `secrets` module added in 3.6
 
 Object lifecycle and resource management has also improved significantly:
 
@@ -2508,6 +2533,13 @@ where:
 Is Python 3 more convenient than Python 2 in every respect?
 -----------------------------------------------------------
 
+.. note:: This answer was written for Python 3.5, and has only
+          partially been updated for 3.7 and later. For instance,
+          :pep:`461`, an accepted proposal to restore support for
+          *binary* interpolation that is to be source and semantically
+          compatible for the use cases we actually want to support in
+          Python 3, was finalized in Python 3.5.
+
 At this point in time, not quite. Python 3.5 comes much closer to this
 than Python 3.4 (which in turn was closer than 3.3, etc), but there are
 still some use cases that are more convenient in Python 2 because it handles
@@ -2587,13 +2619,10 @@ the Python 2 model that favoured wire protocol development over normal
 application development (where binary data should exist only at application
 boundaries and be converted to text or other structured data for internal
 processing). There's still plenty of additional improvements that could be
-made for Python 3.5 and later, though. Possible avenues for improvement
+made for Python 3.8 and later, though. Possible avenues for improvement
 previously discussed on python-dev, python-ideas or the CPython issue
 tracker include:
 
-* :pep:`461` is an accepted proposal to restore support for *binary*
-  interpolation that is to be source and semantically compatible for the use
-  cases we actually want to support in Python 3.
 * :pep:`467` is a draft proposal to clean up some of the legacy of the
   original Python 3 mutable ``bytes`` design. A related change is to better
   document the tuple-of-ints and list-of-ints behaviour of ``bytes`` and
@@ -2603,8 +2632,6 @@ tracker include:
   public API for use when developing custom codecs.
 * making it easier to register custom codecs (preferably making use of
   the native namespace package support added in Python 3.3).
-* adding a new `error handler <http://bugs.python.org/issue22016>`__ that
-  replaces surrogate escaped bytes with ``?`` characters in encoded output
 * introducing a string tainting mechanism that allows strings containing
   surrogate escaped bytes to be tagged with their encoding assumption and
   information about where the assumption was introduced. Attempting to
