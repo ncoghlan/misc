@@ -1387,6 +1387,75 @@ incentives for application developers to migrate are starting to accumulate,
 which means we may see more activity on that front as the 2020 date for the
 end of community support of the Python 2 series gets closer.
 
+Why have Linux distributions taken so long to migrate away from Python 2?
+-------------------------------------------------------------------------
+
+With RHEL 8 and Ubuntu LTS 18.04 now using Python 3.6 for their
+primary system Python installation, and Debian 10 and SLES 15 offering
+Python 3 support alongside Python 2, it’s reasonable to wonder why it
+took more than a decade for Linux distributions to reach a point where
+their migration away from the Python 2.x series is nearing completion.
+
+While part of the problem was simply the sheer amount of code to be
+reviewed and potentially updated, the core of the delay was the issues
+discussed in the answer to :ref:`posix-systems`: with Python 3’s
+internal text model now being different from the one in POSIX, the
+historical mechanisms for interacting with POSIX systems from Python
+2.x didn’t quite work right in earlier Python 3.x releases, and that
+situation needed to be improved before the interpreter would once
+again be fully suitable for use in core operating system components.
+
+That situation was largely resolved with the implementation of both
+:pep:`538` (locale coercion for the legacy C locale) and :pep:`540`
+(UTF-8 mode) in CPython 3.7. The system Python installation in RHEL 8
+actually includes a backport of the PEP 538 locale coercion behaviour,
+as per `the relevant section in the PEP
+<https://www.python.org/dev/peps/pep-0538/#backporting-to-python-3-6-x>`__.
+
+(Note: Red Hat and Canonical have both contributed significantly to
+the broad adoption of Python 3 as a platform, migrating not only their
+own projects and applications, but also often investing time in adding
+Python 3 support to the open source libraries that they depend on.)
+
+
+Why did Apple decide not to ship Python 3?
+------------------------------------------
+
+The short answer is: they decided not to ship Python, and several
+other scripting languages, **at all** (with the OS, for end user use),
+and we believe that decision had nothing to do with the 2-to-3
+transition.
+
+Unlike the open source Linux distributors, Apple doesn’t generally
+make the rationale for their engineering decisions public. The one
+thing we do know in this case is that in `the macOS 10.15 release
+notes
+<https://developer.apple.com/documentation/macos\_release\_notes/macos\_catalina\_10\_15\_beta\_9\_release\_notes#3318248>`__,
+Apple have declared **all** of the open source language runtimes that
+they currently ship (including Python, Perl, and Ruby) to be
+deprecated, and have advised application developers that require those
+runtimes to bundle their own interpreter with their application. The
+macOS 10.15 release notes also explicitly advise against using the
+macOS system installation of Python 2.7 for any purpose.
+
+So while it's possible that the creation of Python 3 was one of the
+factors that contributed to this eventual outcome, the product
+management decision within Apple appears to have been “We will not
+actively promote or encourage any developer experience for our
+platforms that we don’t largely control” (specifically, Obective-C and
+Swift). They’re hardly unique amongst platform developers in that
+regard - there were major battles for control between Sun and
+Microsoft over Java that contributed to Microsoft’s eventual creation
+of the C# programming language, and the later fights between Oracle
+and Google (also over Java), presumably had some impact on the
+latter’s decision to embrace Kotlin as their preferred language for
+Android app development.
+
+(Note: Linux distribution vendors also advise against using the system
+Python runtimes to run your own custom applications, and RHEL 8
+installs the system Python in a way that means it isn’t available to
+users by default.)
+
 
 .. _slow-uptake:
 
