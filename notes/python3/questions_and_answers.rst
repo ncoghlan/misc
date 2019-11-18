@@ -672,7 +672,6 @@ What are (or were) some of the key dates in the Python 3 transition?
 
    At least the following events should be included in a more complete list:
 
-   * NumPy 1.5.0 and SciPy 0.9.0 (these added Python 3 support)
    * IPython Python 3 support
    * Cython Python 3 support
    * SWIG Python 3 support
@@ -819,6 +818,9 @@ covers the details of the Python 3.2 release cycle. Python 3.2 restored
 preliminary support for the binary and text transform codecs that had
 been removed in Python 3.0.
 
+`NumPy 1.5.0 was released <https://numpy.org/devdocs/release/1.5.0-notes.html>`__,
+the first version to support Python 3.
+
 **October 2010**: :pep:`3333` was published to define WSGI 1.1, a Python 3
 compatible version of the Python Web Server Gateway Interface.
 
@@ -831,6 +833,9 @@ compatible version of the Python Web Server Gateway Interface.
 version of Python 3 with support for the Web Server Gateway Interface.
 Python 3.2 received its final security update in February 2016, and even
 commercial support for this version is no longer available.
+
+`SciPy 0.9.0 was released <https://docs.scipy.org/doc/scipy/reference/release.0.9.0.html>__`,
+the first version to support Python 3.
 
 **March 2011**: After Arch Linux updated their Python symlink to
 refer to Python 3 (breaking many scripts that expected it to refer to
