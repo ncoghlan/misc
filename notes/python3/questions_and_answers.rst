@@ -693,7 +693,6 @@ What are (or were) some of the key dates in the Python 3 transition?
    * wxPython phoenix project
    * VTK Python 3 support in August 2015 (blocked Mayavi, which blocked Canopy)
    * cx-Freeze Python 3 support
-   * setuptools Python 3 support
    * Pillow (PIL fork) Python 3 support
    * greenlet Python 3 support
    * pylint Python 3 support
@@ -789,6 +788,9 @@ Python 3.1 release cycle.
 of the Python 3 runtime that was genuinely usable for realistic workloads.
 Python 3.1 received its final security update in April 2012, and even commercial
 support for this version is no longer available.
+
+**September 2009**: `setuptools 0.6.2 was released <https://setuptools.readthedocs.io/en/latest/history.html#id652>`__,
+the first version to support Python 3.
 
 **October 2009**: :pep:`3003` was published, declaring a moraratorium on
 language level changes in Python 2.7 and Python 3.2. This was done to
