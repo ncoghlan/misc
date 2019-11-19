@@ -693,7 +693,7 @@ What are (or were) some of the key dates in the Python 3 transition?
    * wxPython phoenix project
    * VTK Python 3 support in August 2015 (blocked Mayavi, which blocked Canopy)
    * cx-Freeze Python 3 support
-   * setuptools and pip Python 3 support
+   * setuptools Python 3 support
    * Pillow (PIL fork) Python 3 support
    * greenlet Python 3 support
    * pylint Python 3 support
@@ -844,6 +844,9 @@ python-checkins list being `this commit from Senthil Kumaran
 <https://mail.python.org/pipermail/python-checkins/2011-March/103828.html>`__.
 This ended more than two years of managing parallel updates of four active
 branches using ``svnmerge`` rather than a modern DVCS.
+
+**April 2011**: `pip 1.0 was released <https://pip.pypa.io/en/stable/news/#id270>`__,
+the first version to support Python 3.
 
 **November 2011**: :pep:`404` (the Python 2.8 Un-release Schedule) was
 published to make it crystal clear that the core development team had no plans
