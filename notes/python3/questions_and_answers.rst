@@ -848,6 +848,9 @@ branches using ``svnmerge`` rather than a modern DVCS.
 **April 2011**: `pip 1.0 was released <https://pip.pypa.io/en/stable/news/#id270>`__,
 the first version to support Python 3.
 
+`virtualenv 1.6 was released <https://virtualenv.pypa.io/en/stable/changes/#v1-6>`__,
+the first version to support Python 3.
+
 **November 2011**: :pep:`404` (the Python 2.8 Un-release Schedule) was
 published to make it crystal clear that the core development team had no plans
 to make a third parallel release in the Python 2.x series.
