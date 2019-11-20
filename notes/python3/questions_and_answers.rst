@@ -693,7 +693,6 @@ What are (or were) some of the key dates in the Python 3 transition?
    * wxPython phoenix project
    * VTK Python 3 support in August 2015 (blocked Mayavi, which blocked Canopy)
    * cx-Freeze Python 3 support
-   * setuptools and pip Python 3 support
    * Pillow (PIL fork) Python 3 support
    * greenlet Python 3 support
    * pylint Python 3 support
@@ -790,6 +789,9 @@ of the Python 3 runtime that was genuinely usable for realistic workloads.
 Python 3.1 received its final security update in April 2012, and even commercial
 support for this version is no longer available.
 
+**September 2009**: `setuptools 0.6.2 was released <https://setuptools.readthedocs.io/en/latest/history.html#id652>`__,
+the first version to support Python 3.
+
 **October 2009**: :pep:`3003` was published, declaring a moraratorium on
 language level changes in Python 2.7 and Python 3.2. This was done to
 deliberately slow down the pace of core development for a couple of years,
@@ -844,6 +846,12 @@ python-checkins list being `this commit from Senthil Kumaran
 <https://mail.python.org/pipermail/python-checkins/2011-March/103828.html>`__.
 This ended more than two years of managing parallel updates of four active
 branches using ``svnmerge`` rather than a modern DVCS.
+
+**April 2011**: `pip 1.0 was released <https://pip.pypa.io/en/stable/news/#id270>`__,
+the first version to support Python 3.
+
+`virtualenv 1.6 was released <https://virtualenv.pypa.io/en/stable/changes/#v1-6>`__,
+the first version to support Python 3.
 
 **November 2011**: :pep:`404` (the Python 2.8 Un-release Schedule) was
 published to make it crystal clear that the core development team had no plans
