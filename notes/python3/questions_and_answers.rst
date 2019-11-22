@@ -692,7 +692,6 @@ What are (or were) some of the key dates in the Python 3 transition?
    * wxPython phoenix project
    * VTK Python 3 support in August 2015 (blocked Mayavi, which blocked Canopy)
    * cx-Freeze Python 3 support
-   * Pillow (PIL fork) Python 3 support
    * greenlet Python 3 support
    * pylint Python 3 support
    * nose2 Python 3 support
@@ -836,7 +835,7 @@ version of Python 3 with support for the Web Server Gateway Interface.
 Python 3.2 received its final security update in February 2016, and even
 commercial support for this version is no longer available.
 
-`SciPy 0.9.0 was released <https://docs.scipy.org/doc/scipy/reference/release.0.9.0.html>__`,
+`SciPy 0.9.0 was released <https://docs.scipy.org/doc/scipy/reference/release.0.9.0.html>`__,
 the first version to support Python 3.
 
 **March 2011**: After Arch Linux updated their Python symlink to
@@ -902,6 +901,9 @@ Python 2.7 IDLE to be brought more into line with the features of the Python
 
 Continuum Analytics started offering commercial support for cross-platform
 Python 3.3+ environments through their "Anaconda" Python distributions.
+
+`Pillow 2.0.0 was released <https://mail.python.org/pipermail/image-sig/2013-March/007164.html>`__,
+the first version to support Python 3.
 
 **August 2013**: The first alpha of Python 3.4 was published. :pep:`429`
 covers the details of the Python 3.4 release cycle. Amongst other changes,
