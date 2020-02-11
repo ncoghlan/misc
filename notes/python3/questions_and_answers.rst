@@ -647,7 +647,7 @@ January 1, 2020, the release manager for 2.7.x was working on Release
 2.7.18, the final release of Python (`developers added a few
 improvements to Python 2.7 between the 2.7.17 release on October 19,
 2019 and the sunset date of January 1, 2020
-<https://github.com/python/cpython/commits/2.7>`__. On January 1,
+<https://github.com/python/cpython/commits/2.7>`__). On January 1,
 2020, the release manager stopped development and froze the codebase
 (see `python-dev discussion
 <https://mail.python.org/archives/list/python-dev@python.org/thread/APWHFYQDKNVYQAK3HZMBGQIZHAVRHCV2/?sort=date>`__):
