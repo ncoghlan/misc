@@ -2,7 +2,7 @@ Python 3 Q & A
 ==============
 
 :Published:    29th June, 2012
-:Last Updated: 1st October, 2019
+:Last Updated: 11 February, 2020
 
 Throughout the long transition to "Python 3 by default" in the Python ecosystem,
 the question was occasionally raised as to whether or not the core Python
@@ -642,18 +642,21 @@ America in April 2020, per :pep:`373`. More details:
 
 **January 1, 2020: Code freeze for Python 2.7.18**
 
-The "End of Life/sunset" of Python 2.7 will be January 1, 2020. Until
-January 1, 2020, the release manager for 2.7.x will be working on
-Release 2.7.18, the final release of Python. On January 1, 2020, the
-release manager will stop development and freeze the codebase (see
-`python-dev discussion
+The "End of Life/sunset" of Python 2.7 was January 1, 2020. Until
+January 1, 2020, the release manager for 2.7.x was working on Release
+2.7.18, the final release of Python (`developers added a few
+improvements to Python 2.7 between the 2.7.17 release on October 19,
+2019 and the sunset date of January 1, 2020
+<https://github.com/python/cpython/commits/2.7>`__). On January 1,
+2020, the release manager stopped development and froze the codebase
+(see `python-dev discussion
 <https://mail.python.org/archives/list/python-dev@python.org/thread/APWHFYQDKNVYQAK3HZMBGQIZHAVRHCV2/?sort=date>`__):
 from that date, there will be no backports to 2.7.18 from Python 3.
 
 **April 2020: Final Production Release of Python 2.7.18**
 
 It is expected that there will be no patches after the code freeze
-date for 2.7.18. (We do not expect any regressions to be introduced
+date for 2.7.18. (No regressions were introduced
 between the Python 2.7.17 release in October 2019 and the code freeze
 date of January 1, 2020.) Between January 1, 2020 and April 2020, the
 release manager will shepherd the release through the beta and Release
