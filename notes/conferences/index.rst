@@ -1,8 +1,8 @@
 Python Conferences
 ==================
 
-Inspired by Danny Greenfield, I've started keeping conference notes in
-reStructured text on Bitbucket.
+Inspired by Danny Greenfield, I kept version controlled conference notes in
+reStructured text for a couple of years.
 
 .. toctree::
    :maxdepth: 2

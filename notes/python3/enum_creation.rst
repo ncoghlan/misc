@@ -8,8 +8,8 @@ Python, Enumerations and "Good Enough"
    Site last built: |today| (`Change history`_)
 
 
-.. _Change history: https://bitbucket.org/ncoghlan/misc/history-node/default/notes/python3/enum_creation.rst
-.. _issue tracker: https://bitbucket.org/ncoghlan/misc/issues?status=new&status=open
+.. _Change history: https://github.com/ncoghlan/misc/commits/master/notes/python3/enum_creation.rst
+.. _issue tracker: https://github.com/ncoghlan/misc/issues
 
 :pep:`435` adds support for explicit enumerations in the Python standard
 library. One valid criticism of the accepted design is that there are some

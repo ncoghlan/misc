@@ -11,7 +11,7 @@ As with all essays on these pages, feedback is welcome via the
 `issue tracker`_ or `Twitter`_. If you want to comment on :pep:`3156` itself,
 use the `python-ideas mailing list`_.
 
-.. _issue tracker: https://bitbucket.org/ncoghlan/misc/issues
+.. _issue tracker: https://github.com/ncoghlan/misc/issues
 .. _Twitter: https://twitter.com/ncoghlan_dev
 .. _python-ideas mailing list: http://mail.python.org/mailman/listinfo/python-ideas
 

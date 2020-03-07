@@ -23,11 +23,11 @@ About These Notes
 =================
 
 These notes are written using Sphinx_ and published to ReadTheDocs_ via
-BitBucket_. Feedback is welcome on the BitBucket project issue tracker.
+GitHub_. Feedback is welcome on the GitHub project issue tracker.
 
 .. _Sphinx: http://sphinx.pocoo.org/
 .. _ReadTheDocs: http://readthedocs.org/
-.. _BitBucket: https://bitbucket.org/ncoghlan/misc/issues?status=new&status=open
+.. _GitHub: https://github.com/ncoghlan/misc/issues
 
 Indices and tables
 ==================

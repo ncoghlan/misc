@@ -2,9 +2,9 @@ Type Neutral Codec API
 ======================
 
 (Note: this article was substantially rewritten after some initial feedback
-from Armin Ronacher. As always, old versions are available on `BitBucket`_)
+from Armin Ronacher. As always, old versions are available on `GitHub`_)
 
-.. _BitBucket: https://bitbucket.org/ncoghlan/misc/src/default/notes/pep_ideas/codec_pipeline.rst
+.. _GitHub: https://github.com/ncoghlan/misc/blob/master/notes/pep_ideas/codec_pipeline.rst
 
 One of the complaints with Python 3 is that it broke the old idiom for
 many text-to-text and binary-to-binary transforms: the ``encode()`` and

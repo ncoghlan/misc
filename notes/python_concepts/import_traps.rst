@@ -20,9 +20,9 @@ of it applies to earlier versions as well, but I won't be qualifying any of
 the explanations with version details before 2.6.
 
 As with all my essays on this site, suggestions for improvement or
-requests for clarification can be posted on BitBucket_.
+requests for clarification can be posted on GitHub_.
 
-.. _BitBucket: https://bitbucket.org/ncoghlan/misc/issues
+.. _GitHub: https://github.com/ncoghlan/misc/issues
 
 
 The missing __init__.py trap
