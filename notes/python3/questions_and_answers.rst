@@ -21,7 +21,7 @@ years, I started this FAQ as an intermittently updated record of my
 thoughts on the topic, with updates generally being prompted by new
 iterations of the questions. I gave Sumana Harihareswara co-maintainer
 access in September 2019 so she could aid in updating it, but for
-simplicity's sake will retain the first-person singular ("I")
+simplicity's sake we've mostly retained the first-person singular ("I")
 throughout. You can see the full history of changes in the `source
 repo`_.
 
@@ -36,7 +36,7 @@ to specific points or the document in general.
 
 I am also not writing on behalf of the Python Software Foundation (of
 which I am a nominated Fellow), nor on behalf of Python's Steering
-Council (of whom I am a member), nor on behalf of Red Hat (my previous
+Council (of which I am a former member), nor on behalf of Red Hat (my previous
 employer, for whom I worked for much of the time I maintained this).
 However, I do use several Red Hat specific examples when discussing
 enterprise perception and adoption of the Python platform -
@@ -68,8 +68,8 @@ to run solely under Python 2.
 As with all essays on these pages, feedback is welcome via the
 `issue tracker`_ or `Twitter`_.
 
-.. _source repo: https://bitbucket.org/ncoghlan/misc
-.. _issue tracker: https://bitbucket.org/ncoghlan/misc/issues
+.. _source repo: https://github.com/ncoghlan/misc
+.. _issue tracker: https://github.com/ncoghlan/misc/issues
 .. _Twitter: https://twitter.com/ncoghlan_dev
 
 
