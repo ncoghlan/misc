@@ -2,7 +2,7 @@ Python 3 Q & A
 ==============
 
 :Published:    29th June, 2012
-:Last Updated: 11 February, 2020
+:Last Updated: 21 April, 2020
 
 Throughout the long transition to "Python 3 by default" in the Python ecosystem,
 the question was occasionally raised as to whether or not the core Python
@@ -637,8 +637,9 @@ Python 2 (even when they're technically backwards compatible):
 When is the last release of Python 2.7 coming out?
 --------------------------------------------------
 
-Python 2.7.18 is planned for release during PyCon North
-America in April 2020, per :pep:`373`. More details:
+Python 2.7.18 `was released on 20 April 2020
+<https://mail.python.org/archives/list/python-announce-list@python.org/thread/OFCIETIXLX34X7FVK5B5WPZH22HXV342/>`__,
+per :pep:`373`. More details:
 
 **January 1, 2020: Code freeze for Python 2.7.18**
 
@@ -651,16 +652,16 @@ improvements to Python 2.7 between the 2.7.17 release on October 19,
 2020, the release manager stopped development and froze the codebase
 (see `python-dev discussion
 <https://mail.python.org/archives/list/python-dev@python.org/thread/APWHFYQDKNVYQAK3HZMBGQIZHAVRHCV2/?sort=date>`__):
-from that date, there will be no backports to 2.7.18 from Python 3.
+from that date, there were no backports to 2.7.18 from Python 3.
 
-**April 2020: Final Production Release of Python 2.7.18**
+**April 20 2020: Final Production Release of Python 2.7.18**
 
-It is expected that there will be no patches after the code freeze
-date for 2.7.18. (No regressions were introduced
-between the Python 2.7.17 release in October 2019 and the code freeze
-date of January 1, 2020.) Between January 1, 2020 and April 2020, the
-release manager will shepherd the release through the beta and Release
-Candidate process.
+There were `a few small patches after the code freeze date
+<https://github.com/python/cpython/commits/2.7>`__ for 2.7.18. (No
+regressions were introduced between the Python 2.7.17 release in
+October 2019 and the code freeze date of January 1, 2020.) Between
+January 1, 2020 and April 20, 2020, the release manager shepherded the
+release through the beta and Release Candidate process.
 
 
 What are (or were) some of the key dates in the Python 3 transition?
@@ -1149,7 +1150,17 @@ PyPI.
 <https://wiki.centos.org/Manuals/ReleaseNotes/CentOS8.1905?action=show&redirect=Manuals%2FReleaseNotes%2FCentOSLinux8#head-45f030ea18abdace20915c9249057c45511da3c3>`__
 in its approach to Python).
 
-.. _timeline-future:
+.. _timeline-2020:
+
+2020
+^^^^
+
+**January 2020**: Python 2.7 switched to security fix only mode,
+ending roughly thirteen years of parallel maintenance of Python 2 and
+3 by the core development team for the reference interpreter.
+
+**20 April 2020**: `Python 2.7.18 released. <https://mail.python.org/archives/list/python-announce-list@python.org/thread/OFCIETIXLX34X7FVK5B5WPZH22HXV342/>`__
+
 
 Future
 ^^^^^^
@@ -1167,9 +1178,6 @@ proved challenging to migrate, so the stateful server variants of these
 distributions ended up taking longer to migrate to Python 3 than other variants
 that omitted those components from their default package set)
 
-**January? 2020**: Anticipated date for Python 2.7 to switch to security
-fix only mode, ending roughly thirteen years of parallel maintenance of
-Python 2 and 3 by the core development team for the reference interpreter.
 
 **April 2021**: Anticipated date for Ubuntu LTS 16.04 to go end of life, the
 first potential end date for commercial Python 2 support from Canonical (if
@@ -3128,12 +3136,13 @@ plan is too *conservative*, see :ref:`slow-uptake`.
 What would it take to make you change your minds about the current plan?
 ------------------------------------------------------------------------
 
-With both the Debian/Ubuntu and Fedora/RHEL/CentOS ecosystems well
-advanced in their migration plans, public cloud providers offering Python 3
-in addition to Python 2, major commercial end users like Facebook, Google and
-Dropbox migrating, and the PSF's own major services like python.org and the
-Python Package Index switching to Python 3, the short answer here is "That's
-not going to happen".
+With the Python 2.7 sunset date in the past, both the Debian/Ubuntu
+and Fedora/RHEL/CentOS ecosystems well advanced in their migration
+plans, public cloud providers offering Python 3 in addition to Python
+2, major commercial end users like Facebook, Google and Dropbox
+migrating, and the PSF's own major services like python.org and the
+Python Package Index switching to Python 3, the short answer here is
+"That's not going to happen".
 
 While a crash in general Python adoption might have made us change our minds,
 Python ended up working its way into more and more niches *despite* the
