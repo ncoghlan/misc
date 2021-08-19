@@ -403,6 +403,46 @@ current package. If the submodule is loaded by *any* module at any point
 after the import or definition of the same name, it will shadow the
 imported or defined name in the ``__init__.py``'s global namespace.
 
+The ``sys.path_importer_cache`` trap
+------------------------------------
+
+To optimize the import process, during startup Python will cache 
+each ``sys.path`` entry to their respective ``finder`` object. If a directory
+entry in ``sys.path`` does not exist during startup, the cache will contain
+``None`` for that entry, and any import after that which tries to import
+from that directory will fail.
+
+This might come as a surprise if you are configuring ``PYTHONPATH`` to point
+to a directory which does not exist at Python startup, but will be created
+later and populated with modules.
+
+For example::
+
+    $ export PYTHONPATH=/tmp/not-yet-created
+    $ python3
+    >>> import sys
+    >>> "/tmp/not-yet-created" in sys.path
+    True
+    >>> from pathlib import Path    
+    >>> Path("/tmp/not-yet-created").mkdir()
+    >>> Path("/tmp/not-yet-created").write_text("def foo(): return 42")
+    13
+    >>> import foo
+    Traceback (most recent call last):
+      File "<stdin>", line 1, in <module>
+    ModuleNotFoundError: No module named 'foo'
+
+Even though the directory now exists and contains a valid module, Python still fails to import it.
+
+Calling ``sys.path_importer_cache.clear()`` clears the cache and allows the import machinery to find
+the new module::
+
+    >>> import sys
+    >>> sys.path_importer_cache.clear()
+    >>> import foo
+    >>> foo.foo()
+    42
+
 More exotic traps
 -----------------
 
