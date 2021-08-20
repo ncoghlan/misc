@@ -425,7 +425,7 @@ For example::
     True
     >>> from pathlib import Path    
     >>> Path("/tmp/not-yet-created").mkdir()
-    >>> Path("/tmp/not-yet-created").write_text("def foo(): return 42")
+    >>> Path("/tmp/not-yet-created/foo.py").write_text("def foo(): return 42")
     13
     >>> import foo
     Traceback (most recent call last):
@@ -437,7 +437,6 @@ Even though the directory now exists and contains a valid module, Python still f
 Calling ``sys.path_importer_cache.clear()`` clears the cache and allows the import machinery to find
 the new module::
 
-    >>> import sys
     >>> sys.path_importer_cache.clear()
     >>> import foo
     >>> foo.foo()
