@@ -40,8 +40,8 @@ source_suffix = '.rst'
 master_doc = 'index'
 
 # General information about the project.
-project = u'Nick Coghlan\'s Python Notes'
-copyright = u'2011, Nick Coghlan'
+project = u'Alyssa Coghlan\'s Python Notes'
+copyright = u'2024, Alyssa Coghlan'
 
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the
@@ -164,7 +164,7 @@ html_static_path = ['_static']
 #html_file_suffix = None
 
 # Output file base name for HTML help builder.
-htmlhelp_basename = 'NickCoghlansPythonNotes'
+htmlhelp_basename = 'AlyssaCoghlansPythonNotes'
 
 
 # -- Options for LaTeX output --------------------------------------------------
@@ -179,7 +179,7 @@ htmlhelp_basename = 'NickCoghlansPythonNotes'
 # (source start file, target name, title, author, documentclass [howto/manual]).
 latex_documents = [
   ('index', 'ncoghlan_devsPythonNotes.tex', u'ncoghlan_dev\'s Python Notes',
-   u'Nick Coghlan', 'manual'),
+   u'Alyssa Coghlan', 'manual'),
 ]
 
 # The name of an image file (relative to this directory) to place at the top of
@@ -206,4 +206,4 @@ latex_documents = [
 #latex_domain_indices = True
 
 # Example configuration for intersphinx: refer to the Python standard library.
-intersphinx_mapping = {'http://docs.python.org/3/': None}
+intersphinx_mapping = {'https://docs.python.org/3/': None}
