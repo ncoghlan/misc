@@ -40,8 +40,8 @@ source_suffix = '.rst'
 master_doc = 'index'
 
 # General information about the project.
-project = u'Alyssa Coghlan\'s Python Notes'
-copyright = u'2024, Alyssa Coghlan'
+project = 'Alyssa Coghlan\'s Python Notes'
+copyright = '2024, Alyssa Coghlan'
 
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the
@@ -178,8 +178,8 @@ htmlhelp_basename = 'AlyssaCoghlansPythonNotes'
 # Grouping the document tree into LaTeX files. List of tuples
 # (source start file, target name, title, author, documentclass [howto/manual]).
 latex_documents = [
-  ('index', 'ncoghlan_devsPythonNotes.tex', u'ncoghlan_dev\'s Python Notes',
-   u'Alyssa Coghlan', 'manual'),
+  ('index', 'ncoghlan_devsPythonNotes.tex', 'ncoghlan_dev\'s Python Notes',
+   'Alyssa Coghlan', 'manual'),
 ]
 
 # The name of an image file (relative to this directory) to place at the top of
