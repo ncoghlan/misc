@@ -111,7 +111,7 @@ helper to split out the auth headers more cleanly::
     ...     return auth_fields
     ...
     >>> www_auth(r)
-    {'negotiate': '', 'basic': 'realm="GlobalSync: Kerberos Login"'}
+    {'negotiate': '', 'basic': 'realm="Example Realm"'}
 
 That means we can now easily detect when the client should reply with a
 Kerberos authenticated connection. For example, a host may provide
