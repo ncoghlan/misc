@@ -1,2 +1,4 @@
 sphinx
-sphinx-rtd-theme
+
+# HTML theme from https://github.com/pradyunsg/furo
+furo
