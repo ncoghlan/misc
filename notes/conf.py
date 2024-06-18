@@ -92,6 +92,7 @@ pygments_style = 'sphinx'
 # The theme to use for HTML and HTML Help pages.  See the documentation for
 # a list of builtin themes.
 # Use https://github.com/pradyunsg/furo for responsive CSS and dark mode support
+html_title = "Alyssa Coghlan's Python Notes"
 html_theme = 'furo'
 
 # Theme options are theme-specific and customize the look and feel of a theme
