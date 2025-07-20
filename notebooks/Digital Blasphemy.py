@@ -8,208 +8,193 @@ app = marimo.App()
 def _(mo):
     mo.md(
         r"""
-        Digital Blasphemy Wallpaper Sync
-        ================================
+    Digital Blasphemy Wallpaper Sync
+    ================================
 
-        [Digital Blasphemy](http://digitalblasphemy.com) is a great site where the digital artist Ryan Bliss posts a wide variety of wallpapers for download.
+    [Digital Blasphemy](http://digitalblasphemy.com) is a great site where the digital artist Ryan Bliss posts a wide variety of wallpapers for download.
 
-        While a selection of the pieces are available for free, subscribing to the site provides access to all of the images at a variety of resolutions. Given how much I like Ryan's art, I signed up for both the [lifetime supporter](https://secure.digitalblasphemy.com/signup.shtml) subscription and for his [Patreon](https://www.patreon.com/dblasphemy?ty=h) to help ensure I'll have more artwork to download in the future :)
+    While a selection of the pieces are available for free, subscribing to the site provides access to all of the images at a variety of resolutions. Given how much I like Ryan's art, I signed up for a lifetime subscription to help ensure I'll have more artwork to download in the future :)
 
-        I've long used a random selection of the Digital Blasphemy artwork as the desktop background on my personal laptop, but for a long time updating the available images was a matter of downloading the complete zip archives at the relevant resolutions, unzipping them to the appropriate location, and then going through them to delete the few that I know I don't like (or don't mind myself, but wouldn't be happy to have on-screen at a professional conference).
+    I've long used a random selection of the Digital Blasphemy artwork as the desktop background on my personal laptop, but for a long time updating the available images was a matter of downloading the complete zip archives at the relevant resolutions, unzipping them to the appropriate location, and then going through them to delete the few that I know I don't like (or don't mind myself, but wouldn't be happy to have on-screen at a professional conference).
 
-        Eventually, I decided to solve the problem in a more sensible way, by figuring out a way to automate the process of checking for images I didn't have (in the resolutions I care about) and downloading them to the right location.
+    Eventually, I decided to solve the problem in a more sensible way, by figuring out a way to automate the process of checking for images I didn't have (in the resolutions I care about) and downloading them to the right location.
 
-        Packaging that up properly as a command line application would be a lot of work that wouldn't really help *me*, but by using an IPython notebook, I was able to convert my experimental code to see how I could retrieve the relevant data from the site directly into something that actually solved my original problem :)
+    Packaging that up properly as a command line application would be a lot of work that wouldn't really help *me*, but by using an IPython notebook, I was able to convert my experimental code to see how I could retrieve the relevant data from the site directly into something that actually solved my original problem :)
 
-        If the name Digital Blasphemy sounds vaguely familiar, it may be due to *this* image (or one of its earlier incarnations):
+    That selective download solution eventually broke when the website migrated from a simple basic auth protected file server to a full CDN, so the notebook was rewritten in Marimo to work from the per-resolution archive downloads.
 
-        ![Flourescence (2009 version)](http://digitalblasphemy.com/graphics/fb/fluorescence2k93fb.jpg)
+    If the name Digital Blasphemy sounds vaguely familiar, it may be due to *this* image (or one of its earlier incarnations):
 
-        Using the notebook
-        --------------------
+    ![Flourescence (2009 version)](https://cdn.digitalblasphemy.com/thumbnail/980x735/fluorescence2k93_thumbnail_980x735.jpg)
 
-        UPDATE 2022: sadly, with the migration to the new web store on the DB site, this notebook doesn't work anymore. The migration makes the DB website itself quite a bit nicer, but the use of a JS frontend with a backend web API and AWS S3 image storage means that the notebook's naive HTML link scraping approach is no longer viable.
+    Using the notebook
+    --------------------
 
-        NOTE: To grab an initial set of member-only images, I recommend using the zip archives Ryan publishes. This notebook is designed to handle collecting new images every few months, without adding back in any images you decided you didn't want, not for a bulk download of the entire gallery.
-
-        1. Load the notebook using a Python 3 Jupyter kernel (other than the standard library, the only dependency is `requests`)
-        2. Set the `LOCAL_MIRROR` global below to the destination directory
-        3. Set the `RESOLUTIONS` global for the image resolutions you want to download
-        4. Create an `access.cfg` file in your local mirror directory with your Digital Blasphemy login credentials (DB just uses HTTP Basic Auth to control access, and some authenticated pages are currently only available over HTTP, so assume any password you use here can be compromised in transit)
-        5. Optionally, update the `BLOCKED` global to nominate particular images you don't want to download
-        6. Run the whole notebook - the checked in version does a dry run by default
-        7. If the dry run output looks sensible, change DRY_RUN to False and run the last two cells again
-
-        """
+    1. Save an up to date https://digitalblasphemy.com/zip-files/ archive to your local image folder
+    2. Load the notebook using marimo (the only dependency is the standard library)
+    3. Ensure the local image folder is listed under `CANDIDATE_IMAGE_DIRS`
+    4. Ensure the `RESOLUTIONS` list covers the image resolutions to be unpacked
+    5. Optionally, update the `EXCLUDED` global to nominate particular images you don't want to unpack
+    6. Run the whole notebook - the checked in version does a dry run by default
+    7. If the dry run output looks sensible, change DRY_RUN to False and run the notebook again
+    """
     )
     return
 
 
 @app.cell
 def _():
-    import os.path
-    import configparser
-    import requests
-    import re
+    import zipfile
+    from pathlib import Path
+
+    # Default file paths are set up for my personal WSL and native Linux setups
+    # Currently assumes the use of single-screen DB images
 
     DRY_RUN = True
-    LOCAL_MIRROR = os.path.expanduser("~/Pictures/Digital Blasphemy/")
-    REMOTE_HOME_URL = 'http://digitalblasphemy.com/seeall.shtml'
-    REMOTE_CONTENT_URL = 'http://digitalblasphemy.com/content/jpgs'
-    RESOLUTIONS = ["1440p"]
-    LOCAL_RES_DIRS = {res:os.path.join(LOCAL_MIRROR, res) for res in RESOLUTIONS}
-    # Slightly hacky to use os.path.join on URLs, but it works well enough in this case
-    REMOTE_RES_URLS = {res:os.path.join(REMOTE_CONTENT_URL, res) for res in RESOLUTIONS}
+    PERMISSIVE_FILTER = True
+    CANDIDATE_IMAGE_DIRS = [
+        Path("~/Pictures/Digital Blasphemy/").expanduser(),
+        Path("/mnt/e/Digital Blasphemy/")
 
-    # Basic config file for Digital Blasphemy login credentials
-    CONFIG_FILE = os.path.join(LOCAL_MIRROR, "access.cfg")
-    config = configparser.RawConfigParser()
-    config.read(CONFIG_FILE)
-    db_username = config.get("login", "username")
-    db_passwd = config.get("login", "password")
-
-    # Page retrieval helper
-
-    def get_page(db_url):
-        """Retrieve a Digital Blasphemy page using the configured credentials"""
-        return requests.get(db_url, auth=(db_username, db_passwd))
+    ]
+    for LOCAL_IMAGE_DIR in CANDIDATE_IMAGE_DIRS:
+        if LOCAL_IMAGE_DIR.exists():
+            break
+    else:
+        raise RuntimeError("Failed to open local image folder")
+    RESOLUTIONS = ["2560x1440"]
+    def resolution_archive_path(resolution):
+        return LOCAL_IMAGE_DIR / f"single_{resolution}.zip"
+    def relative_resolution_dir(resolution):
+        return f"digitalblasphemy/wallpapers/single/{resolution}/"
+    def resolution_folder_path(resolution):
+        return LOCAL_IMAGE_DIR / f"single_{resolution}" / relative_resolution_dir(resolution)
+    IMAGE_ARCHIVE_PATHS = {res: resolution_archive_path(res) for res in RESOLUTIONS}
+    ARCHIVE_RES_DIRS = {res: relative_resolution_dir(res) for res in RESOLUTIONS}
+    EXTRACTED_RES_DIRS = {res: resolution_folder_path(res) for res in RESOLUTIONS}
     return (
+        ARCHIVE_RES_DIRS,
         DRY_RUN,
-        LOCAL_RES_DIRS,
-        REMOTE_HOME_URL,
-        REMOTE_RES_URLS,
+        EXTRACTED_RES_DIRS,
+        IMAGE_ARCHIVE_PATHS,
+        PERMISSIVE_FILTER,
         RESOLUTIONS,
-        get_page,
-        os,
-        re,
+        zipfile,
     )
 
 
 @app.cell
-def _(REMOTE_HOME_URL, get_page, re):
-    # To mangle a quote from a fine show:
-    # "They say never parse HTML with regular expressions,
-    # but it is, on occasion, an expedient hack" :)
-
-    def iter_published_images():
-        content = get_page(REMOTE_HOME_URL).text
-        for m in re.finditer('href="/preview.shtml\?i=(.*?)"', content):
-            yield m.group(1)
-
-    PUBLISHED = list(iter_published_images())
-    return (PUBLISHED,)
-
-
-@app.cell
-def _(PUBLISHED):
+def _(PERMISSIVE_FILTER):
     # I use my laptop for conference presentations
     # If I either don't really like a wallpaper or I'm
     # not happy displaying it at a professional
-    # conference, I ensure I don't mirror it
-    BLOCKED = ("chamelea", "emblem")
-
-    # I also want to filter any images that are from the pickle jar
-    # (experimental versions that aren't included in the main image index)
-    ACCEPTABLE = set(name for name in PUBLISHED if not name.startswith(BLOCKED))
-    return (ACCEPTABLE,)
+    # conference, I ensure I don't extract it
+    ALWAYS_OMIT = ("cupid", "emblem", "taketwo")
+    if PERMISSIVE_FILTER:
+        EXCLUDED = ALWAYS_OMIT
+    else:
+        # Fine for personal use, risks complaints at a conference
+        EXCLUDED = ("chamelea", *ALWAYS_OMIT)
+    return (EXCLUDED,)
 
 
 @app.cell
-def _(ACCEPTABLE, LOCAL_RES_DIRS, REMOTE_RES_URLS, get_page, os, re):
-    def iter_remote_file_list(res):
-        content = get_page(REMOTE_RES_URLS[res]).text
-        # Complete hack to get the file list from the server index page
-        for m in re.finditer(r'<a href="(.*?)(%s\.jpg)">' % res, content):
-            candidate = m.group(1)
-            if candidate in ACCEPTABLE:
-                yield candidate + m.group(2)
+def _(EXCLUDED):
+    def iter_archive_image_entries(image_res_zpath):
+        if not image_res_zpath.exists():
+            raise Exception(f"{image_res_zpath} is not in the archive")
+        if not image_res_zpath.is_dir():
+            raise Exception(f"{image_res_zpath} is not an archive folder")
+        for zpath in image_res_zpath.iterdir():
+            candidate = zpath.name
+            if not candidate.startswith(EXCLUDED):
+                yield candidate
 
-    def get_remote_files(res):
-        return set(iter_remote_file_list(res))
+    def get_archive_image_names(image_res_zpath):
+        return set(iter_archive_image_entries(image_res_zpath))
 
-    def get_local_files(res):
-        files = os.listdir(LOCAL_RES_DIRS[res])
-        return set(os.path.basename(f) for f in files)
-    return get_local_files, get_remote_files
+    def get_local_image_names(local_path):
+        return set(p.name for p in local_path.iterdir())
+    return get_archive_image_names, get_local_image_names
 
 
 @app.cell
 def _(
-    LOCAL_RES_DIRS,
-    REMOTE_RES_URLS,
-    RESOLUTIONS,
-    get_local_files,
-    get_page,
-    get_remote_files,
-    os,
+    ARCHIVE_RES_DIRS,
+    EXTRACTED_RES_DIRS,
+    IMAGE_ARCHIVE_PATHS,
+    get_archive_image_names,
+    get_local_image_names,
+    zipfile,
 ):
     import time
 
-    def get_images_to_download(res):
-        remote = get_remote_files(res)
-        local = get_local_files(res)
-        return remote - local
+    def get_images_to_extract(archive_image_zpath, dest_dir_path):
+        archive_image_names = get_archive_image_names(archive_image_zpath)
+        local_image_names = get_local_image_names(dest_dir_path)
+        return archive_image_names - local_image_names
 
-    def download_image(source_url, dest_file, dryrun=True):
-        print("  Downloading {} -> {}".format(source_url, dest_file))
-        if dryrun:
-            print("    Dry run only, skipping download")
+    def extract_image(source_zpath, dest_path, dry_run=True):
+        print(f"  Extracting {source_zpath} -> {dest_path}")
+        if dry_run:
+            print("    Dry run only, skipping extraction")
             return
-        data = get_page(source_url).content
-        with open(dest_file, 'wb') as f:
-            f.write(data)
-        return len(data)
+        zf = source_zpath.root
+        zf.extract(source_zpath.at, dest_path)
 
     # This assumes the local destination directory already exists
-    def download_missing_images_for_res(res, dryrun=True):
-        source_url = REMOTE_RES_URLS[res]
-        dest_dir = LOCAL_RES_DIRS[res]
-        delay = 0.05 if dryrun else 0.5
-        images = get_images_to_download(res)
-        total = len(images)
+    def extract_missing_images_for_res(resolution, dry_run=True):
+        archive_path = IMAGE_ARCHIVE_PATHS[resolution]
+        archive_image_dir = ARCHIVE_RES_DIRS[resolution]
+        dest_dir_path = EXTRACTED_RES_DIRS[resolution]
+        delay = 0.05
+        image_archive = zipfile.ZipFile(archive_path)
+        archive_image_zpath = zipfile.Path(image_archive, archive_image_dir)
+        image_names = get_images_to_extract(archive_image_zpath, dest_dir_path)
+        total = len(image_names)
         if not total:
-            print("No {} images to download".format(res))
+            print("No {} images to extract".format(resolution))
             return
-        print("{} {} images to be downloaded".format(total, res))
-        downloaded_images = []
-        for i, image in enumerate(images, start=1):
-            print("Downloading {} image {}/{}".format(res, i, total))
-            source = os.path.join(source_url, image)
-            dest = os.path.join(dest_dir, image)
-            download_image(source, dest, dryrun)
-            downloaded_images.append(dest)
+        print("{} {} images to be extracted".format(total, resolution))
+        extracted_images = []
+        for i, image in enumerate(image_names, start=1):
+            print("Extracting {} image {}/{}".format(resolution, i, total))
+            source_zpath = archive_image_zpath / image
+            dest_path = dest_dir_path / image
+            extract_image(source_zpath, dest_path, dry_run)
+            extracted_images.append(dest_path)
             time.sleep(delay) # Be nice to the server
-        return downloaded_images
+        return extracted_images
 
-    def download_missing_images(dryrun=True):
+    def extract_missing_images(dry_run=True):
         updated_resolutions = {}
-        for res in RESOLUTIONS:
-            images = download_missing_images_for_res(res, dryrun)
+        for res in IMAGE_ARCHIVE_PATHS.keys():
+            images = extract_missing_images_for_res(res, dry_run)
             if images:
                 updated_resolutions[res] = images
         return updated_resolutions
-    return (download_missing_images,)
+    return (extract_missing_images,)
 
 
 @app.cell
-def _():
-    from IPython.display import display, Image
-
+def _(mo):
+    # TODO: Show images directly from archive in dry_run mode
     def show_images(filenames):
         for filename in filenames:
-            display(Image(filename=filename))
+            mo.output.append(mo.image(src=filename))
     return (show_images,)
 
 
 @app.cell
-def _(DRY_RUN, download_missing_images):
-    downloaded = download_missing_images(dryrun=DRY_RUN)
-    return (downloaded,)
+def _(DRY_RUN, extract_missing_images):
+    extracted = extract_missing_images(dry_run=DRY_RUN)
+    return (extracted,)
 
 
 @app.cell
-def _(DRY_RUN, RESOLUTIONS, downloaded, show_images):
-    if downloaded and not DRY_RUN: show_images(downloaded[RESOLUTIONS[0]])
+def _(DRY_RUN, RESOLUTIONS, extracted, show_images):
+    if extracted and not DRY_RUN:
+        show_images(extracted[RESOLUTIONS[0]])
     return
 
 
