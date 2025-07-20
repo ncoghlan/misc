@@ -77,6 +77,7 @@ def _():
         DRY_RUN,
         EXTRACTED_RES_DIRS,
         IMAGE_ARCHIVE_PATHS,
+        LOCAL_IMAGE_DIR,
         PERMISSIVE_FILTER,
         RESOLUTIONS,
         zipfile,
@@ -123,6 +124,7 @@ def _(
     ARCHIVE_RES_DIRS,
     EXTRACTED_RES_DIRS,
     IMAGE_ARCHIVE_PATHS,
+    LOCAL_IMAGE_DIR,
     get_archive_image_names,
     get_local_image_names,
     zipfile,
@@ -134,13 +136,17 @@ def _(
         local_image_names = get_local_image_names(dest_dir_path)
         return archive_image_names - local_image_names
 
-    def extract_image(source_zpath, dest_path, dry_run=True):
+    def extract_image(source_zpath: zipfile.Path, dry_run=True):
+        zf = source_zpath.root
+        extract_root = (LOCAL_IMAGE_DIR / zf.filename).with_suffix("")
+        dest_path = extract_root / source_zpath.at
         print(f"  Extracting {source_zpath} -> {dest_path}")
         if dry_run:
             print("    Dry run only, skipping extraction")
-            return
-        zf = source_zpath.root
-        zf.extract(source_zpath.at, dest_path)
+        else:
+            zf.extract(source_zpath.at, extract_root)
+        return dest_path
+
 
     # This assumes the local destination directory already exists
     def extract_missing_images_for_res(resolution, dry_run=True):
@@ -160,8 +166,7 @@ def _(
         for i, image in enumerate(image_names, start=1):
             print("Extracting {} image {}/{}".format(resolution, i, total))
             source_zpath = archive_image_zpath / image
-            dest_path = dest_dir_path / image
-            extract_image(source_zpath, dest_path, dry_run)
+            dest_path = extract_image(source_zpath, dry_run)
             extracted_images.append(dest_path)
             time.sleep(delay) # Be nice to the server
         return extracted_images
