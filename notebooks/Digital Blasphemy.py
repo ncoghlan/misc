@@ -1,13 +1,12 @@
 import marimo
 
-__generated_with = "0.14.12"
+__generated_with = "0.17.6"
 app = marimo.App()
 
 
 @app.cell(hide_code=True)
 def _(mo):
-    mo.md(
-        r"""
+    mo.md(r"""
     Digital Blasphemy Wallpaper Sync
     ================================
 
@@ -37,8 +36,7 @@ def _(mo):
     5. Optionally, update the `EXCLUDED` global to nominate particular images you don't want to unpack
     6. Run the whole notebook - the checked in version does a dry run by default
     7. If the dry run output looks sensible, change DRY_RUN to False and run the notebook again
-    """
-    )
+    """)
     return
 
 
@@ -64,7 +62,12 @@ def _():
         raise RuntimeError("Failed to open local image folder")
     RESOLUTIONS = ["2560x1440"]
     def resolution_archive_path(resolution):
-        return LOCAL_IMAGE_DIR / f"single_{resolution}.zip"
+        zip_prefix = f"single_{resolution}"
+        dateless_path = LOCAL_IMAGE_DIR / f"{zip_prefix}.zip"
+        if dateless_path.exists():
+            return dateless_path
+        dated_paths = (p for p in LOCAL_IMAGE_DIR.glob(f"{zip_prefix}_*.zip"))
+        return max(dated_paths, default=None)
     def relative_resolution_dir(resolution):
         return f"digitalblasphemy/wallpapers/single/{resolution}/"
     def resolution_folder_path(resolution):
@@ -159,12 +162,12 @@ def _(
         image_names = get_images_to_extract(archive_image_zpath, dest_dir_path)
         total = len(image_names)
         if not total:
-            print("No {} images to extract".format(resolution))
+            print(f"No {resolution} images to extract in {archive_path}")
             return
-        print("{} {} images to be extracted".format(total, resolution))
+        print(f"{total} {resolution} images to be extracted from {archive_path}")
         extracted_images = []
         for i, image in enumerate(image_names, start=1):
-            print("Extracting {} image {}/{}".format(resolution, i, total))
+            print(f"Extracting {resolution} image {i}/{total}")
             source_zpath = archive_image_zpath / image
             dest_path = extract_image(source_zpath, dry_run)
             extracted_images.append(dest_path)
